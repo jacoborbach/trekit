@@ -43,5 +43,5 @@
 .header-container2 nav {
     width: 225px;
     display: flex;
-    justify-content: space-evenly;
+    justify-content: space-around;
 }
