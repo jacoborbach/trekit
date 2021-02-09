@@ -124,6 +124,7 @@ export default function MyMap(props) {
                     id: res.data.id //this is the trip id
                 }])
             })
+
             .catch(err => console.log(err))
     }
 
@@ -157,10 +158,14 @@ export default function MyMap(props) {
                         setMarkers(copyMarkers)
                     }
                 }
-                setStart(res.data.start_date)
-                setEnd(res.data.end_date)
-                setRating(res.data.rating)
-                setComment(res.data.comment)
+                // setStart(res.data.start_date)
+                // setEnd(res.data.end_date)
+                // setRating(res.data.rating)
+                // setComment(res.data.comment)
+                setStart('')
+                setEnd('')
+                setRating('')
+                setComment('')
             })
             .catch(err => console.log(err))
     }
@@ -235,10 +240,10 @@ export default function MyMap(props) {
                 setEnd('')
                 setRating('')
                 setComment('')
+
             })
             .catch(err => console.log(err))
     }
-
 
     return (
         <div>
@@ -315,7 +320,7 @@ export default function MyMap(props) {
                                         <span>{selected.end_date.substring(0, 10)}</span>
 
                                         <br /><br />
-                                        <span>{selected.rating}</span>
+                                        <span>Rating: {selected.rating}</span>
 
 
                                         <br /><br />
