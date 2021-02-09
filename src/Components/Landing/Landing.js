@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import axios from 'axios'
-// import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { getUser } from '../../dux/reducer'
 import './Landing.css'
@@ -125,5 +124,4 @@ export class Landing extends Component {
     }
 }
 
-// export default withRouter(Landing)
 export default connect(null, { getUser })(Landing)

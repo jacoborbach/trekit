@@ -1,26 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { GoogleMap, useLoadScript, Marker, InfoWindow } from "@react-google-maps/api"
-import usePlacesAutocomplete, {
-    getGeocode,
-    getLatLng,
-} from "use-places-autocomplete";
-import {
-    Combobox,
-    ComboboxInput,
-    ComboboxPopover,
-    ComboboxList,
-    ComboboxOption,
-} from "@reach/combobox";
-import "@reach/combobox/styles.css";
 import axios from 'axios'
-
-// styles
+import { connect } from 'react-redux'
+import {
+    GoogleMap,
+    useLoadScript,
+    Marker,
+    InfoWindow
+}
+    from "@react-google-maps/api";
+import SearchMap from '../SearchMap/SearchMap'
 import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
 import "./MyMap.css"
-import { connect } from 'react-redux'
-
-
 
 const mapContainerStyle = {
     width: "88vw",
@@ -32,11 +23,6 @@ const center = {
     lat: 34.373112,
     lng: 6.252371
 }
-
-
-
-
-
 
 function MyMap(props) {
     const [libraries] = useState(['places']);
@@ -262,11 +248,6 @@ function MyMap(props) {
         setColors(e)
     }
 
-
-
-
-    // console.log(props)
-
     return (
         <div id='map-background'>
 
@@ -289,7 +270,7 @@ function MyMap(props) {
                     )
                     : (
                         < div className='search-container'>
-                            <Search addmarker={addmarker} />
+                            <SearchMap addmarker={addmarker} />
                             <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
                         </div>
 
@@ -450,7 +431,6 @@ function MyMap(props) {
     )
 }
 
-
 const mapStateToProps = reduxState => {
     return {
         user: reduxState.user
@@ -458,61 +438,3 @@ const mapStateToProps = reduxState => {
 }
 
 export default connect(mapStateToProps)(MyMap)
-
-
-
-
-
-
-export function Search(props) {
-    const {
-        ready,
-        value,
-        suggestions: { status, data },
-        setValue,
-        clearSuggestions,
-    } = usePlacesAutocomplete({
-        requestOptions: {
-            types: ['(cities)']
-        }
-    });
-
-
-    return (
-        <div className='search'>
-            <Combobox
-                onSelect={async (address) => {
-                    setValue('', false);
-                    clearSuggestions();
-
-                    try {
-                        const results = await getGeocode({ address });
-                        // console.log(results[0])
-                        // console.log('city', results[0].address_components[0].short_name)
-                        // console.log('country:', results[0].address_components[-1].short_name)
-                        const { lat, lng } = await getLatLng(results[0]);
-                        // const details = await getDetails(results[0].place_id)
-                        // console.log(details)
-                        props.addmarker({ address, lat, lng })
-                    } catch (error) {
-                        console.log("error", error);
-                    }
-                }}>
-                <ComboboxInput
-                    value={value}
-                    onChange={(e) => setValue(e.target.value)}
-                    disabled={!ready}
-                    placeholder="Enter a City..."
-                />
-                <ComboboxPopover>
-                    <ComboboxList>
-                        {status === "OK" &&
-                            data.map(({ description }, i) =>
-                                <ComboboxOption key={i} value={description} />
-                            )}
-                    </ComboboxList>
-                </ComboboxPopover>
-            </Combobox>
-        </div>
-    )
-}
