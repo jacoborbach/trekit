@@ -42,6 +42,9 @@ app.put('/api/trip/:id', markerCtrl.editTrip)
 app.delete('/api/trip/:id', markerCtrl.deleteTrip)
 app.post('/api/tripinfo/:id', markerCtrl.tripInfo)
 
+//color
+app.put('/api/color/:id', userCtrl.colorChange)
+
 
 
 //Email handler

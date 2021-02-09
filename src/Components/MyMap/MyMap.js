@@ -69,22 +69,11 @@ export default function MyMap(props) {
     const [colors, setColorTheme] = useState(null)
 
     let options = {
-        // going to import style user selected on a componentDidMount
-        // styles: colors,
         styles: colors,
         disableDefaultUI: true,
         zoomControl: true,
         minZoom: 2
     }
-
-    // const toggleMapColor = () => {
-    //     if (colors === null) {
-    //         setColorTheme(mapStyles)
-    //     } else if (colors === mapStyles) {
-    //         setColorTheme(null)
-    //     }
-    // }
-    // console.log(colors)
 
     const fetchUser = async () => {
         const userData = await axios.get(`/api/user/${defaultId}`);
@@ -92,10 +81,17 @@ export default function MyMap(props) {
         setCountries(userData.data.count[0].countries)
         setCities(userData.data.count[0].cities)
         setMarkers(userData.data.userData)
-        // console.log(colors)
-        // console.log(props.user.theme)
-        // setColorTheme(props.user.theme)
-        // console.log(colors)
+        setUserColorOnLogin();
+    }
+
+    const setUserColorOnLogin = () => {
+        if (props.user.theme === "mapStyles") {
+            setColorTheme(mapStyles)
+        } else if (props.user.theme === "alternativeMap") {
+            setColorTheme(alternativeMap)
+        } else if (props.user.theme === "noLabels") {
+            setColorTheme(noLabels)
+        }
     }
 
     useEffect(() => {
@@ -175,12 +171,6 @@ export default function MyMap(props) {
             .catch(err => console.log(err))
     }
 
-
-    // console.log(markers)
-    // console.log(rating)
-    // console.log(props)
-    // console.log(selected)
-
     const confirmClose = () => {
         let result = window.confirm('Are you sure you want to stop editing this trip? All your data will be lost')
         if (result === true) {
@@ -248,18 +238,30 @@ export default function MyMap(props) {
 
     let handleColorChange = (e) => {
         setColorTheme(e)
+
+        let dbColor = '';
+        if (colors === mapStyles) {
+            dbColor = "mapStyles"
+        } else if (colors === noLabels) {
+            dbColor = "noLabels"
+        } else if (colors === alternativeMap) {
+            dbColor = "alternativeMap"
+        }
+        axios.put(`/api/color/${defaultId}`, { color: dbColor })
+            .catch(err => console.log(err))
     }
+
 
     return (
         <div id='map-background'>
 
             {/* first button sets background to noLabels */}
             <h3>Color Options</h3>
-            <button onClick={() => handleColorChange(noLabels)} name='noLabels'>Default</button>
+            <button onClick={() => handleColorChange(noLabels)} >Default</button>
             {/* second button sets background to dark */}
-            <button onClick={() => handleColorChange(mapStyles)} name='mapStyles'>Dark</button>
+            <button onClick={() => handleColorChange(mapStyles)} >Dark</button>
             {/* third button sets background to the alternative */}
-            <button onClick={() => handleColorChange(alternativeMap)} name='alternativeMap'>Alternative</button>
+            <button onClick={() => handleColorChange(alternativeMap)} >Alternative</button>
 
 
             <GoogleMap className='myMap'
