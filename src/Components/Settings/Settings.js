@@ -1,18 +1,14 @@
 import axios from 'axios';
-import React, { Component } from 'react'
-import './Settings.css'
+import React from 'react'
 import { connect } from 'react-redux'
 import { clearUser } from '../../dux/reducer'
 import { changeColor } from '../../dux/themeReducer'
 import { dark } from '../MyMap/ColorThemes/dark'
 import { silver } from '../MyMap/ColorThemes/silver'
+import './Settings.css'
 
 
-
-
-// bring in a prop that allows me to choose a color theme 
 function Settings(props) {
-
     const handleLogout = () => {
         axios.get('/api/logout')
             .then(() => {
