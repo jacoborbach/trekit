@@ -82,12 +82,7 @@ function MyMap(props) {
         fetchUser()
     }, []);
 
-    // let handleColorChange = (e) => {
-    //     setColors(e)
-    // }
-
     useEffect(() => {
-        // console.log(props.colors)
         let dbColor = '';
         if (props.colors === dark) {
             dbColor = "dark"
@@ -252,12 +247,6 @@ function MyMap(props) {
     console.log(props)
     return (
         <div id='map-background'>
-
-            {/* <h3>Color Options</h3>
-            <button onClick={() => handleColorChange(null)} >Default</button>
-            <button onClick={() => handleColorChange(dark)} >Dark</button>
-            <button onClick={() => handleColorChange(silver)} >Silver</button> */}
-
 
             <GoogleMap className='myMap'
                 mapContainerStyle={mapContainerStyle}
