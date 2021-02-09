@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import './Settings.css'
+import { connect } from 'react-redux'
+import { clearUser } from '../../dux/reducer'
 
 // bring in a prop that allows me to choose a color theme 
 export class Settings extends Component {
@@ -48,7 +49,11 @@ export class Settings extends Component {
 
     handleLogout = () => {
         axios.get('/api/logout')
-        this.props.history.push('/')
+            .then(() => {
+                this.props.history.push('/')
+                this.props.clearUser()
+            })
+            .catch(err => console.log(err))
     }
 
     render() {
@@ -85,4 +90,4 @@ export class Settings extends Component {
     }
 }
 
-export default withRouter(Settings)
+export default connect(null, { clearUser })(Settings)

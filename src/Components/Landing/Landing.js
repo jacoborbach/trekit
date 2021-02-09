@@ -35,7 +35,6 @@ export class Landing extends Component {
         if (password && password === verPassword) {
             axios.post('/api/register', { first_name, last_name, email, password })
                 .then(res => {
-                    // this.props.setUser(res.data)
                     this.props.getUser(res.data)
                     this.props.history.push('/myMap')
                 })
@@ -51,7 +50,6 @@ export class Landing extends Component {
 
         axios.post('/api/login', { email, password })
             .then(res => {
-                // this.props.setUser(res.data)
                 this.props.getUser(res.data)
                 this.props.history.push('/myMap')
             })
