@@ -131,6 +131,11 @@
     margin-left: 8px;
 }
 
+#map-background h3 {
+    margin: 0;
+    padding: 10px 0px;
+}
+
 
 
 /* ------------------Other----------------------------- */

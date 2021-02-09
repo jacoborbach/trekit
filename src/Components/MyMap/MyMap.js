@@ -27,7 +27,7 @@ const mapContainerStyle = {
     height: "74vh",
     left: "2vw",
     // top: "4vh"
-    top: "20vh"
+    top: "8vh"
 }
 const center = {
     lat: 43.419014,
@@ -71,7 +71,7 @@ export default function MyMap(props) {
     let options = {
         // going to import style user selected on a componentDidMount
         // styles: colors,
-        styles: noLabels,
+        styles: colors,
         disableDefaultUI: true,
         zoomControl: true,
         minZoom: 2
@@ -246,9 +246,10 @@ export default function MyMap(props) {
     }
 
     let handleColorChange = (e) => {
-        // console.log(e.target.name)
         setColorTheme(e.target.name)
-        options.styles = e.target.name
+
+        // console.log(e.target.name)
+        // options.styles = e.target.name
     }
 
     console.log(options)
@@ -259,12 +260,12 @@ export default function MyMap(props) {
             {/* <button onClick={toggleMapColor}>Change color</button> */}
 
             {/* first button sets background to null */}
-            {/* <h3>Color Options</h3>
-            <button onClick={handleColorChange} name='null'>Default</button> */}
+            <h3>Color Options</h3>
+            <button onClick={handleColorChange} name='noLabels'>Default</button>
             {/* second button sets background to dark */}
-            {/* <button onClick={handleColorChange} name='mapStyles'>Dark</button> */}
+            <button onClick={handleColorChange} name='mapStyles'>Dark</button>
             {/* third button sets background to the alternative */}
-            {/* <button onClick={handleColorChange} name='alternativeMap'>Alternative</button> */}
+            <button onClick={handleColorChange} name='alternativeMap'>Alternative</button>
 
 
             <GoogleMap className='myMap'
