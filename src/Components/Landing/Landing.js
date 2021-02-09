@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { withRouter } from 'react-router-dom'
 import axios from 'axios'
+// import { withRouter } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { getUser } from '../../dux/reducer'
 import './Landing.css'
 
 export class Landing extends Component {
@@ -33,8 +35,8 @@ export class Landing extends Component {
         if (password && password === verPassword) {
             axios.post('/api/register', { first_name, last_name, email, password })
                 .then(res => {
-                    this.props.setUser(res.data)
-                    // console.log(this.props)
+                    // this.props.setUser(res.data)
+                    this.props.getUser(res.data)
                     this.props.history.push('/myMap')
                 })
                 .catch(err => console.log(err))
@@ -49,14 +51,15 @@ export class Landing extends Component {
 
         axios.post('/api/login', { email, password })
             .then(res => {
-                this.props.setUser(res.data)
+                // this.props.setUser(res.data)
+                this.props.getUser(res.data)
                 this.props.history.push('/myMap')
             })
             .catch(err => console.log(err))
     }
 
     render() {
-        // console.log(this.props)
+        console.log(this.props)
         return (
             <div className='landing-container'>
                 <section className='authentication-info'>
@@ -124,4 +127,5 @@ export class Landing extends Component {
     }
 }
 
-export default withRouter(Landing)
+// export default withRouter(Landing)
+export default connect(null, { getUser })(Landing)

@@ -1,10 +1,11 @@
 import React, { Component } from 'react'
 import './App.css';
-import { Switch, Route } from 'react-router-dom'
-import Landing from './Components/Landing/Landing'
-import Settings from './Components/Settings/Settings'
+// import { Switch, Route } from 'react-router-dom'
+// import Landing from './Components/Landing/Landing'
+// import Settings from './Components/Settings/Settings'
 import Header from './Components/Header/Header'
-import MyMap from './Components/MyMap/MyMap'
+// import MyMap from './Components/MyMap/MyMap'
+import routes from './routes'
 
 
 export class App extends Component {
@@ -24,8 +25,8 @@ export class App extends Component {
     return (
       <div className='App'>
         <Header />
-
-        <Switch>
+        {routes}
+        {/* <Switch>
           <Route
             exact path='/'
             render={() => (
@@ -39,7 +40,7 @@ export class App extends Component {
               <MyMap user={this.state.userObj} isAuthed={true} />
             )}
           />
-        </Switch>
+        </Switch> */}
 
       </div>
     )

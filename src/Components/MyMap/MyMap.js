@@ -18,6 +18,7 @@ import axios from 'axios'
 import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
 import "./MyMap.css"
+import { connect } from 'react-redux'
 
 
 
@@ -32,7 +33,12 @@ const center = {
     lng: 6.252371
 }
 
-export default function MyMap(props) {
+
+
+
+
+
+function MyMap(props) {
     const [libraries] = useState(['places']);
 
     const { isLoaded, loadError } = useLoadScript({
@@ -60,6 +66,12 @@ export default function MyMap(props) {
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
     const [colors, setColors] = useState(null)
+
+    // useEffect(() => {
+    //     if (this.props.user.email) {
+    //         this.props.history.push('/myMap')
+    //     }
+    // }, [])
 
     const fetchUser = async () => {
         const userData = await axios.get(`/api/user/${defaultId}`);
@@ -250,6 +262,11 @@ export default function MyMap(props) {
         setColors(e)
     }
 
+
+
+
+    // console.log(props)
+
     return (
         <div id='map-background'>
 
@@ -433,6 +450,20 @@ export default function MyMap(props) {
     )
 }
 
+
+const mapStateToProps = reduxState => {
+    return {
+        user: reduxState.user
+    }
+}
+
+export default connect(mapStateToProps)(MyMap)
+
+
+
+
+
+
 export function Search(props) {
     const {
         ready,
@@ -445,6 +476,7 @@ export function Search(props) {
             types: ['(cities)']
         }
     });
+
 
     return (
         <div className='search'>

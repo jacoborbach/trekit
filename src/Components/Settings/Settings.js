@@ -3,6 +3,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import './Settings.css'
 
+// bring in a prop that allows me to choose a color theme 
 export class Settings extends Component {
     constructor(props) {
         super(props);
@@ -51,6 +52,7 @@ export class Settings extends Component {
     }
 
     render() {
+        console.log(this.props)
         return (
             <div className='settings'>
                 <div id='innerDiv'>
