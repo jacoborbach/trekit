@@ -1,6 +1,8 @@
 .header-container {
+    position: fixed;
     height: 100px;
-    background-color: rgb(106, 106, 106);
+    width: 100%;
+    /* background-color: grey; */
     color: white;
     display: flex;
     justify-content: space-between;
@@ -23,5 +25,23 @@
 
 #logo {
     color: rgb(42, 87, 164);
+}
 
+.header-container2 {
+    position: fixed;
+    height: 100px;
+    width: 100%;
+    background-color: grey;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 0 30px;
+}
+
+.header-container2 nav {
+    width: 225px;
+    display: flex;
+    justify-content: space-evenly;
 }

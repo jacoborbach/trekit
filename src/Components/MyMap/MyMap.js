@@ -13,18 +13,20 @@ import {
     ComboboxOption,
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
+import axios from 'axios'
 
 import { mapStyles } from "./mapStyles"
-import { defaultMapStyle } from "./defaultMapStyle"
+import { alternativeMap } from "./alternativeMap"
 import "./MyMap.css"
-import axios from 'axios'
+
 
 const mapContainerStyle = {
     // width: "69vw",
     width: "96vw",
     height: "74vh",
     left: "2vw",
-    top: "4vh"
+    // top: "4vh"
+    top: "20vh"
 }
 const center = {
     lat: 40.687928,
@@ -73,14 +75,13 @@ export default function MyMap(props) {
         minZoom: 2
     }
 
-
-    const toggleMapColor = () => {
-        if (colors === null) {
-            setColorTheme(mapStyles)
-        } else if (colors === mapStyles) {
-            setColorTheme(null)
-        }
-    }
+    // const toggleMapColor = () => {
+    //     if (colors === null) {
+    //         setColorTheme(mapStyles)
+    //     } else if (colors === mapStyles) {
+    //         setColorTheme(null)
+    //     }
+    // }
     // console.log(colors)
 
     const fetchUser = async () => {
@@ -104,6 +105,12 @@ export default function MyMap(props) {
         setCountries(newCount.data[0].countries)
         setCities(newCount.data[0].cities)
     }
+
+    // too (hopefully) cause less re-renders
+    const mapRef = React.useRef();
+    const onMapLoad = React.useCallback((map) => {
+        mapRef.current = map;
+    }, []);
 
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps"
@@ -158,10 +165,6 @@ export default function MyMap(props) {
                         setMarkers(copyMarkers)
                     }
                 }
-                // setStart(res.data.start_date)
-                // setEnd(res.data.end_date)
-                // setRating(res.data.rating)
-                // setComment(res.data.comment)
                 setStart('')
                 setEnd('')
                 setRating('')
@@ -174,9 +177,7 @@ export default function MyMap(props) {
     // console.log(markers)
     // console.log(rating)
     // console.log(props)
-    console.log(selected)
-
-    //in the confirm window, if we hit ok, then set all 4 inputs to null and setSelected to null. If they hit cancel then do nothing.
+    // console.log(selected)
 
     const confirmClose = () => {
         let result = window.confirm('Are you sure you want to stop editing this trip? All your data will be lost')
@@ -200,9 +201,6 @@ export default function MyMap(props) {
             setEnd(copyEnd)
             setRating(+copyRating)
             setComment(copyComment)
-
-
-            // console.log(copySelected)
         }
     }
 
@@ -245,18 +243,34 @@ export default function MyMap(props) {
             .catch(err => console.log(err))
     }
 
-    return (
-        <div>
+    let handleColorChange = (e) => {
+        // console.log(e.target.name)
+        setColorTheme(e.target.name)
+        options.styles = e.target.name
+    }
 
+    console.log(options)
+
+    return (
+        <div id='map-background'>
 
             {/* <button onClick={toggleMapColor}>Change color</button> */}
+
+            {/* first button sets background to null */}
+            {/* <h3>Color Options</h3>
+            <button onClick={handleColorChange} name='null'>Default</button> */}
+            {/* second button sets background to dark */}
+            {/* <button onClick={handleColorChange} name='mapStyles'>Dark</button> */}
+            {/* third button sets background to the alternative */}
+            {/* <button onClick={handleColorChange} name='alternativeMap'>Alternative</button> */}
 
 
             <GoogleMap className='myMap'
                 mapContainerStyle={mapContainerStyle}
                 zoom={2}
                 center={center}
-                options={options}>
+                options={options}
+                onLoad={onMapLoad} >
 
                 {showView
                     ? (
@@ -288,14 +302,6 @@ export default function MyMap(props) {
                     <h2>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
                 </div>
 
-
-                {/* Going to need a conditional rendering on the info window
-    if the selected has a start date and end date, it should display those instead of the input
-
-    if the selected has a rating it should display that with the option to edit
-
-    if the selected has a comment it will display that with the option to edit
-*/}
                 {selected ? (
                     <InfoWindow
                         // pixelOffset:

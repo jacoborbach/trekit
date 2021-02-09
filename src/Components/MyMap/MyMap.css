@@ -1,16 +1,10 @@
-h1 {
-    /* position: absolute;
-    top: 5rem;
-    left: 1rem;
-    color: white;
-    z-index: 10;
-    margin: 0;
-    padding: 0; */
-}
-
 .myMap {
     position: relative;
-    box-sizing: border-box;
+}
+
+#map-background {
+    background-color: rgb(48, 154, 48);
+    height: 100vh;
 }
 
 .AddBtn {
