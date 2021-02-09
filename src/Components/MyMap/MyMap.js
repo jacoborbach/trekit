@@ -98,6 +98,19 @@ export default function MyMap(props) {
         fetchUser()
     }, []);
 
+    useEffect(() => {
+        let dbColor = '';
+        if (colors === mapStyles) {
+            dbColor = "mapStyles"
+        } else if (colors === noLabels) {
+            dbColor = "noLabels"
+        } else if (colors === alternativeMap) {
+            dbColor = "alternativeMap"
+        };
+        axios.put(`/api/color/${defaultId}`, { color: dbColor })
+            .catch(err => console.log(err))
+    }, [colors])
+
     const getCount = async () => {
         const newCount = await axios.get(`/api/trip-count/${defaultId}`)
         setCountries(newCount.data[0].countries)
@@ -235,22 +248,9 @@ export default function MyMap(props) {
             .catch(err => console.log(err))
     }
 
-
     let handleColorChange = (e) => {
         setColorTheme(e)
-
-        let dbColor = '';
-        if (colors === mapStyles) {
-            dbColor = "mapStyles"
-        } else if (colors === noLabels) {
-            dbColor = "noLabels"
-        } else if (colors === alternativeMap) {
-            dbColor = "alternativeMap"
-        }
-        axios.put(`/api/color/${defaultId}`, { color: dbColor })
-            .catch(err => console.log(err))
     }
-
 
     return (
         <div id='map-background'>
@@ -329,6 +329,7 @@ export default function MyMap(props) {
 
 
                                         <br /><br />
+                                        {/* <p id='notesHeader'><b>Notes</b></p> */}
                                         <span>{selected.comment}</span>
                                         <br /><br />
                                         <button onClick={handleEdit}>Edit</button>
