@@ -15,6 +15,7 @@ import {
 import "@reach/combobox/styles.css";
 import axios from 'axios'
 
+import { noLabels } from './noLabels'
 import { mapStyles } from "./mapStyles"
 import { alternativeMap } from "./alternativeMap"
 import "./MyMap.css"
@@ -29,8 +30,8 @@ const mapContainerStyle = {
     top: "20vh"
 }
 const center = {
-    lat: 40.687928,
-    lng: 9.564487
+    lat: 43.419014,
+    lng: 14.445674
 }
 
 export default function MyMap(props) {
@@ -69,7 +70,8 @@ export default function MyMap(props) {
 
     let options = {
         // going to import style user selected on a componentDidMount
-        styles: colors,
+        // styles: colors,
+        styles: noLabels,
         disableDefaultUI: true,
         zoomControl: true,
         minZoom: 2
@@ -267,7 +269,7 @@ export default function MyMap(props) {
 
             <GoogleMap className='myMap'
                 mapContainerStyle={mapContainerStyle}
-                zoom={2}
+                zoom={2.15}
                 center={center}
                 options={options}
                 onLoad={onMapLoad} >

@@ -24,14 +24,14 @@
 }
 
 #logo {
-    color: rgb(42, 87, 164);
+    color: rgb(0, 150, 17);
 }
 
 .header-container2 {
     position: fixed;
     height: 100px;
     width: 100%;
-    background-color: grey;
+    background-color: rgba(94, 94, 94, 0.933);
     color: white;
     display: flex;
     justify-content: space-between;
