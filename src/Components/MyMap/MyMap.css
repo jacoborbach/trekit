@@ -1,0 +1,205 @@
+h1 {
+    /* position: absolute;
+    top: 5rem;
+    left: 1rem;
+    color: white;
+    z-index: 10;
+    margin: 0;
+    padding: 0; */
+}
+
+.myMap {
+    position: relative;
+    box-sizing: border-box;
+}
+
+.AddBtn {
+    right: 0px;
+    top: 60px;
+    background-color:  rgb(213, 213, 26);
+    border-radius: 15px;
+    width: 100px;
+    position: absolute;
+    z-index: 10;
+}
+.testingE {
+    z-index: 10;
+    background-color: aqua; 
+}
+.search-container {
+    display: flex;
+	flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    /* padding: 15px; */
+    z-index: 10;
+}
+
+.search {
+    /* position: absolute; */
+    /* top: 1rem; */
+    /* left: 50%;
+    transform: translateX(-50%); */
+    width:90%;
+    max-width: 350px;
+    z-index: 10;
+}
+
+.search input {
+    padding: 0.5rem;
+    font-size: 1.5 rem;
+    width: 90%;
+}
+
+.MinusBtn {
+    /* top: 1rem; */
+    background-color: red;
+    border-radius: 15px;
+    width: 30px;
+    /* position: absolute; */
+    z-index: 10;
+}
+
+.count {
+    display: flex;
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color:midnightblue;
+    color: white;
+    border: solid rgb(213, 213, 26) 2px;
+}
+
+.countDisplay {
+    margin: 25px 45px 25px 25px;
+    padding: 30px;
+    
+}
+.formName {
+    margin: 5px;
+}
+.deleteBtn {
+    bottom: 6px;
+    position: absolute;
+    background-color: white;
+    color: red;
+    border: none;
+    right: 5px;
+    /* float: right; */
+}
+
+.tripInfoForm {
+    display: flex;
+    text-align: start;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+#plus {
+    color: rgba(13, 82, 185, 0.623)
+}
+
+.dumbclass {
+    display: flex;
+    text-align: start;
+    flex-direction: column;
+    justify-content: flex-start;
+    position: relative;
+    margin-bottom: 8px;
+    margin-top: 4px;
+}
+
+#back {
+    color: blue;
+    margin: 0px;
+    margin-top: 8px;
+    position: absolute;
+    bottom: 0px;
+    right: 10px;
+}
+
+#endDateInp {
+    margin-bottom: 3px;
+}
+
+.question {
+    margin: 0px;
+}
+
+#review {
+    margin-top: 10px;
+    margin-bottom: 7px;
+}
+
+#EditTripSubmit {
+    background-color: rgb(21, 184, 21);
+    margin-left: 8px;
+}
+
+
+
+/* ------------------Other----------------------------- */
+/* stars */
+.hide {
+    display: none;
+}
+
+.clear {
+    float: none;
+    clear: both;
+}
+
+.rating {
+    width: 60%;
+    unicode-bidi: bidi-override;
+    direction: rtl;
+    /* text-align: center; */
+    /* position: relative; */
+
+}
+
+.rating > label {
+    display: inline;
+    padding: 0;
+    margin: 0;
+    position: relative;
+    width: 1.1em;
+    cursor: pointer;
+    color: #000;
+}
+
+.rating > label:hover,
+.rating > label:hover ~ label,
+.rating > input.radio-btn:checked ~ label {
+    color: transparent;
+}
+
+.rating > label:hover:before,
+.rating > label:hover ~ label:before,
+.rating > input.radio-btn:checked ~ label:before,
+.rating > input.radio-btn:checked ~ label:before {
+    content: "\2605";
+    position: absolute;
+    left: 0;
+    color: #FFD700;
+}
+
+.ratingContainer {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+/*  */
+
+/* gets ride of Google Logo and ToS */
+a[href^="http://maps.google.com/maps"]{display:none !important}
+a[href^="https://maps.google.com/maps"]{display:none !important}
+
+.gmnoprint a, .gmnoprint span, .gm-style-cc {
+    display:none;
+}
+.gmnoprint div {
+    background:none !important;
+}
+/*  */

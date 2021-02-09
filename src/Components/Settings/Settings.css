@@ -1,0 +1,58 @@
+.settings {
+    /* display: flex;
+    flex-direction: column;
+    align-items: flex-start; */
+    /* margin-left: 15px; */
+    height: 100vh;
+    background-color: rgba(224, 224, 224, 0.94);
+    text-align: start;
+    /* margin-left: 0; */
+}
+
+#innerDiv {
+    margin-left: 40px;
+}
+
+ul {
+    list-style-type: none;
+    padding: 0px;
+}
+
+.themeChooser {
+    display: inline-block;
+    margin: 0px 15px;
+    border: solid black 1px;
+    padding: 24px;
+    /* background-color: white; */
+}
+
+.hideColor {
+    background-color: none
+}
+
+.applySelected {
+    background-color: rgba(148, 148, 148, 0.94);
+}
+
+.pin {
+    display: inline-block;
+    padding: 0px 40px;
+    margin: 0px 15px;
+}
+
+.hide{
+    display: none;
+}
+
+.ThemeChoices {
+    margin: 0;
+}
+
+#logout {
+    margin: 30px
+}
+
+#colorHeader {
+    margin: 0px;
+    padding-top: 100px;
+}

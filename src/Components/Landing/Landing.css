@@ -1,0 +1,87 @@
+.landing-container {
+    height: calc(100vh - 100px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    /* background-color: rgb(10, 84, 163); */
+    background-image: url("./landing.jpg");
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+    
+}
+
+.landForm {
+    /* background-color: transparent; */
+    padding: 30px;
+}
+
+.authentication-info {
+    height: 350px;
+    width: 350px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    /* color: white; */
+}
+
+.authentication-info h1 {
+    margin: 0;
+    color: white;
+}
+
+.authentication-info h3 {
+    color: white;
+}
+
+.authentication-info span {
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+.authentication-info input {
+    height: 30px;
+    width: 350px;
+    background-color: transparent;
+    /* color: white; */
+    border: none;
+    border-bottom: 2px solid white;
+    margin-bottom: 20px;
+    font-size: 20px;
+    outline: none;
+    color: white
+}
+
+/* ::placeholder {
+    color: white;
+} */
+
+.authentication-info button {
+    height: 30px;
+    width: 350px;
+    background-color: transparent;
+    /* color:white; */
+    border: 2px solid white;
+    border-radius: 15px;
+    font-size: 20px;
+    outline: none;
+    color: white;
+}
+
+.authentication-info button:hover {
+    background-color:  rgb(213, 213, 26);
+    color: rgb(10, 84, 163)
+}
+
+.authentication-info button:active {
+    background-color: transparent;
+    color: white
+}
+
+.inputText ::placeholder{
+    color: white
+}
+
+.white {
+    color: white;
+}
