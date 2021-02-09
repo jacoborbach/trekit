@@ -1,4 +1,10 @@
-import { createStore } from 'redux'
+import { createStore, combineReducers } from 'redux'
 import reducer from './reducer'
+import themeReducer from './themeReducer'
 
-export default createStore(reducer)
+const rootReducer = combineReducers({
+    userReducer: reducer,
+    themeReducer
+})
+
+export default createStore(rootReducer)

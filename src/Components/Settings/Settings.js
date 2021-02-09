@@ -3,6 +3,9 @@ import React, { Component } from 'react'
 import './Settings.css'
 import { connect } from 'react-redux'
 import { clearUser } from '../../dux/reducer'
+import { changeColor } from '../../dux/themeReducer'
+import { dark } from '../MyMap/ColorThemes/dark'
+import { silver } from '../MyMap/ColorThemes/silver'
 
 // bring in a prop that allows me to choose a color theme 
 export class Settings extends Component {
@@ -65,6 +68,12 @@ export class Settings extends Component {
                     <h4 id='colorHeader'>Color</h4>
                     <p >Choose one of the following color themes:</p>
 
+                    <button onClick={() => this.props.changeColor(null)}>Default</button>
+                    <button onClick={() => this.props.changeColor(dark)}>Dark</button>
+                    <button onClick={() => this.props.changeColor(silver)}>Silver</button>
+
+
+                    {/*
                     <ul className='ThemeChoices'>
                         <li className="pin" ><span id="pin1" role="img" aria-label="pin" title='Choose Theme'>
                             📌
@@ -81,7 +90,7 @@ export class Settings extends Component {
                         <li className='themeChooser' id='default' onClick={(e) => this.setChosen('default')}>Default (Light)</li>
                         <li className='themeChooser' id='dark' onClick={(e) => this.setChosen('dark')}>Dark</li>
                         <li className='themeChooser' id='tropics' onClick={(e) => this.setChosen('tropics')}>Tropics</li>
-                    </ul>
+                    </ul> */}
                 </div>
 
                 <button onClick={this.handleLogout} id="logout">Logout</button>
@@ -89,5 +98,6 @@ export class Settings extends Component {
         )
     }
 }
+const mapStateToProps = reduxState => ({ themereducer: reduxState.themereducer })
 
-export default connect(null, { clearUser })(Settings)
+export default connect(mapStateToProps, { clearUser, changeColor })(Settings)

@@ -16,7 +16,7 @@ import "./MyMap.css"
 const mapContainerStyle = {
     width: "88vw",
     height: "74vh",
-    left: "2vw",
+    left: "6vw",
     top: "3vh"
 }
 const center = {
@@ -82,18 +82,24 @@ function MyMap(props) {
         fetchUser()
     }, []);
 
+    // let handleColorChange = (e) => {
+    //     setColors(e)
+    // }
+
     useEffect(() => {
+        // console.log(props.colors)
         let dbColor = '';
-        if (colors === dark) {
+        if (props.colors === dark) {
             dbColor = "dark"
-        } else if (colors === null) {
+        } else if (props.colors === null) {
             dbColor = "null"
-        } else if (colors === silver) {
+        } else if (props.colors === silver) {
             dbColor = "silver"
         };
         axios.put(`/api/color/${defaultId}`, { color: dbColor })
+            .then(() => setColors(props.colors))
             .catch(err => console.log(err))
-    }, [colors])
+    }, [props.colors])
 
     let options = {
         styles: colors,
@@ -243,18 +249,14 @@ function MyMap(props) {
             })
             .catch(err => console.log(err))
     }
-
-    let handleColorChange = (e) => {
-        setColors(e)
-    }
-
+    console.log(props)
     return (
         <div id='map-background'>
 
-            <h3>Color Options</h3>
+            {/* <h3>Color Options</h3>
             <button onClick={() => handleColorChange(null)} >Default</button>
             <button onClick={() => handleColorChange(dark)} >Dark</button>
-            <button onClick={() => handleColorChange(silver)} >Silver</button>
+            <button onClick={() => handleColorChange(silver)} >Silver</button> */}
 
 
             <GoogleMap className='myMap'
@@ -431,10 +433,9 @@ function MyMap(props) {
     )
 }
 
-const mapStateToProps = reduxState => {
-    return {
-        user: reduxState.user
-    }
-}
+const mapStateToProps = reduxState => ({
+    user: reduxState.userReducer.user,
+    colors: reduxState.themeReducer.colors
+})
 
 export default connect(mapStateToProps)(MyMap)
