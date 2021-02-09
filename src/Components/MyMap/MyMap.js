@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { GoogleMap, useLoadScript, Marker, InfoWindow } from "@react-google-maps/api"
 import usePlacesAutocomplete, {
-    // getDetails,
     getGeocode,
     getLatLng,
 } from "use-places-autocomplete";
@@ -15,23 +14,22 @@ import {
 import "@reach/combobox/styles.css";
 import axios from 'axios'
 
-import { noLabels } from './ColorThemes/noLabels'
+// styles
 import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
 import "./MyMap.css"
 
 
+
 const mapContainerStyle = {
-    // width: "69vw",
-    width: "96vw",
+    width: "88vw",
     height: "74vh",
     left: "2vw",
-    // top: "4vh"
-    top: "8vh"
+    top: "3vh"
 }
 const center = {
-    lat: 43.419014,
-    lng: 14.445674
+    lat: 34.373112,
+    lng: 6.252371
 }
 
 export default function MyMap(props) {
@@ -42,38 +40,26 @@ export default function MyMap(props) {
         libraries,
     });
 
-
+    //trips
     const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null)
     const [cityCount, setCities] = useState(" ");
     const [countryCount, setCountries] = useState(" ");
     const [showView, changeView] = useState(true)
-
     const [dateView, changeDateView] = useState(false);
-
     // Inputs
     const [startDate, setStart] = useState('');
     const [endDate, setEnd] = useState('');
     const [ratingInp, setRating] = useState(0);
     const [commentInp, setComment] = useState('');
     const defaultId = 1;
-
     // Editing Trip Info
     const [toggleTripEdit, setToggleTripEdit] = useState(false)
     const [newStartDate, setNewStart] = useState('')
     const [newEndDate, setNewEnd] = useState('')
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
-
-
-    const [colors, setColorTheme] = useState(noLabels)
-
-    let options = {
-        styles: colors,
-        disableDefaultUI: true,
-        zoomControl: true,
-        minZoom: 2
-    }
+    const [colors, setColors] = useState(null)
 
     const fetchUser = async () => {
         const userData = await axios.get(`/api/user/${defaultId}`);
@@ -86,11 +72,11 @@ export default function MyMap(props) {
 
     const setUserColorOnLogin = () => {
         if (props.user.theme === "dark") {
-            setColorTheme(dark)
+            setColors(dark)
         } else if (props.user.theme === "silver") {
-            setColorTheme(silver)
-        } else if (props.user.theme === "noLabels") {
-            setColorTheme(noLabels)
+            setColors(silver)
+        } else if (props.user.theme === "null") {
+            setColors(null)
         }
     }
 
@@ -102,8 +88,8 @@ export default function MyMap(props) {
         let dbColor = '';
         if (colors === dark) {
             dbColor = "dark"
-        } else if (colors === noLabels) {
-            dbColor = "noLabels"
+        } else if (colors === null) {
+            dbColor = "null"
         } else if (colors === silver) {
             dbColor = "silver"
         };
@@ -111,10 +97,11 @@ export default function MyMap(props) {
             .catch(err => console.log(err))
     }, [colors])
 
-    const getCount = async () => {
-        const newCount = await axios.get(`/api/trip-count/${defaultId}`)
-        setCountries(newCount.data[0].countries)
-        setCities(newCount.data[0].cities)
+    let options = {
+        styles: colors,
+        disableDefaultUI: true,
+        zoomControl: true,
+        minZoom: 1.5
     }
 
     // too (hopefully) cause less re-renders
@@ -131,6 +118,13 @@ export default function MyMap(props) {
         setSelected(null)
     }
 
+    const getCount = async () => {
+        const newCount = await axios.get(`/api/trip-count/${defaultId}`)
+        setCountries(newCount.data[0].countries)
+        setCities(newCount.data[0].cities)
+    }
+
+    // Add Markers
     const addmarker = (coordinates) => {
         axios.post('/api/newtrip', { id: props.user.id || defaultId, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
             .then(res => {
@@ -146,6 +140,7 @@ export default function MyMap(props) {
             .catch(err => console.log(err))
     }
 
+    // Delete Markers
     const handleDelete = () => {
         axios.delete(`/api/trip/${selected.id}`)
             .then(res => {
@@ -162,6 +157,7 @@ export default function MyMap(props) {
         changeDateView(!dateView)
     }
 
+    // Submit Trip Info
     const handleSubmit = (e) => {
         e.preventDefault();
         axios.post(`/api/tripinfo/${defaultId}`, { id: selected.id, startDate, endDate, ratingInp, commentInp })
@@ -184,6 +180,7 @@ export default function MyMap(props) {
             .catch(err => console.log(err))
     }
 
+    // Confirm Closing of Info Window
     const confirmClose = () => {
         let result = window.confirm('Are you sure you want to stop editing this trip? All your data will be lost')
         if (result === true) {
@@ -221,6 +218,7 @@ export default function MyMap(props) {
         setNewComment(selected.comment)
     }
 
+    // Edit Trip Info
     const handleTripEditSubmit = (e) => {
         e.preventDefault();
         axios.put(`/api/trip/${defaultId}`, {
@@ -249,18 +247,15 @@ export default function MyMap(props) {
     }
 
     let handleColorChange = (e) => {
-        setColorTheme(e)
+        setColors(e)
     }
 
     return (
         <div id='map-background'>
 
-            {/* first button sets background to noLabels */}
             <h3>Color Options</h3>
-            <button onClick={() => handleColorChange(noLabels)} >Default</button>
-            {/* second button sets background to dark */}
+            <button onClick={() => handleColorChange(null)} >Default</button>
             <button onClick={() => handleColorChange(dark)} >Dark</button>
-            {/* third button sets background to the alternative */}
             <button onClick={() => handleColorChange(silver)} >Silver</button>
 
 

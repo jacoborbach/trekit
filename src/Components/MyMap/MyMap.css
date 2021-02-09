@@ -70,6 +70,10 @@
     padding: 30px;
     
 }
+
+.count {
+    opacity: .8;
+}
 .formName {
     margin: 5px;
 }
@@ -132,8 +136,8 @@
 }
 
 #map-background h3 {
-    margin: 0;
-    padding: 10px 0px;
+    margin: 0px;
+    padding: 14px 0px 13px 0px;
 }
 
 /* #notesHeader {
