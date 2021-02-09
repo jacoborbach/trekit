@@ -15,9 +15,9 @@ import {
 import "@reach/combobox/styles.css";
 import axios from 'axios'
 
-import { noLabels } from './noLabels'
-import { mapStyles } from "./mapStyles"
-import { alternativeMap } from "./alternativeMap"
+import { noLabels } from './ColorThemes/noLabels'
+import { dark } from "./ColorThemes/dark"
+import { silver } from "./ColorThemes/silver"
 import "./MyMap.css"
 
 
@@ -66,7 +66,7 @@ export default function MyMap(props) {
     const [newComment, setNewComment] = useState('')
 
 
-    const [colors, setColorTheme] = useState(null)
+    const [colors, setColorTheme] = useState(noLabels)
 
     let options = {
         styles: colors,
@@ -85,10 +85,10 @@ export default function MyMap(props) {
     }
 
     const setUserColorOnLogin = () => {
-        if (props.user.theme === "mapStyles") {
-            setColorTheme(mapStyles)
-        } else if (props.user.theme === "alternativeMap") {
-            setColorTheme(alternativeMap)
+        if (props.user.theme === "dark") {
+            setColorTheme(dark)
+        } else if (props.user.theme === "silver") {
+            setColorTheme(silver)
         } else if (props.user.theme === "noLabels") {
             setColorTheme(noLabels)
         }
@@ -100,12 +100,12 @@ export default function MyMap(props) {
 
     useEffect(() => {
         let dbColor = '';
-        if (colors === mapStyles) {
-            dbColor = "mapStyles"
+        if (colors === dark) {
+            dbColor = "dark"
         } else if (colors === noLabels) {
             dbColor = "noLabels"
-        } else if (colors === alternativeMap) {
-            dbColor = "alternativeMap"
+        } else if (colors === silver) {
+            dbColor = "silver"
         };
         axios.put(`/api/color/${defaultId}`, { color: dbColor })
             .catch(err => console.log(err))
@@ -259,9 +259,9 @@ export default function MyMap(props) {
             <h3>Color Options</h3>
             <button onClick={() => handleColorChange(noLabels)} >Default</button>
             {/* second button sets background to dark */}
-            <button onClick={() => handleColorChange(mapStyles)} >Dark</button>
+            <button onClick={() => handleColorChange(dark)} >Dark</button>
             {/* third button sets background to the alternative */}
-            <button onClick={() => handleColorChange(alternativeMap)} >Alternative</button>
+            <button onClick={() => handleColorChange(silver)} >Silver</button>
 
 
             <GoogleMap className='myMap'

@@ -1,4 +1,4 @@
-export let alternativeMap =
+export let silver =
     [
         {
             "featureType": "all",

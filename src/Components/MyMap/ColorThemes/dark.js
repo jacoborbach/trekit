@@ -1,4 +1,4 @@
-export let mapStyles =
+export let dark =
     [
         {
             "featureType": "all",
