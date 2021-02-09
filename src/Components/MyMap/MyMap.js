@@ -245,27 +245,21 @@ export default function MyMap(props) {
             .catch(err => console.log(err))
     }
 
+
     let handleColorChange = (e) => {
-        setColorTheme(e.target.name)
-
-        // console.log(e.target.name)
-        // options.styles = e.target.name
+        setColorTheme(e)
     }
-
-    console.log(options)
 
     return (
         <div id='map-background'>
 
-            {/* <button onClick={toggleMapColor}>Change color</button> */}
-
-            {/* first button sets background to null */}
+            {/* first button sets background to noLabels */}
             <h3>Color Options</h3>
-            <button onClick={handleColorChange} name='noLabels'>Default</button>
+            <button onClick={() => handleColorChange(noLabels)} name='noLabels'>Default</button>
             {/* second button sets background to dark */}
-            <button onClick={handleColorChange} name='mapStyles'>Dark</button>
+            <button onClick={() => handleColorChange(mapStyles)} name='mapStyles'>Dark</button>
             {/* third button sets background to the alternative */}
-            <button onClick={handleColorChange} name='alternativeMap'>Alternative</button>
+            <button onClick={() => handleColorChange(alternativeMap)} name='alternativeMap'>Alternative</button>
 
 
             <GoogleMap className='myMap'
