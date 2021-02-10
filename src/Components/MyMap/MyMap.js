@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Component } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
+import { v4 as randomString } from 'uuid'
+import Dropzone from 'react-dropzone'
+import { GridLoader } from 'react-spinners'
 import {
     GoogleMap,
     useLoadScript,
@@ -52,6 +55,11 @@ function MyMap(props) {
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
     const [colors, setColors] = useState(null)
+
+    //Aws
+    const [isUploading, setUploading] = useState(false)
+    const [url, setUrl] = useState('')
+    //
 
     // useEffect(() => {
     //     if (props.user.email) {
@@ -244,7 +252,58 @@ function MyMap(props) {
             })
             .catch(err => console.log(err))
     }
-    console.log(markers)
+
+    const getSignedRequest = ([file]) => {
+        setUploading(true)
+
+        const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
+
+        axios.get('/sign-s3', {
+            params: {
+                'file-name': fileName,
+                'file-type': file.type
+            }
+        }).then((response) => {
+            const { signedRequest, url } = response.data
+            uploadFile(file, signedRequest, url)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
+
+    const uploadFile = (file, signedRequest, url) => {
+        const options = {
+            headers: {
+                'Content-Type': file.type,
+            },
+        };
+
+        axios
+            .put(signedRequest, file, options)
+            .then(res => {
+                setUploading(false)
+                setUrl(url)
+                // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
+                //will need to change trip id
+                axios.post('/api/file', { url, trip_id: 255 })
+                    .then(res => console.log(res.data))
+                    .catch(err => console.log(err))
+            })
+            .catch(err => {
+                setUploading(false)
+                if (err.response.status === 403) {
+                    alert(
+                        `Your request for a signed URL failed with a status 403. Double check the CORS configuration and bucket policy in the README. You also will want to double check your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env and ensure that they are the same as the ones that you created in the IAM dashboard. You may need to generate new keys\n${err.stack
+                        }`
+                    );
+                } else {
+                    alert(`ERROR: ${err.status}\n ${err.stack}`);
+                }
+            });
+    };
+
+
+    // console.log(markers)
     return (
         <div id='map-background'>
 
@@ -298,7 +357,7 @@ function MyMap(props) {
                                 <h2 className='formName'>{selected.name || selected.city + ', ' + selected.country}</h2>
                                 <button onClick={handleDelete} className='deleteBtn'>Delete</button>
 
-                                {/* on click of edit toggle view for that specific input back to the input view  */}
+                                {/* Displaying Trip Info */}
                                 {!toggleTripEdit ? (
                                     <>
                                         <span>Start Date: </span>
@@ -307,10 +366,8 @@ function MyMap(props) {
 
                                         <span>End Date: </span>
                                         <span>{selected.end_date.substring(0, 10)}</span>
-
                                         <br />
 
-                                        {/* Star Rating */}
                                         <div className='ratingContainer'>
                                             <h3 className='question'>Rating</h3>
                                             <div className="rating">
@@ -333,7 +390,6 @@ function MyMap(props) {
                                             </div>
                                         </div>
 
-                                        {/* <p id='notesHeader'><b>Notes</b></p> */}
                                         <h3 className='question'>Notes:</h3>
                                         <span>{selected.comment}</span>
                                         <br /><br />
@@ -390,6 +446,7 @@ function MyMap(props) {
 
                             </>
                         ) : (
+                                // Add Trip Info
                                 <>
                                     <form onSubmit={handleSubmit}>
                                         <button onClick={handleDelete} className='deleteBtn'>Delete</button>
@@ -440,6 +497,42 @@ function MyMap(props) {
                                             {/* Text Area */}
                                             <h3 id='review'>Review</h3>
                                             <textarea value={commentInp} onChange={e => setComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br />
+
+
+                                            <div className="App">
+                                                <h3>Upload</h3>
+
+                                                <Dropzone
+                                                    onDropAccepted={getSignedRequest}
+                                                    accept=".doc, .docx, image/png"
+                                                    multiple={false}>
+                                                    {({ getRootProps, getInputProps }) => (
+                                                        <div
+                                                            style={{
+                                                                position: 'relative',
+                                                                width: 130,
+                                                                height: 50,
+                                                                borderWidth: 5,
+                                                                borderColor: 'gray',
+                                                                borderStyle: 'dashed',
+                                                                borderRadius: 5,
+                                                                display: 'inline-block',
+                                                                fontSize: 17,
+                                                            }}
+                                                            {...getRootProps()}>
+                                                            <input {...getInputProps()} />
+                                                            {isUploading ? <GridLoader /> : <p>Upload Itinerary!</p>}
+
+                                                            <br />
+                                                        </div>
+                                                    )}
+                                                </Dropzone>
+
+                                            </div>
+                                            {/*jeez*/}
+
+
+
 
                                         </div>
                                         <input type="submit" />
