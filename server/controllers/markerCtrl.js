@@ -51,8 +51,8 @@ module.exports = {
         const { url, trip_id } = req.body;
         const db = req.app.get('db')
 
-        const [saved] = db.trips.add_file(url, trip_id)
-        // console.log(saved)
-        return res.status(200).send(saved)
+        const [saved] = await db.trips.add_file(url, trip_id)
+        console.log(saved)
+        // return res.status(200).send(saved)
     }
 }

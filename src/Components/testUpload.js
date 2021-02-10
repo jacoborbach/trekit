@@ -43,7 +43,10 @@ export class testUpload extends Component {
             .then(response => {
                 this.setState({ isUploading: false, url });
                 // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
-                console.log(response.data)
+                //will need to change trip id
+                axios.post('/api/file', { url, trip_id: 255 })
+                    .then(res => console.log(res.data))
+                    .catch(err => console.log(err))
             })
             .catch(err => {
                 this.setState({
