@@ -308,11 +308,35 @@ function MyMap(props) {
                                         <span>End Date: </span>
                                         <span>{selected.end_date.substring(0, 10)}</span>
 
-                                        <br /><br />
-                                        <span>Rating: {selected.rating}</span>
+                                        <br />
+                                        {/* <span>Rating: {selected.rating}</span> */}
 
 
-                                        <br /><br />
+                                        {/* Star Rating */}
+                                        <div className='ratingContainer'>
+                                            <h3 className='question'>Rating</h3>
+                                            <div className="rating">
+                                                <input onChange={e => setRating(e.target.name)} id="star5" name={5} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+selected.rating === 5} />
+                                                <label htmlFor="star5">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star4" name={4} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+selected.rating === 4} />
+                                                <label htmlFor="star4">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star3" name={3} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+selected.rating === 3} />
+                                                <label htmlFor="star3">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star2" name={2} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+selected.rating === 2} />
+                                                <label htmlFor="star2">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star1" name={1} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+selected.rating === 1} />
+                                                <label htmlFor="star1">☆</label>
+                                                <div className="clear"></div>
+                                            </div>
+                                        </div>
+
+
+                                        {/* <br /><br /> */}
                                         {/* <p id='notesHeader'><b>Notes</b></p> */}
                                         <span>{selected.comment}</span>
                                         <br /><br />
