@@ -9,7 +9,7 @@ module.exports = {
         const country = splitName.pop()
 
         const [addedtrip] = await db.trips.create_trip(city, lat, lng, id, country)
-        console.log(addedtrip)
+        // console.log(addedtrip)
         return res.status(201).send(addedtrip)
     },
     // handle submit
@@ -31,7 +31,7 @@ module.exports = {
 
         const [tripUpdated] = await db.trips.edit_trip(trip_id, start_date, end_date, rating, comment)
 
-        console.log(tripUpdated)
+        // console.log(tripUpdated)
 
         return res.status(200).send(tripUpdated)
 
@@ -46,5 +46,13 @@ module.exports = {
         const count = await db.trips.count_trips(1)
 
         return res.status(200).send({ count, newMarkers })
+    },
+    saveFile: async (req, res) => {
+        const { url, trip_id } = req.body;
+        const db = req.app.get('db')
+
+        const [saved] = db.trips.add_file(url, trip_id)
+        // console.log(saved)
+        return res.status(200).send(saved)
     }
 }

@@ -23,7 +23,7 @@ module.exports = {
         const { color } = req.body
         const { id } = req.params
         const db = req.app.get('db')
-        console.log(req.body)
+        // console.log(req.body)
 
         const [changed] = await db.users.change_color(color, id)
 

@@ -3,12 +3,13 @@ import { withRouter, Link } from 'react-router-dom'
 import './Header.css'
 
 function Header(props) {
-    // console.log(props)
+    console.log(props)
     return (
         <>
             {props.location.pathname === '/' ? (
 
                 <header className='header-container'>
+
                     <Link to='/' className='nav-links' id='logo'><h1>Trekit</h1></Link>
 
                     {props.location.pathname !== '/'
