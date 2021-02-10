@@ -9,6 +9,7 @@ import './Settings.css'
 
 
 function Settings(props) {
+
     const handleLogout = () => {
         axios.get('/api/logout')
             .then(() => {
@@ -17,7 +18,8 @@ function Settings(props) {
             })
             .catch(err => console.log(err))
     }
-    // console.log(props)
+
+
     return (
         <div className='settings'>
             <div id='innerDiv'>
@@ -28,6 +30,7 @@ function Settings(props) {
                 <button onClick={() => props.changeColor(null)}>Default</button>
                 <button onClick={() => props.changeColor(dark)}>Dark</button>
                 <button onClick={() => props.changeColor(silver)}>Silver</button>
+
             </div>
 
 
