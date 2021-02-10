@@ -54,8 +54,8 @@ function MyMap(props) {
     const [colors, setColors] = useState(null)
 
     // useEffect(() => {
-    //     if (this.props.user.email) {
-    //         this.props.history.push('/myMap')
+    //     if (props.user.email) {
+    //         props.history.push('/myMap')
     //     }
     // }, [])
 
@@ -143,7 +143,7 @@ function MyMap(props) {
     const handleDelete = () => {
         axios.delete(`/api/trip/${selected.id}`)
             .then(res => {
-                console.log(res.data)
+                // console.log(res.data)
                 setMarkers(res.data.newMarkers)
                 setCities(res.data.count[0].cities)
                 setCountries(res.data.count[0].countries)
@@ -194,7 +194,7 @@ function MyMap(props) {
             let copyStart = startDate;
             let copyEnd = endDate;
             let copyRating = ratingInp;
-            console.log(copyRating)
+            // console.log(copyRating)
             let copyComment = commentInp;
             setSelected(null)
             setSelected(copySelected)

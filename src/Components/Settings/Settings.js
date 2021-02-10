@@ -30,7 +30,9 @@ function Settings(props) {
                 <button onClick={() => props.changeColor(silver)}>Silver</button>
             </div>
 
+
             <button onClick={handleLogout} id="logout">Logout</button>
+
         </div>
     )
 }
