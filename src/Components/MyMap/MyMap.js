@@ -244,7 +244,7 @@ function MyMap(props) {
             })
             .catch(err => console.log(err))
     }
-    // console.log(props)
+    console.log(markers)
     return (
         <div id='map-background'>
 
@@ -338,6 +338,7 @@ function MyMap(props) {
                                         <br /><br />
                                         <button onClick={handleEdit}>Edit</button><br /><br />
 
+                                        <a href={selected.file} target="_blank">Itinerary</a>
                                     </>
 
                                 ) : (

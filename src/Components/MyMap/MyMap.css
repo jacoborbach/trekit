@@ -140,6 +140,10 @@
     padding: 14px 0px 13px 0px;
 }
 
+#imgFile {
+    height: 50px;
+    width: 50px;
+}
 /* #notesHeader {
     margin: 0px 0px 8px 0px;
 } */
