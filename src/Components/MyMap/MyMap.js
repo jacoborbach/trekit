@@ -315,30 +315,44 @@ function MyMap(props) {
                                             <h3 className='question'>Rating</h3>
                                             <div className="rating">
                                                 <input id="star5" name={5} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 5} />
+                                                    checked={+selected.rating === 5} disabled='disabled' />
                                                 <label htmlFor="star5">☆</label>
                                                 <input id="star4" name={4} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 4} />
+                                                    checked={+selected.rating === 4} disabled='disabled' />
                                                 <label htmlFor="star4">☆</label>
                                                 <input id="star3" name={3} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 3} />
+                                                    checked={+selected.rating === 3} disabled='disabled' />
                                                 <label htmlFor="star3">☆</label>
                                                 <input id="star2" name={2} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 2} />
+                                                    checked={+selected.rating === 2} disabled='disabled' />
                                                 <label htmlFor="star2">☆</label>
                                                 <input id="star1" name={1} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 1} />
+                                                    checked={+selected.rating === 1} disabled='disabled' />
                                                 <label htmlFor="star1">☆</label>
                                                 <div className="clear"></div>
                                             </div>
                                         </div>
 
                                         {/* <p id='notesHeader'><b>Notes</b></p> */}
+                                        <h3 className='question'>Notes:</h3>
                                         <span>{selected.comment}</span>
                                         <br /><br />
-                                        <button onClick={handleEdit}>Edit</button><br /><br />
 
-                                        <a href={selected.file} target="_blank">Itinerary</a>
+                                        {selected.file ? (
+                                            <>
+                                                <a href={selected.file} target="_blank">Itinerary</a>
+                                                <br /><br />
+
+                                                <button onClick={handleEdit}>Edit</button><br /><br />
+                                            </>
+                                        ) : (
+                                                <>
+                                                    <button onClick={handleEdit}>Edit</button><br /><br />
+                                                </>
+                                            )}
+
+
+
                                     </>
 
                                 ) : (
