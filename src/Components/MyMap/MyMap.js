@@ -241,11 +241,11 @@ function MyMap(props) {
                         copyMarkers[i].end_date = res.data.end_date
                         copyMarkers[i].rating = res.data.rating
                         copyMarkers[i].comment = res.data.comment
-                        setMarkers(copyMarkers)
                         console.log(file)
                         { file.name ? getSignedRequest(file) : console.log('didnt work') }
                     }
                 }
+                setMarkers(copyMarkers)
                 setStart('')
                 setEnd('')
                 setRating('')
@@ -282,7 +282,18 @@ function MyMap(props) {
             .put(signedRequest, file, options)
             .then(response => {
                 axios.post('/api/file', { url, trip_id: selected.trip_id })
-                    .then(res => console.log(res.data))
+                    .then(res => {
+                        console.log(res.data)
+                        let copyArray = [...markers]
+                        for (let i = 0; i < copyArray.length; i++) {
+                            if (selected.trip_id === copyArray[i].trip_id) {
+                                copyArray[i].file = res.data.file
+                            }
+                        }
+                        setMarkers(copyArray)
+
+                    })
+
                     .catch(err => console.log(err))
             })
             .catch(err => {
