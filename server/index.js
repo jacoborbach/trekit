@@ -94,6 +94,6 @@ app.post('/api/file', markerCtrl.saveFile)
 
 
 //Email handler
-// app.post('/api/email', emailCtrl.email);
+// app.get('/api/email', emailCtrl.email);
 
 app.listen(SERVER_PORT, () => console.log(`Listening on port ${SERVER_PORT}`))

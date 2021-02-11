@@ -14,6 +14,14 @@ import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
 import "./MyMap.css"
 
+const aws = require('aws-sdk')
+const s3 = new aws.S3({
+    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+})
+
+const { S3_BUCKET } = process.env;
+
 const mapContainerStyle = {
     width: "88vw",
     height: "74vh",
@@ -233,7 +241,6 @@ function MyMap(props) {
         e.preventDefault();
         axios.post(`/api/tripinfo/${defaultId}`, { trip_id: selected.trip_id, startDate, endDate, ratingInp, commentInp })
             .then(res => {
-                console.log(res.data)
                 let copyMarkers = [...markers];
                 for (let i = 0; i < copyMarkers.length; i++) {
                     if (copyMarkers[i].trip_id === res.data.trip_id) {
@@ -241,7 +248,7 @@ function MyMap(props) {
                         copyMarkers[i].end_date = res.data.end_date
                         copyMarkers[i].rating = res.data.rating
                         copyMarkers[i].comment = res.data.comment
-                        console.log(file)
+                        // console.log(file)
                         { file.name ? getSignedRequest(file) : console.log('didnt work') }
                     }
                 }
@@ -283,7 +290,7 @@ function MyMap(props) {
             .then(response => {
                 axios.post('/api/file', { url, trip_id: selected.trip_id })
                     .then(res => {
-                        console.log(res.data)
+                        // console.log(res.data)
                         let copyArray = [...markers]
                         for (let i = 0; i < copyArray.length; i++) {
                             if (selected.trip_id === copyArray[i].trip_id) {
@@ -307,6 +314,21 @@ function MyMap(props) {
                 }
             });
     };
+    console.log(selected)
+    const DeleteAwsFile = () => {
+        const params = {
+            Bucket: S3_BUCKET,
+            Key: selected.file
+        };
+        s3.deleteObject(params, function (err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else console.log(data);           // successful response
+            /*
+            data = {
+            }
+            */
+        });
+    }
 
     return (
         <div id='map-background'>
@@ -400,7 +422,11 @@ function MyMap(props) {
 
                                         {selected.file ? (
                                             <>
-                                                <a href={selected.file} target="_blank">Itinerary</a>
+                                                <a href={selected.file} target="_blank" rel="noopener noreferrer">Itinerary</a>
+                                                <br /><br />
+                                                <button onClick={DeleteAwsFile}>Delete AWS File</button>
+
+
                                                 <br /><br />
 
                                                 <button onClick={handleEdit}>Edit</button><br /><br />

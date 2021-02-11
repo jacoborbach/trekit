@@ -1,8 +1,9 @@
 // const nodemailer = require('nodemailer'),
-//     { EMAIL, PASSWORD } = process.env;
+//     { EMAIL, PASSWORD } = process.env;     
 
 // module.exports = {
 //     email: async (req, res) => {
+//  const  {email, first_name} = req.body;
 //         try {
 //             let transporter = nodemailer.createTransport({
 //                 host: 'smtp.gmail.com',
@@ -17,12 +18,12 @@
 //             });
 //             let info = await transporter.sendMail({
 //                 from: `Jacob Orbach <${EMAIL}>`,
-//                 to: 'jacoborbach96@gmail.com',
-//                 subject: 'Nodemailer Test',
+//                 to: email,
+//                 subject: 'Welcome to trekit!',
 //                 //text is for plain text support if the html cannot load
-//                 text: 'This is a NodeMailer Test',
+//                 text: 'Welcome Email',
 //                 //Body of Email
-//                 html: `<div>This is a NodeMailer Test</div>`
+//                 html: `<h3>Welcome ${first_name}</h3> <p>I hope you find this product useful. Please feel free to reach out with any questions or concerns.</p> <h4>Jacob</h4>`
 //             }, (err, res) => {
 //                 if (err) {
 //                     console.log(err)
