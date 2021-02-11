@@ -2,6 +2,7 @@ require('dotenv').config()
 const massive = require('massive')
 const express = require('express')
 const session = require('express-session')
+// const path = require('path')
 const authCtrl = require('./controllers/authCtrl')
 const markerCtrl = require('./controllers/markerCtrl')
 const userCtrl = require('./controllers/userCtrl')
@@ -12,24 +13,24 @@ const app = express()
 // Aws------------------------------------>
 const aws = require('aws-sdk')
 const {
-    S3_BUCKET,
-    AWS_ACCESS_KEY_ID,
-    AWS_SECRET_ACCESS_KEY
+    REACT_APP_S3_BUCKET,
+    REACT_APP_AWS_ACCESS_KEY_ID,
+    REACT_APP_AWS_SECRET_ACCESS_KEY
 } = process.env
 
 app.get('/sign-s3', (req, res) => {
 
     aws.config = {
         region: 'us-east-1',
-        accessKeyId: AWS_ACCESS_KEY_ID,
-        secretAccessKey: AWS_SECRET_ACCESS_KEY
+        accessKeyId: REACT_APP_AWS_ACCESS_KEY_ID,
+        secretAccessKey: REACT_APP_AWS_SECRET_ACCESS_KEY
     }
 
     const s3 = new aws.S3();
     const fileName = req.query['file-name'];
     const fileType = req.query['file-type'];
     const s3Params = {
-        Bucket: S3_BUCKET,
+        Bucket: REACT_APP_S3_BUCKET,
         Key: fileName,
         Expires: 60,
         ContentType: fileType,
@@ -43,7 +44,7 @@ app.get('/sign-s3', (req, res) => {
         }
         const returnData = {
             signedRequest: data,
-            url: `https://${S3_BUCKET}.s3.amazonaws.com/${fileName}`
+            url: `https://${REACT_APP_S3_BUCKET}.s3.amazonaws.com/${fileName}`
         };
 
         return res.send(returnData)
@@ -79,7 +80,6 @@ app.get('/api/logout', authCtrl.logout)
 app.get('/api/user/:id', userCtrl.getData)
 app.get('/api/trip-count/:id', userCtrl.tripCount)
 
-
 //trip handlers
 app.post('/api/newtrip', markerCtrl.newtrip)
 app.put('/api/trip/:id', markerCtrl.editTrip)
@@ -92,8 +92,13 @@ app.put('/api/color/:id', userCtrl.colorChange)
 //Aws file
 app.post('/api/file', markerCtrl.saveFile)
 
-
 //Email handler
 app.post('/api/email', emailCtrl.email);
+
+// For Production (uncomment path up-top)
+// app.use(express.static(__dirname + '/../build'))
+// app.get('*', (req, res) => {
+//     res.sendFile(path.join(__dirname + '../build/index.html'))
+// })
 
 app.listen(SERVER_PORT, () => console.log(`Listening on port ${SERVER_PORT}`))

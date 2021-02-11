@@ -16,11 +16,11 @@ import "./MyMap.css"
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY
+    accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
+    secretAccessKey: process.env.REACT_APP_AWS_SECRET_ACCESS_KEY
 })
 
-const { S3_BUCKET } = process.env;
+const { REACT_APP_S3_BUCKET: S3_BUCKET } = process.env;
 
 const mapContainerStyle = {
     width: "88vw",
@@ -315,11 +315,14 @@ function MyMap(props) {
             });
     };
     console.log(selected)
-    const DeleteAwsFile = () => {
+
+    // console.log(S3_BUCKET)
+    let DeleteAwsFile = () => {
         const params = {
             Bucket: S3_BUCKET,
-            Key: selected.file
+            Key: selected.file.substring(47) //pushes the file that AWS recognizes (removes https:....)
         };
+
         s3.deleteObject(params, function (err, data) {
             if (err) console.log(err, err.stack); // an error occurred
             else console.log(data);           // successful response
@@ -329,6 +332,7 @@ function MyMap(props) {
             */
         });
     }
+
 
     return (
         <div id='map-background'>
