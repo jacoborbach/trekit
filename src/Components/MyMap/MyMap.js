@@ -145,7 +145,7 @@ function MyMap(props) {
 
             .catch(err => console.log(err))
     }
-    console.log(selected)
+
     // Delete Markers
     const handleDelete = () => {
         axios.delete(`/api/trip/${selected.trip_id}`)
@@ -242,7 +242,8 @@ function MyMap(props) {
                         copyMarkers[i].rating = res.data.rating
                         copyMarkers[i].comment = res.data.comment
                         setMarkers(copyMarkers)
-                        // { Object.keys(file).length > 0 ? getSignedRequest(file) : console.log('didnt work') }
+                        console.log(file)
+                        { file.name ? getSignedRequest(file) : console.log('didnt work') }
                     }
                 }
                 setStart('')
@@ -253,50 +254,50 @@ function MyMap(props) {
             .catch(err => console.log(err))
     }
 
-    // const getSignedRequest = (file) => {
-    //     const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
+    const getSignedRequest = (file) => {
+        const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
 
-    //     axios.get('/sign-s3', {
-    //         params: {
-    //             'file-name': fileName,
-    //             'file-type': file.type
-    //         }
-    //     }).then((response) => {
-    //         const { signedRequest, url } = response.data
-    //         uploadFile(file, signedRequest, url)
-    //     }).catch(err => {
-    //         console.log(err)
-    //     })
-    // }
+        axios.get('/sign-s3', {
+            params: {
+                'file-name': fileName,
+                'file-type': file.type
+            }
+        }).then((response) => {
+            const { signedRequest, url } = response.data
+            uploadFile(file, signedRequest, url)
+        }).catch(err => {
+            console.log(err)
+        })
+    }
 
-    // const uploadFile = (file, signedRequest, url) => {
-    //     const options = {
-    //         headers: {
-    //             'Content-Type': file.type,
-    //         },
-    //     };
-    //     console.log(selected)
-    //     axios
-    //         .put(signedRequest, file, options)
-    //         .then(response => {
-    //             setUrl(url)
-    //             // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
-    //             //will need to change trip id
-    //             axios.post('/api/file', { url, trip_id: selected.trip_id })
-    //                 .then(res => console.log(res.data))
-    //                 .catch(err => console.log(err))
-    //         })
-    //         .catch(err => {
-    //             if (err.response.status === 403) {
-    //                 alert(
-    //                     `Your request for a signed URL failed with a status 403. Double check the CORS configuration and bucket policy in the README. You also will want to double check your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env and ensure that they are the same as the ones that you created in the IAM dashboard. You may need to generate new keys\n${err.stack
-    //                     }`
-    //                 );
-    //             } else {
-    //                 alert(`ERROR: ${err.status}\n ${err.stack}`);
-    //             }
-    //         });
-    // };
+    const uploadFile = (file, signedRequest, url) => {
+        const options = {
+            headers: {
+                'Content-Type': file.type,
+            },
+        };
+
+        axios
+            .put(signedRequest, file, options)
+            .then(response => {
+                setUrl(url)
+                // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
+                //will need to change trip id
+                axios.post('/api/file', { url, trip_id: selected.trip_id })
+                    .then(res => console.log(res.data))
+                    .catch(err => console.log(err))
+            })
+            .catch(err => {
+                if (err.response.status === 403) {
+                    alert(
+                        `Your request for a signed URL failed with a status 403. Double check the CORS configuration and bucket policy in the README. You also will want to double check your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env and ensure that they are the same as the ones that you created in the IAM dashboard. You may need to generate new keys\n${err.stack
+                        }`
+                    );
+                } else {
+                    alert(`ERROR: ${err.status}\n ${err.stack}`);
+                }
+            });
+    };
 
     return (
         <div id='map-background'>
@@ -495,17 +496,15 @@ function MyMap(props) {
 
                                             <div className="App">
                                                 <h3 id='cutPadding'>Upload an Itinerary</h3>
-
-                                                <input type='file' onChange={e => {
+                                                {/* File Input */}
+                                                <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
                                                     setFile(e.target.files[0])
                                                 }} />
 
 
                                             </div>
-                                            {/*jeez*/}
-
-
                                         </div>
+
                                         <input type="submit" />
 
                                     </form>

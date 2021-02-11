@@ -31,8 +31,6 @@ module.exports = {
 
         const [tripUpdated] = await db.trips.edit_trip(trip_id, start_date, end_date, rating, comment)
 
-        // console.log(tripUpdated)
-
         return res.status(200).send(tripUpdated)
 
     },
@@ -50,8 +48,7 @@ module.exports = {
         const { url, trip_id } = req.body;
         const db = req.app.get('db')
 
-        const saved = await db.trips.add_file(url, trip_id)
-        console.log(saved)
-        // return res.status(200).send(saved)
+        const [saved] = await db.trips.add_file(url, trip_id)
+        return res.status(200).send(saved)
     }
 }
