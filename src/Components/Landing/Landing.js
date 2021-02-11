@@ -36,12 +36,13 @@ export class Landing extends Component {
                 .then(res => {
                     this.props.getUser(res.data)
                     this.props.history.push('/myMap')
-                    // axios.get('/api/email', {email, first_name})
                 })
                 .catch(err => console.log(err))
         } else {
             alert("Passwords don't match")
         }
+        axios.post('/api/email', { email, first_name })
+            .catch(err => console.log(err))
     }
 
     handleLogin = (e) => {

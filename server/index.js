@@ -5,7 +5,7 @@ const session = require('express-session')
 const authCtrl = require('./controllers/authCtrl')
 const markerCtrl = require('./controllers/markerCtrl')
 const userCtrl = require('./controllers/userCtrl')
-// const emailCtrl = require('./controllers/emailCtrl')
+const emailCtrl = require('./controllers/emailCtrl')
 const { CONNECTION_STRING, SESSION_SECRET, SERVER_PORT } = process.env
 const app = express()
 
@@ -94,6 +94,6 @@ app.post('/api/file', markerCtrl.saveFile)
 
 
 //Email handler
-// app.get('/api/email', emailCtrl.email);
+app.post('/api/email', emailCtrl.email);
 
 app.listen(SERVER_PORT, () => console.log(`Listening on port ${SERVER_PORT}`))
