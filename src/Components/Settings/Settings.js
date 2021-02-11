@@ -9,6 +9,7 @@ import './Settings.css'
 
 
 function Settings(props) {
+    const [toggleColor, changeToggle] = React.useState('')
 
     const handleLogout = () => {
         axios.get('/api/logout')
@@ -19,6 +20,10 @@ function Settings(props) {
             .catch(err => console.log(err))
     }
 
+    // const toggle = () => {
+    //     changeToggle(!toggleColor)
+    // }
+
 
     return (
         <div className='settings'>
@@ -27,9 +32,19 @@ function Settings(props) {
                 <h4 id='colorHeader'>Color</h4>
                 <p >Choose one of the following color themes:</p>
 
-                <button onClick={() => props.changeColor(null)}>Default</button>
-                <button onClick={() => props.changeColor(dark)}>Dark</button>
-                <button onClick={() => props.changeColor(silver)}>Silver</button>
+                <button onClick={e => {
+                    changeToggle(e.target.innerText)
+                    props.changeColor(null)
+                }}>Default</button>
+                <button onClick={e => {
+                    changeToggle(e.target.innerText)
+                    props.changeColor(dark)
+                }}>Dark</button>
+                <button onClick={e => {
+                    changeToggle(e.target.innerText)
+                    props.changeColor(silver)
+                }}>Silver</button>
+                {toggleColor ? <div>Color Successfully Changed to {toggleColor}</div> : null}
 
             </div>
 
