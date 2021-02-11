@@ -25,7 +25,7 @@ module.exports = {
                 //text is for plain text support if the html cannot load
                 text: 'Welcome Email',
                 //Body of Email
-                // html: `<h3>Welcome ${first_name}</h3> <p>I hope you find this product useful. Please feel free to reach out with any questions or concerns.</p> <h4>Jacob</h4>`
+                html: `<h3>Welcome ${first_name}!</h3> <p>I hope you find this product useful. I have spent time trying to develop it to suit everyones needs. Please let me know if there are any issues or concerns.</p> <p>Best,</p><h4>Jacob Orbach</h4><p>(516) 880-4097</p>`
             }, (err, res) => {
                 if (err) {
                     console.log(err)
