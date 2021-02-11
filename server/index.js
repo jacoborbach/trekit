@@ -12,6 +12,7 @@ const app = express()
 
 // Aws------------------------------------>
 const aws = require('aws-sdk')
+const { default: axios } = require('axios')
 const {
     REACT_APP_S3_BUCKET,
     REACT_APP_AWS_ACCESS_KEY_ID,
@@ -85,6 +86,7 @@ app.post('/api/newtrip', markerCtrl.newtrip)
 app.put('/api/trip/:id', markerCtrl.editTrip)
 app.delete('/api/trip/:id', markerCtrl.deleteTrip)
 app.post('/api/tripinfo/:id', markerCtrl.tripInfo)
+app.put('/api/file', markerCtrl.deleteFile)
 
 //color
 app.put('/api/color/:id', userCtrl.colorChange)

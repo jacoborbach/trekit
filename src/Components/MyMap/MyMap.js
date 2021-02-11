@@ -322,6 +322,11 @@ function MyMap(props) {
             Bucket: S3_BUCKET,
             Key: selected.file.substring(47) //pushes the file that AWS recognizes (removes https:....)
         };
+        //delete the file from db
+        axios.put('/api/file', { trip_id: selected.trip_id })
+            .then(res => { console.log(res.data) })
+            .catch(err => console.log(err))
+
 
         s3.deleteObject(params, function (err, data) {
             if (err) console.log(err, err.stack); // an error occurred
