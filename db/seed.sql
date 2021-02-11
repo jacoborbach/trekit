@@ -25,3 +25,9 @@ end_date date default current_date,
 rating int, CHECK (rating >= 1 and rating <= 5), 
 "comment" varchar (1200)
 );
+
+create table itineraries(
+id serial primary key,
+trip_info_id int references trip_info(id) on delete cascade,
+file_name varchar(1200)
+);

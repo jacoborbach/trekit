@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Component } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { v4 as randomString } from 'uuid'
@@ -59,6 +59,7 @@ function MyMap(props) {
     //Aws
     const [isUploading, setUploading] = useState(false)
     const [url, setUrl] = useState('')
+    const [upload, setUpload] = useState(false)
     //
 
     // useEffect(() => {
@@ -164,29 +165,6 @@ function MyMap(props) {
         changeDateView(!dateView)
     }
 
-    // Submit Trip Info
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        axios.post(`/api/tripinfo/${defaultId}`, { id: selected.id, startDate, endDate, ratingInp, commentInp })
-            .then(res => {
-                let copyMarkers = [...markers];
-                for (let i = 0; i < copyMarkers.length; i++) {
-                    if (copyMarkers[i].id === res.data.trip_id) {
-                        copyMarkers[i].start_date = res.data.start_date
-                        copyMarkers[i].end_date = res.data.end_date
-                        copyMarkers[i].rating = res.data.rating
-                        copyMarkers[i].comment = res.data.comment
-                        setMarkers(copyMarkers)
-                    }
-                }
-                setStart('')
-                setEnd('')
-                setRating('')
-                setComment('')
-            })
-            .catch(err => console.log(err))
-    }
-
     // Confirm Closing of Info Window
     const confirmClose = () => {
         let result = window.confirm('Are you sure you want to stop editing this trip? All your data will be lost')
@@ -253,6 +231,33 @@ function MyMap(props) {
             .catch(err => console.log(err))
     }
 
+    // Submit Trip Info
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        axios.post(`/api/tripinfo/${defaultId}`, { id: selected.id, startDate, endDate, ratingInp, commentInp })
+            .then(res => {
+                let copyMarkers = [...markers];
+                for (let i = 0; i < copyMarkers.length; i++) {
+                    if (copyMarkers[i].id === res.data.trip_id) {
+                        copyMarkers[i].start_date = res.data.start_date
+                        copyMarkers[i].end_date = res.data.end_date
+                        copyMarkers[i].rating = res.data.rating
+                        copyMarkers[i].comment = res.data.comment
+                        setMarkers(copyMarkers)
+                    }
+                }
+                // flip a switch to upload to aws
+                setUpload(true)
+                // 
+
+                setStart('')
+                setEnd('')
+                setRating('')
+                setComment('')
+            })
+            .catch(err => console.log(err))
+    }
+
     const getSignedRequest = ([file]) => {
         setUploading(true)
 
@@ -280,12 +285,12 @@ function MyMap(props) {
 
         axios
             .put(signedRequest, file, options)
-            .then(res => {
+            .then(response => {
                 setUploading(false)
                 setUrl(url)
                 // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
                 //will need to change trip id
-                axios.post('/api/file', { url, trip_id: 255 })
+                axios.post('/api/file', { url, trip_id: selected.id })
                     .then(res => console.log(res.data))
                     .catch(err => console.log(err))
             })
@@ -500,7 +505,7 @@ function MyMap(props) {
 
 
                                             <div className="App">
-                                                <h3>Upload</h3>
+                                                <h3 id='cutPadding'>Upload an Itinerary</h3>
 
                                                 <Dropzone
                                                     onDropAccepted={getSignedRequest}
@@ -510,7 +515,7 @@ function MyMap(props) {
                                                         <div
                                                             style={{
                                                                 position: 'relative',
-                                                                width: 130,
+                                                                width: 100,
                                                                 height: 50,
                                                                 borderWidth: 5,
                                                                 borderColor: 'gray',
@@ -521,7 +526,7 @@ function MyMap(props) {
                                                             }}
                                                             {...getRootProps()}>
                                                             <input {...getInputProps()} />
-                                                            {isUploading ? <GridLoader /> : <p>Upload Itinerary!</p>}
+                                                            {isUploading ? <GridLoader /> : <p>Upload</p>}
 
                                                             <br />
                                                         </div>

@@ -27,7 +27,7 @@ function Settings(props) {
                 <h4 id='colorHeader'>Color</h4>
                 <p >Choose one of the following color themes:</p>
 
-                <button onClick={() => props.changeColor(null), alert('changed')}>Default</button>
+                <button onClick={() => props.changeColor(null)}>Default</button>
                 <button onClick={() => props.changeColor(dark)}>Dark</button>
                 <button onClick={() => props.changeColor(silver)}>Silver</button>
 
