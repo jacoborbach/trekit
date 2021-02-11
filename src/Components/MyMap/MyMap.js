@@ -2,8 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { v4 as randomString } from 'uuid'
-import Dropzone from 'react-dropzone'
-import { GridLoader } from 'react-spinners'
 import {
     GoogleMap,
     useLoadScript,
@@ -57,10 +55,8 @@ function MyMap(props) {
     const [colors, setColors] = useState(null)
 
     //Aws
-    const [isUploading, setUploading] = useState(false)
     const [url, setUrl] = useState('')
-    const [upload, setUpload] = useState(false)
-    //
+    const [file, setFile] = useState({})
 
     // useEffect(() => {
     //     if (props.user.email) {
@@ -68,6 +64,7 @@ function MyMap(props) {
     //     }
     // }, [])
 
+    //is the logic here sound? Also the getcount
     const fetchUser = async () => {
         const userData = await axios.get(`/api/user/${defaultId}`);
         // console.log(userData)
@@ -76,6 +73,7 @@ function MyMap(props) {
         setMarkers(userData.data.userData)
         setUserColorOnLogin();
     }
+    // 
 
     const setUserColorOnLogin = () => {
         if (props.user.theme === "dark") {
@@ -141,18 +139,18 @@ function MyMap(props) {
                     name: coordinates.address,
                     lat: coordinates.lat,
                     lng: coordinates.lng,
-                    id: res.data.id //this is the trip id
+                    trip_id: res.data.trip_id
                 }])
             })
 
             .catch(err => console.log(err))
     }
-
+    console.log(selected)
     // Delete Markers
     const handleDelete = () => {
-        axios.delete(`/api/trip/${selected.id}`)
+        axios.delete(`/api/trip/${selected.trip_id}`)
             .then(res => {
-                // console.log(res.data)
+                console.log(res.data)
                 setMarkers(res.data.newMarkers)
                 setCities(res.data.count[0].cities)
                 setCountries(res.data.count[0].countries)
@@ -207,13 +205,13 @@ function MyMap(props) {
     const handleTripEditSubmit = (e) => {
         e.preventDefault();
         axios.put(`/api/trip/${defaultId}`, {
-            trip_id: selected.id, start_date: newStartDate, end_date: newEndDate, rating: newRating, comment: newComment
+            trip_id: selected.trip_id, start_date: newStartDate, end_date: newEndDate, rating: newRating, comment: newComment
         })
 
             .then(res => {
                 let copyMarkers = [...markers];
                 for (let i = 0; i < copyMarkers.length; i++) {
-                    if (copyMarkers[i].id === res.data.trip_id) {
+                    if (copyMarkers[i].trip_id === res.data.trip_id) {
                         copyMarkers[i].start_date = res.data.start_date
                         copyMarkers[i].end_date = res.data.end_date
                         copyMarkers[i].rating = res.data.rating
@@ -230,26 +228,23 @@ function MyMap(props) {
             })
             .catch(err => console.log(err))
     }
-
     // Submit Trip Info
     const handleSubmit = (e) => {
         e.preventDefault();
-        axios.post(`/api/tripinfo/${defaultId}`, { id: selected.id, startDate, endDate, ratingInp, commentInp })
+        axios.post(`/api/tripinfo/${defaultId}`, { trip_id: selected.trip_id, startDate, endDate, ratingInp, commentInp })
             .then(res => {
+                console.log(res.data)
                 let copyMarkers = [...markers];
                 for (let i = 0; i < copyMarkers.length; i++) {
-                    if (copyMarkers[i].id === res.data.trip_id) {
+                    if (copyMarkers[i].trip_id === res.data.trip_id) {
                         copyMarkers[i].start_date = res.data.start_date
                         copyMarkers[i].end_date = res.data.end_date
                         copyMarkers[i].rating = res.data.rating
                         copyMarkers[i].comment = res.data.comment
                         setMarkers(copyMarkers)
+                        // { Object.keys(file).length > 0 ? getSignedRequest(file) : console.log('didnt work') }
                     }
                 }
-                // flip a switch to upload to aws
-                setUpload(true)
-                // 
-
                 setStart('')
                 setEnd('')
                 setRating('')
@@ -258,57 +253,51 @@ function MyMap(props) {
             .catch(err => console.log(err))
     }
 
-    const getSignedRequest = ([file]) => {
-        setUploading(true)
+    // const getSignedRequest = (file) => {
+    //     const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
 
-        const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
+    //     axios.get('/sign-s3', {
+    //         params: {
+    //             'file-name': fileName,
+    //             'file-type': file.type
+    //         }
+    //     }).then((response) => {
+    //         const { signedRequest, url } = response.data
+    //         uploadFile(file, signedRequest, url)
+    //     }).catch(err => {
+    //         console.log(err)
+    //     })
+    // }
 
-        axios.get('/sign-s3', {
-            params: {
-                'file-name': fileName,
-                'file-type': file.type
-            }
-        }).then((response) => {
-            const { signedRequest, url } = response.data
-            uploadFile(file, signedRequest, url)
-        }).catch(err => {
-            console.log(err)
-        })
-    }
+    // const uploadFile = (file, signedRequest, url) => {
+    //     const options = {
+    //         headers: {
+    //             'Content-Type': file.type,
+    //         },
+    //     };
+    //     console.log(selected)
+    //     axios
+    //         .put(signedRequest, file, options)
+    //         .then(response => {
+    //             setUrl(url)
+    //             // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
+    //             //will need to change trip id
+    //             axios.post('/api/file', { url, trip_id: selected.trip_id })
+    //                 .then(res => console.log(res.data))
+    //                 .catch(err => console.log(err))
+    //         })
+    //         .catch(err => {
+    //             if (err.response.status === 403) {
+    //                 alert(
+    //                     `Your request for a signed URL failed with a status 403. Double check the CORS configuration and bucket policy in the README. You also will want to double check your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env and ensure that they are the same as the ones that you created in the IAM dashboard. You may need to generate new keys\n${err.stack
+    //                     }`
+    //                 );
+    //             } else {
+    //                 alert(`ERROR: ${err.status}\n ${err.stack}`);
+    //             }
+    //         });
+    // };
 
-    const uploadFile = (file, signedRequest, url) => {
-        const options = {
-            headers: {
-                'Content-Type': file.type,
-            },
-        };
-
-        axios
-            .put(signedRequest, file, options)
-            .then(response => {
-                setUploading(false)
-                setUrl(url)
-                // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
-                //will need to change trip id
-                axios.post('/api/file', { url, trip_id: selected.id })
-                    .then(res => console.log(res.data))
-                    .catch(err => console.log(err))
-            })
-            .catch(err => {
-                setUploading(false)
-                if (err.response.status === 403) {
-                    alert(
-                        `Your request for a signed URL failed with a status 403. Double check the CORS configuration and bucket policy in the README. You also will want to double check your AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in your .env and ensure that they are the same as the ones that you created in the IAM dashboard. You may need to generate new keys\n${err.stack
-                        }`
-                    );
-                } else {
-                    alert(`ERROR: ${err.status}\n ${err.stack}`);
-                }
-            });
-    };
-
-
-    // console.log(markers)
     return (
         <div id='map-background'>
 
@@ -507,40 +496,18 @@ function MyMap(props) {
                                             <div className="App">
                                                 <h3 id='cutPadding'>Upload an Itinerary</h3>
 
-                                                <Dropzone
-                                                    onDropAccepted={getSignedRequest}
-                                                    accept=".doc, .docx, image/png"
-                                                    multiple={false}>
-                                                    {({ getRootProps, getInputProps }) => (
-                                                        <div
-                                                            style={{
-                                                                position: 'relative',
-                                                                width: 100,
-                                                                height: 50,
-                                                                borderWidth: 5,
-                                                                borderColor: 'gray',
-                                                                borderStyle: 'dashed',
-                                                                borderRadius: 5,
-                                                                display: 'inline-block',
-                                                                fontSize: 17,
-                                                            }}
-                                                            {...getRootProps()}>
-                                                            <input {...getInputProps()} />
-                                                            {isUploading ? <GridLoader /> : <p>Upload</p>}
+                                                <input type='file' onChange={e => {
+                                                    setFile(e.target.files[0])
+                                                }} />
 
-                                                            <br />
-                                                        </div>
-                                                    )}
-                                                </Dropzone>
 
                                             </div>
                                             {/*jeez*/}
 
 
-
-
                                         </div>
                                         <input type="submit" />
+
                                     </form>
                                 </>
                             )}
