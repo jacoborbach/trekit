@@ -55,7 +55,6 @@ function MyMap(props) {
     const [colors, setColors] = useState(null)
 
     //Aws
-    const [url, setUrl] = useState('')
     const [file, setFile] = useState({})
 
     // useEffect(() => {
@@ -171,14 +170,13 @@ function MyMap(props) {
             setEnd('')
             setRating('')
             setComment('')
+            setFile({})
             setSelected(null)
         } else if (result === false) {
-            // console.log('you hit cancel')
             let copySelected = selected
             let copyStart = startDate;
             let copyEnd = endDate;
             let copyRating = ratingInp;
-            // console.log(copyRating)
             let copyComment = commentInp;
             setSelected(null)
             setSelected(copySelected)
@@ -186,11 +184,12 @@ function MyMap(props) {
             setEnd(copyEnd)
             setRating(+copyRating)
             setComment(copyComment)
+            setFile({})
         }
     }
 
     const handleClose = () => {
-        startDate || endDate || ratingInp || commentInp ? confirmClose() : setSelected(null)
+        startDate || endDate || ratingInp || commentInp || file.name ? confirmClose() : setSelected(null)
     }
 
     const handleEdit = () => {
@@ -225,6 +224,7 @@ function MyMap(props) {
                 setRating('')
                 setComment('')
 
+
             })
             .catch(err => console.log(err))
     }
@@ -250,6 +250,7 @@ function MyMap(props) {
                 setEnd('')
                 setRating('')
                 setComment('')
+                setFile({})
             })
             .catch(err => console.log(err))
     }
@@ -280,9 +281,6 @@ function MyMap(props) {
         axios
             .put(signedRequest, file, options)
             .then(response => {
-                setUrl(url)
-                // THEN DO SOMETHING WITH THE URL. SEND TO DB USING POST REQUEST OR SOMETHING
-                //will need to change trip id
                 axios.post('/api/file', { url, trip_id: selected.trip_id })
                     .then(res => console.log(res.data))
                     .catch(err => console.log(err))
