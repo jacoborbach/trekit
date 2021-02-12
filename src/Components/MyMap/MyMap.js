@@ -405,40 +405,40 @@ function MyMap(props) {
 
                                 {/* Displaying Trip Info */}
                                 {!toggleTripEdit ? (
-                                    <>
-                                        <span>Start Date: </span>
-                                        <span>{selected.start_date.substring(0, 10)}</span>
-                                        <br /><br />
+                                    <div >
+                                        <div id='alignTripInfoLeft'>
+                                            <p>Start Date:  <span>{selected.start_date.substring(0, 10)}</span></p>
 
-                                        <span>End Date: </span>
-                                        <span>{selected.end_date.substring(0, 10)}</span>
-                                        <br />
+                                            <p>End Date: <span>{selected.end_date.substring(0, 10)}</span></p>
 
-                                        <div className='ratingContainer'>
-                                            <h3 className='question'>Rating</h3>
-                                            <div className="rating">
-                                                <input id="star5" name={5} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 5} disabled='disabled' />
-                                                <label htmlFor="star5">☆</label>
-                                                <input id="star4" name={4} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 4} disabled='disabled' />
-                                                <label htmlFor="star4">☆</label>
-                                                <input id="star3" name={3} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 3} disabled='disabled' />
-                                                <label htmlFor="star3">☆</label>
-                                                <input id="star2" name={2} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 2} disabled='disabled' />
-                                                <label htmlFor="star2">☆</label>
-                                                <input id="star1" name={1} type="radio" className="radio-btn hide"
-                                                    checked={+selected.rating === 1} disabled='disabled' />
-                                                <label htmlFor="star1">☆</label>
-                                                <div className="clear"></div>
+
+
+                                            <div className='ratingContainer'>
+                                                <p>Rating</p>
+                                                <div className="rating">
+                                                    <input id="star5" name={5} type="radio" className="radio-btn hide"
+                                                        checked={+selected.rating === 5} disabled='disabled' />
+                                                    <label htmlFor="star5">☆</label>
+                                                    <input id="star4" name={4} type="radio" className="radio-btn hide"
+                                                        checked={+selected.rating === 4} disabled='disabled' />
+                                                    <label htmlFor="star4">☆</label>
+                                                    <input id="star3" name={3} type="radio" className="radio-btn hide"
+                                                        checked={+selected.rating === 3} disabled='disabled' />
+                                                    <label htmlFor="star3">☆</label>
+                                                    <input id="star2" name={2} type="radio" className="radio-btn hide"
+                                                        checked={+selected.rating === 2} disabled='disabled' />
+                                                    <label htmlFor="star2">☆</label>
+                                                    <input id="star1" name={1} type="radio" className="radio-btn hide"
+                                                        checked={+selected.rating === 1} disabled='disabled' />
+                                                    <label htmlFor="star1">☆</label>
+                                                    <div className="clear"></div>
+                                                </div>
                                             </div>
                                         </div>
 
-                                        <h3 className='question'>Notes:</h3>
-                                        <span>{selected.comment}</span>
-                                        <br /><br />
+                                        <p className='question'>Notes: <span>{selected.comment}</span></p>
+
+                                        <br />
 
                                         {selected.file ? (
                                             <>
@@ -459,7 +459,7 @@ function MyMap(props) {
 
 
 
-                                    </>
+                                    </div>
 
                                 ) : (
                                         <>
