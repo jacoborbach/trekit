@@ -50,7 +50,8 @@ module.exports = {
 
         const [returnData] = await db.trips.delete_file(trip_id)
         console.log(returnData)
-        //res
+
+        return res.status(200).send(returnData)
     },
     saveFile: async (req, res) => {
         const { url, trip_id } = req.body;

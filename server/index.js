@@ -86,7 +86,7 @@ app.post('/api/newtrip', markerCtrl.newtrip)
 app.put('/api/trip/:id', markerCtrl.editTrip)
 app.delete('/api/trip/:id', markerCtrl.deleteTrip)
 app.post('/api/tripinfo/:id', markerCtrl.tripInfo)
-app.put('/api/file', markerCtrl.deleteFile)
+app.put('/api/file', markerCtrl.deleteFile)  //deleteFile sets the value to null
 
 //color
 app.put('/api/color/:id', userCtrl.colorChange)

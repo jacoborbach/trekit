@@ -316,7 +316,6 @@ function MyMap(props) {
     };
     console.log(selected)
 
-    // console.log(S3_BUCKET)
     let DeleteAwsFile = () => {
         const params = {
             Bucket: S3_BUCKET,
@@ -324,7 +323,19 @@ function MyMap(props) {
         };
         //delete the file from db
         axios.put('/api/file', { trip_id: selected.trip_id })
-            .then(res => { console.log(res.data) })
+            .then(res => {
+                console.log(res.data)
+                let awsMarkers = [...markers];
+                for (let i = 0; i < awsMarkers.length; i++) {
+                    if (awsMarkers[i].trip_id === res.data.trip_id) {
+                        awsMarkers[i].start_date = res.data.start_date
+                        awsMarkers[i].end_date = res.data.end_date
+                        awsMarkers[i].rating = res.data.rating
+                        awsMarkers[i].comment = res.data.comment
+                    }
+                }
+                setMarkers(awsMarkers)
+            })
             .catch(err => console.log(err))
 
 
