@@ -71,6 +71,7 @@ function MyMap(props) {
     //     }
     // }, [])
 
+    console.log(props)
     //is the logic here sound? Also the getcount
     const fetchUser = async () => {
         const userData = await axios.get(`/api/user/${defaultId}`);
@@ -308,8 +309,7 @@ function MyMap(props) {
         axios.delete(`/api/trip/${selected.trip_id}`)
             .then(res => {
                 // console.log(res.data)
-                DeleteAwsFile();
-
+                { selected.file ? DeleteAwsFile() : console.log('deleted all items successfully') }
                 setMarkers(res.data.newMarkers)
                 setCities(res.data.count[0].cities)
                 setCountries(res.data.count[0].countries)
