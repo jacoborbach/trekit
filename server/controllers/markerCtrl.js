@@ -44,15 +44,15 @@ module.exports = {
 
         return res.status(200).send({ count, newMarkers })
     },
-    deleteFile: async (req, res) => {
-        const { trip_id } = req.body
-        const db = req.app.get('db')
+    // deleteFile: async (req, res) => {
+    //     const { trip_id } = req.body
+    //     const db = req.app.get('db')
 
-        const [returnData] = await db.trips.delete_file(trip_id)
-        console.log(returnData)
+    //     const [returnData] = await db.trips.delete_file(trip_id)
+    //     console.log(returnData)
 
-        return res.status(200).send(returnData)
-    },
+    //     return res.status(200).send(returnData)
+    // },
     saveFile: async (req, res) => {
         const { url, trip_id } = req.body;
         const db = req.app.get('db')

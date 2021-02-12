@@ -153,19 +153,6 @@ function MyMap(props) {
             .catch(err => console.log(err))
     }
 
-    // Delete Markers
-    const handleDelete = () => {
-        axios.delete(`/api/trip/${selected.trip_id}`)
-            .then(res => {
-                console.log(res.data)
-                setMarkers(res.data.newMarkers)
-                setCities(res.data.count[0].cities)
-                setCountries(res.data.count[0].countries)
-            })
-            .catch(err => console.log(err))
-        setSelected(null)
-    }
-
     const toggleDateView = () => {
         changeDateView(!dateView)
     }
@@ -314,7 +301,23 @@ function MyMap(props) {
                 }
             });
     };
-    console.log(selected)
+    // console.log(selected)
+
+    // Delete Markers
+    const handleDelete = () => {
+        axios.delete(`/api/trip/${selected.trip_id}`)
+            .then(res => {
+                // console.log(res.data)
+                DeleteAwsFile();
+
+                setMarkers(res.data.newMarkers)
+                setCities(res.data.count[0].cities)
+                setCountries(res.data.count[0].countries)
+            })
+            .catch(err => console.log(err))
+        setSelected(null)
+    }
+    // 
 
     let DeleteAwsFile = () => {
         const params = {
@@ -322,22 +325,9 @@ function MyMap(props) {
             Key: selected.file.substring(47) //pushes the file that AWS recognizes (removes https:....)
         };
         //delete the file from db
-        axios.put('/api/file', { trip_id: selected.trip_id })
-            .then(res => {
-                console.log(res.data)
-                let awsMarkers = [...markers];
-                for (let i = 0; i < awsMarkers.length; i++) {
-                    if (awsMarkers[i].trip_id === res.data.trip_id) {
-                        awsMarkers[i].start_date = res.data.start_date
-                        awsMarkers[i].end_date = res.data.end_date
-                        awsMarkers[i].rating = res.data.rating
-                        awsMarkers[i].comment = res.data.comment
-                    }
-                }
-                setMarkers(awsMarkers)
-            })
-            .catch(err => console.log(err))
-
+        // axios.put('/api/file', { trip_id: selected.trip_id })
+        //     .then(res => console.log(res.data))
+        //     .catch(err => console.log(err))
 
         s3.deleteObject(params, function (err, data) {
             if (err) console.log(err, err.stack); // an error occurred
@@ -406,7 +396,7 @@ function MyMap(props) {
                                 {/* Displaying Trip Info */}
                                 {!toggleTripEdit ? (
                                     <div >
-                                        <div id='alignTripInfoLeft'>
+                                        <div className='alignTripInfoLeft'>
                                             <p>Start Date:  <span>{selected.start_date.substring(0, 10)}</span></p>
 
                                             <p>End Date: <span>{selected.end_date.substring(0, 10)}</span></p>
@@ -434,20 +424,23 @@ function MyMap(props) {
                                                     <div className="clear"></div>
                                                 </div>
                                             </div>
+
+                                            <p className='question'>Notes: </p>
+                                            <span>{selected.comment}</span>
                                         </div>
 
-                                        <p className='question'>Notes: <span>{selected.comment}</span></p>
+
 
                                         <br />
 
                                         {selected.file ? (
                                             <>
-                                                <a href={selected.file} target="_blank" rel="noopener noreferrer">Itinerary</a>
-                                                <br /><br />
-                                                <button onClick={DeleteAwsFile}>Delete AWS File</button>
-
-
-                                                <br /><br />
+                                                <div className='alignTripInfoLeft'>
+                                                    <div>Files:</div>
+                                                    <a href={selected.file} target="_blank" rel="noopener noreferrer">Itinerary</a>
+                                                </div>
+                                                <br />
+                                                {/* <button onClick={DeleteAwsFile}>Delete AWS File</button> */}
 
                                                 <button onClick={handleEdit}>Edit</button><br /><br />
                                             </>
