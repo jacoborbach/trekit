@@ -83,9 +83,9 @@ app.get('/api/trip-count/:id', userCtrl.tripCount)
 
 //trip handlers
 app.post('/api/newtrip', markerCtrl.newtrip)
-app.put('/api/trip/:id', markerCtrl.editTrip)
+app.put('/api/trip', markerCtrl.editTrip)
 app.delete('/api/trip/:id', markerCtrl.deleteTrip)
-app.post('/api/tripinfo/:id', markerCtrl.tripInfo)
+app.post('/api/tripinfo', markerCtrl.tripInfo)
 //app.put('/api/file', markerCtrl.deleteFile)  //deleteFile sets the value to null
 
 //color

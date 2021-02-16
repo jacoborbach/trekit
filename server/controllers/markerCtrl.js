@@ -14,8 +14,6 @@ module.exports = {
     },
     // handle submit
     tripInfo: async (req, res) => {
-        // const { id } = req.params;
-        // console.log(req.body)
         const { trip_id, startDate, endDate, ratingInp, commentInp } = req.body;
         const db = req.app.get('db');
 
@@ -35,13 +33,16 @@ module.exports = {
 
     },
     deleteTrip: async (req, res) => {
+        console.log('params:', req.params)
+        console.log('body:', req.body)
         const { id } = req.params
+        const { user_id } = req.body;
         const db = req.app.get('db');
-        console.log(id)
+        // console.log(id)
 
-        const newMarkers = await db.trips.delete_trip(id, 1)
-        const count = await db.trips.count_trips(1)
-
+        const newMarkers = await db.trips.delete_trip(id, user_id)
+        const count = await db.trips.count_trips(user_id)
+        // console.log(count, newMarkers)
         return res.status(200).send({ count, newMarkers })
     },
     // deleteFile: async (req, res) => {

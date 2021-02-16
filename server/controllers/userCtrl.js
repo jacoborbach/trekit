@@ -7,7 +7,7 @@ module.exports = {
         const userData = await db.users.get_all_user_data(id)
         // const userData = await db.users.get_all_user_data(id) need to add this back to make it dynamic
         // console.log(userData)
-        const count = await db.trips.count_trips(1)
+        const count = await db.trips.count_trips(id)
 
         // console.log(userData)
         return res.status(200).send({ userData, count })
@@ -16,7 +16,7 @@ module.exports = {
         const { id } = req.params
         const db = req.app.get('db')
 
-        const count = await db.trips.count_trips(1)
+        const count = await db.trips.count_trips(id)
         return res.status(200).send(count)
     },
     colorChange: async (req, res) => {
