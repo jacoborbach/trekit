@@ -313,22 +313,19 @@ function MyMap(props) {
         axios.delete(`/api/trip/${selected.trip_id}`)
             .then(res => {
                 //remove the trip from state and re-set state here
-                // setMarkers(res.data.newMarkers)
                 let copyMarkers = [...markers]
                 for (let i = 0; i < copyMarkers.length; i++) {
                     if (copyMarkers[i].trip_id === selected.trip_id) {
-                        copyMarkers.splice(copyMarkers[i], 1)
-                        setMarkers(copyMarkers)
+                        copyMarkers.splice(i, 1)
                     }
                 }
+                setMarkers(copyMarkers)
 
                 //add another axios call for count
                 axios.get(`/api/trip-count/${defaultId}`)
                     .then(response => {
                         setCities(response.data[0].cities)
                         setCountries(response.data[0].countries)
-                        console.log(response.data)
-
                     })
 
                 { selected.file ? DeleteAwsFile() : doNothing() }
