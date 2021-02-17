@@ -33,27 +33,15 @@ module.exports = {
 
     },
     deleteTrip: async (req, res) => {
-        console.log('params:', req.params)
-        console.log('body:', req.body)
-        const { id } = req.params
-        const { user_id } = req.body;
+        const { id } = req.params;
         const db = req.app.get('db');
-        // console.log(id)
 
-        const newMarkers = await db.trips.delete_trip(id, user_id)
-        const count = await db.trips.count_trips(user_id)
+        const newMarkers = await db.trips.delete_trip(id)
+        // const count = await db.trips.count_trips(user_id)
+
         // console.log(count, newMarkers)
-        return res.status(200).send({ count, newMarkers })
+        return res.status(200).send(newMarkers)
     },
-    // deleteFile: async (req, res) => {
-    //     const { trip_id } = req.body
-    //     const db = req.app.get('db')
-
-    //     const [returnData] = await db.trips.delete_file(trip_id)
-    //     console.log(returnData)
-
-    //     return res.status(200).send(returnData)
-    // },
     saveFile: async (req, res) => {
         const { url, trip_id } = req.body;
         const db = req.app.get('db')

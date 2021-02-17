@@ -60,6 +60,7 @@ function MyMap(props) {
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
     const [colors, setColors] = useState(null)
+    const defaultId = 52
 
     //Aws
     const [file, setFile] = useState({})
@@ -70,17 +71,17 @@ function MyMap(props) {
     //     }
     // }, [])
 
-    // console.log(props)
+
     //is the logic here sound? Also the getcount
     const fetchUser = async () => {
-        const userData = await axios.get(`/api/user/${props.user.id}`);
+        const userData = await axios.get(`/api/user/${defaultId}`);
         // console.log(userData)
         setCountries(userData.data.count[0].countries)
         setCities(userData.data.count[0].cities)
         setMarkers(userData.data.userData)
         setUserColorOnLogin();
     }
-    // 
+    // console.log(props)
 
     const setUserColorOnLogin = () => {
         if (props.user.theme === "dark") {
@@ -105,7 +106,7 @@ function MyMap(props) {
         } else if (props.colors === silver) {
             dbColor = "silver"
         };
-        axios.put(`/api/color/${props.user.id}`, { color: dbColor })
+        axios.put(`/api/color/${defaultId}`, { color: dbColor })
             .then(() => setColors(props.colors))
             .catch(err => console.log(err))
     }, [props.colors])
@@ -132,14 +133,14 @@ function MyMap(props) {
     }
 
     const getCount = async () => {
-        const newCount = await axios.get(`/api/trip-count/${props.user.id}`)
+        const newCount = await axios.get(`/api/trip-count/${defaultId}`)
         setCountries(newCount.data[0].countries)
         setCities(newCount.data[0].cities)
     }
 
     // Add Markers
     const addmarker = (coordinates) => {
-        axios.post('/api/newtrip', { id: props.user.id, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
+        axios.post('/api/newtrip', { id: defaultId, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
             .then(res => {
                 getCount();
                 setMarkers(current => [...current, {
@@ -303,41 +304,58 @@ function MyMap(props) {
     };
     // console.log(selected)
 
-    // Delete Markers
+    const doNothing = () => {
+        return undefined
+    }
 
+    // Delete Markers
     const handleDelete = () => {
-        axios.delete(`/api/trip/${selected.trip_id}`, { user_id: props.user.id })
+        axios.delete(`/api/trip/${selected.trip_id}`)
             .then(res => {
-                // console.log(res.data)
-                setMarkers(res.data.newMarkers)
-                setCities(res.data.count[0].cities)
-                setCountries(res.data.count[0].countries)
-                // { selected.file ? DeleteAwsFile() : console.log('deleted all items successfully') }
+                //remove the trip from state and re-set state here
+                // setMarkers(res.data.newMarkers)
+                let copyMarkers = [...markers]
+                for (let i = 0; i < copyMarkers.length; i++) {
+                    if (copyMarkers[i].trip_id === selected.trip_id) {
+                        copyMarkers.splice(copyMarkers[i], 1)
+                        setMarkers(copyMarkers)
+                    }
+                }
+
+                //add another axios call for count
+                axios.get(`/api/trip-count/${defaultId}`)
+                    .then(response => {
+                        setCities(response.data[0].cities)
+                        setCountries(response.data[0].countries)
+                        console.log(response.data)
+
+                    })
+
+                { selected.file ? DeleteAwsFile() : doNothing() }
             })
             .catch(err => console.log(err))
         setSelected(null)
     }
-    // 
 
-    // let DeleteAwsFile = () => {
-    //     const params = {
-    //         Bucket: S3_BUCKET,
-    //         Key: selected.file.substring(47) //pushes the file that AWS recognizes (removes https:....)
-    //     };
-    //     //delete the file from db
-    //     // axios.put('/api/file', { trip_id: selected.trip_id })
-    //     //     .then(res => console.log(res.data))
-    //     //     .catch(err => console.log(err))
+    let DeleteAwsFile = () => {
+        const params = {
+            Bucket: S3_BUCKET,
+            Key: selected.file.substring(47) //pushes the file that AWS recognizes (removes https:....)
+        };
+        //delete the file from db
+        // axios.put('/api/file', { trip_id: selected.trip_id })
+        //     .then(res => console.log(res.data))
+        //     .catch(err => console.log(err))
 
-    //     s3.deleteObject(params, function (err, data) {
-    //         if (err) console.log(err, err.stack); // an error occurred
-    //         else console.log(data);           // successful response
-    //         /*
-    //         data = {
-    //         }
-    //         */
-    //     });
-    // }
+        s3.deleteObject(params, function (err, data) {
+            if (err) console.log(err, err.stack); // an error occurred
+            else console.log(data);           // successful response
+            /*
+            data = {
+            }
+            */
+        });
+    }
 
     return (
         <div id='map-background'>

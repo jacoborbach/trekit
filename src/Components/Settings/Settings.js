@@ -24,7 +24,6 @@ function Settings(props) {
     //     changeToggle(!toggleColor)
     // }
 
-
     return (
         <div className='settings'>
             <div id='innerDiv'>
