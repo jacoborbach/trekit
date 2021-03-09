@@ -60,28 +60,10 @@ function MyMap(props) {
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
     const [colors, setColors] = useState(null)
-    const defaultId = 52
+    // const defaultId = 52
 
     //Aws
     const [file, setFile] = useState({})
-
-    // useEffect(() => {
-    //     if (props.user.email) {
-    //         props.history.push('/myMap')
-    //     }
-    // }, [])
-
-
-    //is the logic here sound? Also the getcount
-    const fetchUser = async () => {
-        const userData = await axios.get(`/api/user/${defaultId}`);
-        // console.log(userData)
-        setCountries(userData.data.count[0].countries)
-        setCities(userData.data.count[0].cities)
-        setMarkers(userData.data.userData)
-        setUserColorOnLogin();
-    }
-    // console.log(props)
 
     const setUserColorOnLogin = () => {
         if (props.user.theme === "dark") {
@@ -93,22 +75,43 @@ function MyMap(props) {
         }
     }
 
-    useEffect(() => {
-        fetchUser()
-    }, []);
+    const getCount = () => {
+        if (props.user.id) {
+            axios.get(`/api/trip-count/${props.user.id}`)
+                .then(res => {
+                    setCountries(res.data[0].countries)
+                    setCities(res.data[0].cities)
+                })
+        }
+    }
 
     useEffect(() => {
-        let dbColor = '';
-        if (props.colors === dark) {
-            dbColor = "dark"
-        } else if (props.colors === null) {
-            dbColor = "null"
-        } else if (props.colors === silver) {
-            dbColor = "silver"
-        };
-        axios.put(`/api/color/${defaultId}`, { color: dbColor })
-            .then(() => setColors(props.colors))
-            .catch(err => console.log(err))
+        if (props.user.id) {
+            axios.get(`/api/user/${props.user.id}`)
+                .then(res => {
+                    setCountries(res.data.count[0].countries)
+                    setCities(res.data.count[0].cities)
+                    setMarkers(res.data.userData)
+                    setUserColorOnLogin();
+                })
+        }
+    }, [props]);
+
+    useEffect(() => {
+        if (props.user.id) {
+            let dbColor = '';
+            if (props.colors === dark) {
+                dbColor = "dark"
+            } else if (props.colors === null) {
+                dbColor = "null"
+            } else if (props.colors === silver) {
+                dbColor = "silver"
+            };
+            axios.put(`/api/color/${props.user.id}`, { color: dbColor })
+                .then(res => setColors(props.colors))
+                .catch(err => console.log(err))
+        }
+
     }, [props.colors])
 
     let options = {
@@ -132,26 +135,22 @@ function MyMap(props) {
         setSelected(null)
     }
 
-    const getCount = async () => {
-        const newCount = await axios.get(`/api/trip-count/${defaultId}`)
-        setCountries(newCount.data[0].countries)
-        setCities(newCount.data[0].cities)
-    }
-
     // Add Markers
     const addmarker = (coordinates) => {
-        axios.post('/api/newtrip', { id: defaultId, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
-            .then(res => {
-                getCount();
-                setMarkers(current => [...current, {
-                    name: coordinates.address,
-                    lat: coordinates.lat,
-                    lng: coordinates.lng,
-                    trip_id: res.data.trip_id
-                }])
-            })
-
-            .catch(err => console.log(err))
+        if (props.user.id) {
+            axios.post('/api/newtrip', { id: props.user.id, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
+                .then(res => {
+                    console.log('hit')
+                    getCount();
+                    setMarkers(current => [...current, {
+                        name: coordinates.address,
+                        lat: coordinates.lat,
+                        lng: coordinates.lng,
+                        trip_id: res.data.trip_id
+                    }])
+                })
+                .catch(err => console.log(err))
+        }
     }
 
     const toggleDateView = () => {
@@ -310,28 +309,30 @@ function MyMap(props) {
 
     // Delete Markers
     const handleDelete = () => {
-        axios.delete(`/api/trip/${selected.trip_id}`)
-            .then(res => {
-                //remove the trip from state and re-set state here
-                let copyMarkers = [...markers]
-                for (let i = 0; i < copyMarkers.length; i++) {
-                    if (copyMarkers[i].trip_id === selected.trip_id) {
-                        copyMarkers.splice(i, 1)
+        if (props.user.id) {
+            axios.delete(`/api/trip/${selected.trip_id}`)
+                .then(res => {
+                    //remove the trip from state and re-set state here
+                    let copyMarkers = [...markers]
+                    for (let i = 0; i < copyMarkers.length; i++) {
+                        if (copyMarkers[i].trip_id === selected.trip_id) {
+                            copyMarkers.splice(i, 1)
+                        }
                     }
-                }
-                setMarkers(copyMarkers)
+                    setMarkers(copyMarkers)
 
-                //add another axios call for count
-                axios.get(`/api/trip-count/${defaultId}`)
-                    .then(response => {
-                        setCities(response.data[0].cities)
-                        setCountries(response.data[0].countries)
-                    })
+                    //add another axios call for count
+                    axios.get(`/api/trip-count/${props.user.id}`)
+                        .then(response => {
+                            setCities(response.data[0].cities)
+                            setCountries(response.data[0].countries)
+                        })
 
-                { selected.file ? DeleteAwsFile() : doNothing() }
-            })
-            .catch(err => console.log(err))
-        setSelected(null)
+                    { selected.file ? DeleteAwsFile() : doNothing() }
+                })
+                .catch(err => console.log(err))
+            setSelected(null)
+        }
     }
 
     let DeleteAwsFile = () => {
@@ -459,119 +460,119 @@ function MyMap(props) {
                                                 <button onClick={handleEdit}>Edit</button><br /><br />
                                             </>
                                         ) : (
-                                                <>
-                                                    <button onClick={handleEdit}>Edit</button><br /><br />
-                                                </>
-                                            )}
+                                            <>
+                                                <button onClick={handleEdit}>Edit</button><br /><br />
+                                            </>
+                                        )}
 
 
 
                                     </div>
 
                                 ) : (
-                                        <>
-                                            <label>Start Date:</label>
-                                            <input type='date'
-                                                value={newStartDate}
-                                                onChange={e => setNewStart(e.target.value)}
-                                            />
+                                    <>
+                                        <label>Start Date:</label>
+                                        <input type='date'
+                                            value={newStartDate}
+                                            onChange={e => setNewStart(e.target.value)}
+                                        />
 
-                                            <br /><br />
+                                        <br /><br />
 
-                                            <label>End Date:</label>
-                                            <input id='endDateInp' type='date'
-                                                value={newEndDate}
-                                                onChange={e => setNewEnd(e.target.value)} />
-                                            <br /><br />
+                                        <label>End Date:</label>
+                                        <input id='endDateInp' type='date'
+                                            value={newEndDate}
+                                            onChange={e => setNewEnd(e.target.value)} />
+                                        <br /><br />
 
-                                            <label>Rating:</label>
-                                            <input value={newRating}
-                                                onChange={e => setNewRating(e.target.value)} />
+                                        <label>Rating:</label>
+                                        <input value={newRating}
+                                            onChange={e => setNewRating(e.target.value)} />
 
 
-                                            {/* Text Area */}
-                                            <h3 id='review'>Review</h3>
-                                            <textarea value={newComment} onChange={e => setNewComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br /><br />
+                                        {/* Text Area */}
+                                        <h3 id='review'>Review</h3>
+                                        <textarea value={newComment} onChange={e => setNewComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br /><br />
 
-                                            <button onClick={handleEdit}>Back</button>
-                                            <button id='EditTripSubmit' onClick={handleTripEditSubmit}>Submit</button>
-                                            <br /><br />
+                                        <button onClick={handleEdit}>Back</button>
+                                        <button id='EditTripSubmit' onClick={handleTripEditSubmit}>Submit</button>
+                                        <br /><br />
 
-                                        </>
-                                    )}
+                                    </>
+                                )}
 
 
                             </>
                         ) : (
-                                // Add Trip Info
-                                <>
-                                    <form onSubmit={handleSubmit}>
-                                        <button onClick={handleDelete} className='deleteBtn'>Delete</button>
-                                        <h2 className='formName'>{selected.name || selected.city + ', ' + selected.country}</h2>
-                                        <div className='tripInfoForm'>
-                                            {!dateView ?
-                                                (
-                                                    <h3 onClick={toggleDateView} id='review' >Add dates <span id='plus' title='Click to add Dates'>+</span></h3>
-                                                ) : (
-                                                    <div className='dumbclass'>
-                                                        {/* Trip Dates */}
-                                                        <label>Start Date:</label>
-                                                        <input type='date' value={startDate} onChange={e => setStart(e.target.value)} /><br />
+                            // Add Trip Info
+                            <>
+                                <form onSubmit={handleSubmit}>
+                                    <button onClick={handleDelete} className='deleteBtn'>Delete</button>
+                                    <h2 className='formName'>{selected.name || selected.city + ', ' + selected.country}</h2>
+                                    <div className='tripInfoForm'>
+                                        {!dateView ?
+                                            (
+                                                <h3 onClick={toggleDateView} id='review' >Add dates <span id='plus' title='Click to add Dates'>+</span></h3>
+                                            ) : (
+                                                <div className='dumbclass'>
+                                                    {/* Trip Dates */}
+                                                    <label>Start Date:</label>
+                                                    <input type='date' value={startDate} onChange={e => setStart(e.target.value)} /><br />
 
-                                                        <label>End Date:</label>
-                                                        <input id='endDateInp' type='date' value={endDate} onChange={e => setEnd(e.target.value)} />
+                                                    <label>End Date:</label>
+                                                    <input id='endDateInp' type='date' value={endDate} onChange={e => setEnd(e.target.value)} />
 
-                                                        <br />
-                                                        <p onClick={toggleDateView} id='back' title="Click to go back to 'Add Dates' view">Back</p>
-                                                    </div>
-                                                )}
-
-
-                                            {/* Star Rating */}
-                                            <div className='ratingContainer'>
-                                                <h3 className='question'>Rating</h3>
-                                                <div className="rating">
-                                                    <input onChange={e => setRating(e.target.name)} id="star5" name={5} type="radio" value={ratingInp} className="radio-btn hide"
-                                                        checked={+ratingInp === 5} />
-                                                    <label htmlFor="star5">☆</label>
-                                                    <input onChange={e => setRating(e.target.name)} id="star4" name={4} type="radio" value={ratingInp} className="radio-btn hide"
-                                                        checked={+ratingInp === 4} />
-                                                    <label htmlFor="star4">☆</label>
-                                                    <input onChange={e => setRating(e.target.name)} id="star3" name={3} type="radio" value={ratingInp} className="radio-btn hide"
-                                                        checked={+ratingInp === 3} />
-                                                    <label htmlFor="star3">☆</label>
-                                                    <input onChange={e => setRating(e.target.name)} id="star2" name={2} type="radio" value={ratingInp} className="radio-btn hide"
-                                                        checked={+ratingInp === 2} />
-                                                    <label htmlFor="star2">☆</label>
-                                                    <input onChange={e => setRating(e.target.name)} id="star1" name={1} type="radio" value={ratingInp} className="radio-btn hide"
-                                                        checked={+ratingInp === 1} />
-                                                    <label htmlFor="star1">☆</label>
-                                                    <div className="clear"></div>
+                                                    <br />
+                                                    <p onClick={toggleDateView} id='back' title="Click to go back to 'Add Dates' view">Back</p>
                                                 </div>
-                                            </div>
+                                            )}
 
 
-                                            {/* Text Area */}
-                                            <h3 id='review'>Review</h3>
-                                            <textarea value={commentInp} onChange={e => setComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br />
-
-
-                                            <div className="App">
-                                                <h3 id='cutPadding'>Upload an Itinerary</h3>
-                                                {/* File Input */}
-                                                <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
-                                                    setFile(e.target.files[0])
-                                                }} />
-
-
+                                        {/* Star Rating */}
+                                        <div className='ratingContainer'>
+                                            <h3 className='question'>Rating</h3>
+                                            <div className="rating">
+                                                <input onChange={e => setRating(e.target.name)} id="star5" name={5} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+ratingInp === 5} />
+                                                <label htmlFor="star5">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star4" name={4} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+ratingInp === 4} />
+                                                <label htmlFor="star4">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star3" name={3} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+ratingInp === 3} />
+                                                <label htmlFor="star3">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star2" name={2} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+ratingInp === 2} />
+                                                <label htmlFor="star2">☆</label>
+                                                <input onChange={e => setRating(e.target.name)} id="star1" name={1} type="radio" value={ratingInp} className="radio-btn hide"
+                                                    checked={+ratingInp === 1} />
+                                                <label htmlFor="star1">☆</label>
+                                                <div className="clear"></div>
                                             </div>
                                         </div>
 
-                                        <input type="submit" />
 
-                                    </form>
-                                </>
-                            )}
+                                        {/* Text Area */}
+                                        <h3 id='review'>Review</h3>
+                                        <textarea value={commentInp} onChange={e => setComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br />
+
+
+                                        <div className="App">
+                                            <h3 id='cutPadding'>Upload an Itinerary</h3>
+                                            {/* File Input */}
+                                            <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
+                                                setFile(e.target.files[0])
+                                            }} />
+
+
+                                        </div>
+                                    </div>
+
+                                    <input type="submit" />
+
+                                </form>
+                            </>
+                        )}
 
                     </InfoWindow>) : null}
             </GoogleMap>

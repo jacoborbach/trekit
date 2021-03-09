@@ -17,6 +17,7 @@ module.exports = {
         const db = req.app.get('db')
 
         const count = await db.trips.count_trips(id)
+
         return res.status(200).send(count)
     },
     colorChange: async (req, res) => {
