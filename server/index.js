@@ -3,13 +3,14 @@ const massive = require('massive')
 const express = require('express')
 const session = require('express-session')
 // const bodyParser = require('body')
-// const path = require('path')
+const path = require('path')
 const authCtrl = require('./controllers/authCtrl')
 const markerCtrl = require('./controllers/markerCtrl')
 const userCtrl = require('./controllers/userCtrl')
 const emailCtrl = require('./controllers/emailCtrl')
 const { CONNECTION_STRING, SESSION_SECRET, SERVER_PORT } = process.env
 const app = express()
+
 
 // Aws------------------------------------>
 const aws = require('aws-sdk')
@@ -98,10 +99,10 @@ app.post('/api/file', markerCtrl.saveFile)
 //Email handler
 app.post('/api/email', emailCtrl.email);
 
-// For Production (uncomment path up-top)
-// app.use(express.static(__dirname + '/../build'))
-// app.get('*', (req, res) => {
-//     res.sendFile(path.join(__dirname + '../build/index.html'))
-// })
+//for hosting
+app.use(express.static(__dirname + '/../build'))
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../build/index.html'))
+})
 
 app.listen(SERVER_PORT, () => console.log(`Listening on port ${SERVER_PORT}`))
