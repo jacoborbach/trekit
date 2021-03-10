@@ -91,7 +91,7 @@ app.post('/api/tripinfo', markerCtrl.tripInfo)
 //app.put('/api/file', markerCtrl.deleteFile)  //deleteFile sets the value to null
 
 //color
-app.put('/api/color/:id', userCtrl.colorChange)
+app.put('/api/changecolor', userCtrl.colorChange)
 
 //Aws file
 app.post('/api/file', markerCtrl.saveFile)

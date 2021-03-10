@@ -21,12 +21,12 @@ module.exports = {
         return res.status(200).send(count)
     },
     colorChange: async (req, res) => {
-        const { color } = req.body
-        const { id } = req.params
+        const { id, color } = req.body
         const db = req.app.get('db')
-        // console.log(req.body)
+        console.log('color in backend on userctrl colorchange:', color)
 
-        const [changed] = await db.users.change_color(color, id)
+        const changed = await db.users.change_color(color, id)
+        console.log(changed)
 
         return res.sendStatus(202)
     }

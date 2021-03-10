@@ -65,12 +65,12 @@ function MyMap(props) {
     //Aws
     const [file, setFile] = useState({})
 
-    const setUserColorOnLogin = () => {
-        if (props.user.theme === "dark") {
+    const setUserColor = () => {
+        if (props.user.theme === dark) {
             setColors(dark)
-        } else if (props.user.theme === "silver") {
+        } else if (props.user.theme === silver) {
             setColors(silver)
-        } else if (props.user.theme === "null") {
+        } else if (props.user.theme === null) {
             setColors(null)
         }
     }
@@ -86,33 +86,25 @@ function MyMap(props) {
     }
 
     useEffect(() => {
+        setUserColor();
         if (props.user.id) {
             axios.get(`/api/user/${props.user.id}`)
                 .then(res => {
                     setCountries(res.data.count[0].countries)
                     setCities(res.data.count[0].cities)
                     setMarkers(res.data.userData)
-                    setUserColorOnLogin();
                 })
         }
     }, [props]);
 
     useEffect(() => {
-        if (props.user.id) {
-            let dbColor = '';
-            if (props.colors === dark) {
-                dbColor = "dark"
-            } else if (props.colors === null) {
-                dbColor = "null"
-            } else if (props.colors === silver) {
-                dbColor = "silver"
-            };
-            axios.put(`/api/color/${props.user.id}`, { color: dbColor })
-                .then(res => setColors(props.colors))
+        let id = props.user.id;
+        if (id) {
+            axios.put('/api/changecolor/', { id, color: colors })
+                .then(() => console.log('Successfully changed color'))
                 .catch(err => console.log(err))
         }
-
-    }, [props.colors])
+    }, [colors])
 
     let options = {
         styles: colors,
@@ -194,6 +186,7 @@ function MyMap(props) {
         setNewRating(selected.rating)
         setNewComment(selected.comment)
     }
+
 
     // Edit Trip Info
     const handleTripEditSubmit = (e) => {
@@ -355,6 +348,9 @@ function MyMap(props) {
         });
     }
 
+
+
+    console.log(props)
     return (
         <div id='map-background'>
 
@@ -582,8 +578,7 @@ function MyMap(props) {
 }
 
 const mapStateToProps = reduxState => ({
-    user: reduxState.userReducer.user,
-    colors: reduxState.themeReducer.colors
+    user: reduxState.userReducer.user
 })
 
 export default connect(mapStateToProps)(MyMap)

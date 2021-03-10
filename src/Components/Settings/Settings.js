@@ -1,10 +1,10 @@
 import axios from 'axios';
 import React from 'react'
 import { connect } from 'react-redux'
-import { clearUser } from '../../dux/reducer'
-import { changeColor } from '../../dux/themeReducer'
+import { clearUser, getUser } from '../../dux/reducer'
 import { dark } from '../MyMap/ColorThemes/dark'
 import { silver } from '../MyMap/ColorThemes/silver'
+import { noLabels } from '../MyMap/ColorThemes/noLabels'
 import './Settings.css'
 
 
@@ -19,7 +19,7 @@ function Settings(props) {
             })
             .catch(err => console.log(err))
     }
-
+    console.log(props)
     // const toggle = () => {
     //     changeToggle(!toggleColor)
     // }
@@ -33,15 +33,15 @@ function Settings(props) {
 
                 <button onClick={e => {
                     changeToggle(e.target.innerText)
-                    props.changeColor(null)
-                }}>Default</button>
+                    props.getUser({ ...props.user, theme: noLabels })
+                }}>No Labels</button>
                 <button onClick={e => {
                     changeToggle(e.target.innerText)
-                    props.changeColor(dark)
+                    props.getUser({ ...props.user, theme: dark })
                 }}>Dark</button>
                 <button onClick={e => {
                     changeToggle(e.target.innerText)
-                    props.changeColor(silver)
+                    props.getUser({ ...props.user, theme: silver })
                 }}>Silver</button>
                 {toggleColor ? <div>Color Successfully Changed to {toggleColor}</div> : null}
 
@@ -53,6 +53,8 @@ function Settings(props) {
         </div>
     )
 }
-const mapStateToProps = reduxState => ({ themereducer: reduxState.themereducer })
+const mapStateToProps = reduxState => ({
+    user: reduxState.userReducer.user
+})
 
-export default connect(mapStateToProps, { clearUser, changeColor })(Settings)
+export default connect(mapStateToProps, { clearUser, getUser })(Settings)
