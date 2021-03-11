@@ -25,9 +25,9 @@ module.exports = {
         const db = req.app.get('db')
         console.log('color in backend on userctrl colorchange:', color)
 
-        const changed = await db.users.change_color(color, id)
+        const [changed] = await db.users.change_color(color, id)
         console.log(changed)
 
-        return res.sendStatus(202)
+        return res.status(200).send(changed)
     }
 }

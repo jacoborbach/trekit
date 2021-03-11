@@ -13,6 +13,7 @@ import SearchMap from '../SearchMap/SearchMap'
 import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
 import "./MyMap.css"
+import { noLabels } from './ColorThemes/noLabels';
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
@@ -66,12 +67,12 @@ function MyMap(props) {
     const [file, setFile] = useState({})
 
     const setUserColor = () => {
-        if (props.user.theme === dark) {
+        if (props.user.theme === 'Dark') {
             setColors(dark)
-        } else if (props.user.theme === silver) {
+        } else if (props.user.theme === "Silver") {
             setColors(silver)
-        } else if (props.user.theme === null) {
-            setColors(null)
+        } else if (props.user.theme === "No Labels") {
+            setColors(noLabels)
         }
     }
 
@@ -86,8 +87,8 @@ function MyMap(props) {
     }
 
     useEffect(() => {
-        setUserColor();
         if (props.user.id) {
+            setUserColor();
             axios.get(`/api/user/${props.user.id}`)
                 .then(res => {
                     setCountries(res.data.count[0].countries)
@@ -96,15 +97,6 @@ function MyMap(props) {
                 })
         }
     }, [props]);
-
-    useEffect(() => {
-        let id = props.user.id;
-        if (id) {
-            axios.put('/api/changecolor/', { id, color: colors })
-                .then(() => console.log('Successfully changed color'))
-                .catch(err => console.log(err))
-        }
-    }, [colors])
 
     let options = {
         styles: colors,

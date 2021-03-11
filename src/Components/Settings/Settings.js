@@ -19,10 +19,15 @@ function Settings(props) {
             })
             .catch(err => console.log(err))
     }
-    console.log(props)
-    // const toggle = () => {
-    //     changeToggle(!toggleColor)
-    // }
+
+    const handleColorChange = (e) => {
+        changeToggle(e)
+        axios.put('/api/changecolor', { id: props.user.id, color: e })
+            .then(res =>
+                props.getUser({ ...props.user, theme: res.data.theme })
+            )
+            .catch(err => console.log(err))
+    }
 
     return (
         <div className='settings'>
@@ -32,16 +37,13 @@ function Settings(props) {
                 <p >Choose one of the following color themes:</p>
 
                 <button onClick={e => {
-                    changeToggle(e.target.innerText)
-                    props.getUser({ ...props.user, theme: noLabels })
+                    handleColorChange(e.target.innerText)
                 }}>No Labels</button>
                 <button onClick={e => {
-                    changeToggle(e.target.innerText)
-                    props.getUser({ ...props.user, theme: dark })
+                    handleColorChange(e.target.innerText)
                 }}>Dark</button>
                 <button onClick={e => {
-                    changeToggle(e.target.innerText)
-                    props.getUser({ ...props.user, theme: silver })
+                    handleColorChange(e.target.innerText)
                 }}>Silver</button>
                 {toggleColor ? <div>Color Successfully Changed to {toggleColor}</div> : null}
 
