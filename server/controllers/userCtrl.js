@@ -5,11 +5,11 @@ module.exports = {
         const db = req.app.get('db')
 
         const userData = await db.users.get_all_user_data(id)
-        // const userData = await db.users.get_all_user_data(id) need to add this back to make it dynamic
-        // console.log(userData)
         const count = await db.trips.count_trips(id)
 
-        // console.log(userData)
+        req.session.user = { ...req.session.user, userData, count }
+        console.log(req.session.user)
+
         return res.status(200).send({ userData, count })
     },
     tripCount: async (req, res) => {

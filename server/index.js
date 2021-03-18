@@ -78,9 +78,10 @@ massive({
 app.post('/api/register', authCtrl.register)
 app.post('/api/login', authCtrl.login)
 app.get('/api/logout', authCtrl.logout)
+app.get('/api/user', authCtrl.getUser)
 
 //User handlers
-app.get('/api/user/:id', userCtrl.getData)
+// app.get('/api/user/:id', userCtrl.getData)
 app.get('/api/trip-count/:id', userCtrl.tripCount)
 
 //trip handlers

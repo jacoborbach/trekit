@@ -2,9 +2,6 @@ import axios from 'axios';
 import React from 'react'
 import { connect } from 'react-redux'
 import { clearUser, getUser } from '../../dux/reducer'
-import { dark } from '../MyMap/ColorThemes/dark'
-import { silver } from '../MyMap/ColorThemes/silver'
-import { noLabels } from '../MyMap/ColorThemes/noLabels'
 import './Settings.css'
 
 

@@ -37,13 +37,23 @@ module.exports = {
         }
 
         delete foundUser.password
-        // console.log(foundUser)
-        req.session.user = foundUser
+
+        const userData = await db.users.get_all_user_data(foundUser.id)
+        const count = await db.trips.count_trips(foundUser.id)
+
+        req.session.user = [foundUser, userData, count]
+
         return res.status(202).send(req.session.user)
 
     },
     logout: (req, res) => {
         req.session.destroy()
         res.sendStatus(200)
+    },
+    getUser: async (req, res) => {
+        if (req.session.user) {
+            return res.send(req.session.user);
+        }
+        res.status(404).send(`No user found`);
     }
 }

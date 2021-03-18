@@ -14,12 +14,6 @@ import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
 import "./MyMap.css"
 import { noLabels } from './ColorThemes/noLabels';
-// import {
-//     DateInput,
-//     TimeInput,
-//     DateTimeInput,
-//     DatesRangeInput
-// } from 'semantic-ui-calendar-react';
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
@@ -48,6 +42,7 @@ function MyMap(props) {
         libraries,
     });
 
+    const [userFromSession, setUserFromSession] = useState(false)
     //trips
     const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null)
@@ -67,7 +62,6 @@ function MyMap(props) {
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
     const [colors, setColors] = useState(null)
-    // const defaultId = 52
 
     //Aws
     const [file, setFile] = useState({})
@@ -83,8 +77,8 @@ function MyMap(props) {
     }
 
     const getCount = () => {
-        if (props.user.id) {
-            axios.get(`/api/trip-count/${props.user.id}`)
+        if (props.user) {
+            axios.get(`/api/trip-count/${props.user[0].id}`)
                 .then(res => {
                     setCountries(res.data[0].countries)
                     setCities(res.data[0].cities)
@@ -92,17 +86,28 @@ function MyMap(props) {
         }
     }
 
+    //setting user from from session
     useEffect(() => {
-        if (props.user.id) {
-            setUserColor();
-            axios.get(`/api/user/${props.user.id}`)
-                .then(res => {
-                    setCountries(res.data.count[0].countries)
-                    setCities(res.data.count[0].cities)
-                    setMarkers(res.data.userData)
-                })
-        }
+        axios.get('/api/user')
+            .then(res => {
+                console.log(res.data)
+                setCountries(res.data[2][0].countries)
+                setCities(res.data[2][0].cities)
+                setMarkers(res.data[1])
+            })
     }, [props]);
+
+    // useEffect(() => {
+    //     if (props.user) {
+    //         setUserColor();
+    //         axios.get(`/api/user/${props.user[0].id}`)
+    //             .then(res => {
+    //                 setCountries(res.data.count[0].countries)
+    //                 setCities(res.data.count[0].cities)
+    //                 setMarkers(res.data.userData)
+    //             })
+    //     }
+    // }, [props]);
 
     let options = {
         styles: colors,
@@ -124,11 +129,11 @@ function MyMap(props) {
         changeView(!showView)
         setSelected(null)
     }
-
+    console.log(props)
     // Add Markers
     const addmarker = (coordinates) => {
-        if (props.user.id) {
-            axios.post('/api/newtrip', { id: props.user.id, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
+        if (props.user) {
+            axios.post('/api/newtrip', { id: props.user[0].id, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
                 .then(res => {
                     console.log('hit')
                     getCount();
@@ -300,7 +305,7 @@ function MyMap(props) {
 
     // Delete Markers
     const handleDelete = () => {
-        if (props.user.id) {
+        if (props.user) {
             axios.delete(`/api/trip/${selected.trip_id}`)
                 .then(res => {
                     //remove the trip from state and re-set state here
@@ -313,7 +318,7 @@ function MyMap(props) {
                     setMarkers(copyMarkers)
 
                     //add another axios call for count
-                    axios.get(`/api/trip-count/${props.user.id}`)
+                    axios.get(`/api/trip-count/${props.user[0].id}`)
                         .then(response => {
                             setCities(response.data[0].cities)
                             setCountries(response.data[0].countries)
@@ -348,7 +353,7 @@ function MyMap(props) {
 
 
 
-    console.log(props)
+    // console.log(props)
     return (
         <div id='map-background'>
 

@@ -9,7 +9,13 @@ module.exports = {
         const country = splitName.pop()
 
         const [addedtrip] = await db.trips.create_trip(city, lat, lng, id, country)
-        // console.log(addedtrip)
+
+
+        req.session.user[1].splice(1, 0, { country, city, lat, lng, trip_id: addedtrip.trip_id, start_date: null, end_date: null, rating: null, comment: null, file: null })
+
+        const count = await db.trips.count_trips(id)
+        req.session.user[2].splice(0, 1, { cities: count[0].cities, countries: count[0].countries })
+
         return res.status(201).send(addedtrip)
     },
     // handle submit
@@ -20,7 +26,6 @@ module.exports = {
         const [sentInfo] = await db.trips.create_trip_info(trip_id, startDate, endDate, ratingInp, commentInp)
 
         return res.status(201).send(sentInfo)
-
 
     },
     editTrip: async (req, res) => {
