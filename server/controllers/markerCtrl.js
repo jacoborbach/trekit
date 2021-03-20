@@ -3,7 +3,7 @@ module.exports = {
         const { id, name, lat, lng } = req.body
         const db = req.app.get('db')
 
-        // extracity city and country names 
+        // extract city and country names 
         const splitName = name.split(', ');
         const city = splitName.shift();
         const country = splitName.pop()
@@ -42,6 +42,9 @@ module.exports = {
         const db = req.app.get('db');
 
         await db.trips.delete_trip(id)
+        let newMarkers = req.session.user[1].filter(element => element.trip_id !== +id)
+        req.session.user[1] = newMarkers
+
 
         return res.sendStatus(200)
     },

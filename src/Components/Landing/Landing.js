@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import axios from 'axios'
 import { connect } from 'react-redux'
-import { getUser } from '../../dux/reducer'
+import { getUser, getMarkers, getCount } from '../../dux/reducer'
 import './Landing.css'
 
 export class Landing extends Component {
@@ -51,7 +51,9 @@ export class Landing extends Component {
 
         axios.post('/api/login', { email, password })
             .then(res => {
-                this.props.getUser(res.data)
+                this.props.getUser(res.data[0]) //user info
+                this.props.getMarkers(res.data[1]) //marker info
+                this.props.getCount(res.data[2]) //trip count info
                 this.props.history.push('/myMap')
             })
             .catch(err => console.log(err))
@@ -126,4 +128,4 @@ export class Landing extends Component {
     }
 }
 
-export default connect(null, { getUser })(Landing)
+export default connect(null, { getUser, getMarkers, getCount })(Landing)
