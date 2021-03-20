@@ -24,6 +24,16 @@ module.exports = {
         const db = req.app.get('db');
 
         const [sentInfo] = await db.trips.create_trip_info(trip_id, startDate, endDate, ratingInp, commentInp)
+        console.log(typeof trip_id)
+        req.session.user[1].map(element => {
+            if (element.trip_id === trip_id) {
+                element.start_date = startDate
+                element.end_date = endDate
+                element.comment = commentInp
+                element.rating = ratingInp
+            }
+        })
+        console.log(req.session.user)
 
         return res.status(201).send(sentInfo)
 
@@ -33,6 +43,8 @@ module.exports = {
         const db = req.app.get('db')
 
         const [tripUpdated] = await db.trips.edit_trip(trip_id, start_date, end_date, rating, comment)
+        // console.log(req.session.user)
+        // console.log(tripUpdated)
 
         return res.status(200).send(tripUpdated)
 
