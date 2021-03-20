@@ -24,7 +24,6 @@ module.exports = {
         const db = req.app.get('db');
 
         const [sentInfo] = await db.trips.create_trip_info(trip_id, startDate, endDate, ratingInp, commentInp)
-        console.log(typeof trip_id)
         req.session.user[1].map(element => {
             if (element.trip_id === trip_id) {
                 element.start_date = startDate
@@ -33,18 +32,24 @@ module.exports = {
                 element.rating = ratingInp
             }
         })
-        console.log(req.session.user)
 
         return res.status(201).send(sentInfo)
 
     },
     editTrip: async (req, res) => {
-        const { trip_id, start_date, end_date, rating, comment } = req.body;
+        const { trip_id, start_date, end_date, rating, comment, file } = req.body;
         const db = req.app.get('db')
-
-        const [tripUpdated] = await db.trips.edit_trip(trip_id, start_date, end_date, rating, comment)
-        // console.log(req.session.user)
-        // console.log(tripUpdated)
+        console.log('file:', file)
+        const [tripUpdated] = await db.trips.edit_trip(trip_id, start_date, end_date, rating, comment, file)
+        req.session.user[1].map(element => {
+            if (element.trip_id === trip_id) {
+                element.start_date = start_date
+                element.end_date = end_date
+                element.comment = rating
+                element.rating = comment
+                element.file = file
+            }
+        })
 
         return res.status(200).send(tripUpdated)
 
@@ -65,6 +70,12 @@ module.exports = {
         const db = req.app.get('db')
 
         const [saved] = await db.trips.add_file(url, trip_id)
+        req.session.user[1].map(element => {
+            if (element.trip_id === trip_id) {
+                element.file = url
+            }
+        })
+
         return res.status(200).send(saved)
     }
 }

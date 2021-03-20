@@ -61,10 +61,12 @@ function MyMap(props) {
     const [newEndDate, setNewEnd] = useState('')
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
+    const [newFile, setNewFile] = useState({})
     const [colors, setColors] = useState(null)
 
     //Aws
     const [file, setFile] = useState({})
+    const [fileView, setFileView] = useState(false)
 
     const setUserColor = () => {
         if (props.user.theme === 'Dark') {
@@ -140,6 +142,10 @@ function MyMap(props) {
         changeDateView(!dateView)
     }
 
+    const toggleFileView = () => {
+        setFileView(!fileView)
+    }
+
     // Confirm Closing of Info Window
     const confirmClose = () => {
         let result = window.confirm('Are you sure you want to stop editing this trip? All your data will be lost')
@@ -166,6 +172,7 @@ function MyMap(props) {
         }
     }
 
+
     const handleClose = () => {
         startDate || endDate || ratingInp || commentInp || file.name ? confirmClose() : setSelected(null)
     }
@@ -176,6 +183,7 @@ function MyMap(props) {
         setNewEnd(selected.end_date.substring(0, 10))
         setNewRating(selected.rating)
         setNewComment(selected.comment)
+        setNewFile(selected.file)
     }
 
 
@@ -183,9 +191,8 @@ function MyMap(props) {
     const handleTripEditSubmit = (e) => {
         e.preventDefault();
         axios.put('/api/trip', {
-            trip_id: selected.trip_id, start_date: newStartDate, end_date: newEndDate, rating: newRating, comment: newComment
+            trip_id: selected.trip_id, start_date: newStartDate, end_date: newEndDate, rating: newRating, comment: newComment, file: newFile
         })
-
             .then(res => {
                 let copyMarkers = [...markers];
                 for (let i = 0; i < copyMarkers.length; i++) {
@@ -194,6 +201,7 @@ function MyMap(props) {
                         copyMarkers[i].end_date = res.data.end_date
                         copyMarkers[i].rating = res.data.rating
                         copyMarkers[i].comment = res.data.comment
+                        { newFile.name ? getSignedRequest(newFile) : console.log('didnt work') }
                         setMarkers(copyMarkers)
                         setToggleTripEdit(!toggleTripEdit)
                     }
@@ -202,7 +210,7 @@ function MyMap(props) {
                 setEnd('')
                 setRating('')
                 setComment('')
-
+                setFile({})
 
             })
             .catch(err => console.log(err))
@@ -269,9 +277,7 @@ function MyMap(props) {
                             }
                         }
                         setMarkers(copyArray)
-
                     })
-
                     .catch(err => console.log(err))
             })
             .catch(err => {
@@ -285,15 +291,13 @@ function MyMap(props) {
                 }
             });
     };
-    // console.log(selected)
 
     const doNothing = () => {
         return undefined
     }
-    console.log(props)
+
     // Delete Markers
     const handleDelete = () => {
-
         if (props.user) {
             axios.delete(`/api/trip/${selected.trip_id}`)
                 .then(res => {
@@ -339,8 +343,6 @@ function MyMap(props) {
             */
         });
     }
-
-
 
     return (
         <div id='map-background'>
@@ -481,8 +483,26 @@ function MyMap(props) {
                                         <h3 id='review'>Review</h3>
                                         <textarea value={newComment} onChange={e => setNewComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br /><br />
 
+
+                                        <div className="App">
+                                            {!fileView ?
+                                                <p id='cutPadding' onClick={toggleFileView}>Add an Itinerary+</p>
+                                                :
+                                                <>
+                                                    <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
+                                                        setNewFile(e.target.files[0])
+                                                    }} />
+                                                    <span onClick={toggleFileView}>Dont Add</span>
+                                                </>
+                                            }
+
+                                        </div>
+                                        <br />
+
                                         <button onClick={handleEdit}>Back</button>
                                         <button id='EditTripSubmit' onClick={handleTripEditSubmit}>Submit</button>
+
+
                                         <br /><br />
 
                                     </>
