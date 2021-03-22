@@ -35,6 +35,9 @@ function Settings(props) {
 
                 <button onClick={e => {
                     handleColorChange(e.target.innerText)
+                }}>Original</button>
+                <button onClick={e => {
+                    handleColorChange(e.target.innerText)
                 }}>No Labels</button>
                 <button onClick={e => {
                     handleColorChange(e.target.innerText)

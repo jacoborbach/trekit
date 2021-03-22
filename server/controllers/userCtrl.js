@@ -17,9 +17,8 @@ module.exports = {
         const db = req.app.get('db')
 
         const count = await db.trips.count_trips(id)
-        if (req.session.user[2]) {
-            req.session.user[2] = count
-        }
+
+        req.session.user[2] = count
 
         return res.status(200).send(count)
     },
@@ -29,9 +28,9 @@ module.exports = {
 
         const [changed] = await db.users.change_color(color, id)
         console.log('theme:', changed.theme)
-        if (req.session.user[0]) {
-            req.session.user[0].theme = changed.theme
-        }
+
+        req.session.user[0].theme = changed.theme
+
 
         return res.status(200).send(changed)
     }

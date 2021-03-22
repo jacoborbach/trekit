@@ -10,10 +10,12 @@ import {
 }
     from "@react-google-maps/api";
 import SearchMap from '../SearchMap/SearchMap'
+import { original } from "./ColorThemes/original"
 import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
-import "./MyMap.css"
 import { noLabels } from './ColorThemes/noLabels';
+import "./MyMap.css"
+
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
@@ -74,11 +76,12 @@ function MyMap(props) {
             setColors(silver)
         } else if (props.user.theme === "No Labels") {
             setColors(noLabels)
+        } else if (props.user.theme === "Original") {
+            setColors(original)
         }
     }
 
     const getCount = () => {
-        console.log('hit getcount')
         if (props.user.id) {
             axios.get(`/api/trip-count/${props.user.id}`)
                 .then(res => {
@@ -88,7 +91,6 @@ function MyMap(props) {
         }
     }
     console.log(props)
-    //setting user from from session
 
     useEffect(() => {
         setUserColor();
@@ -97,6 +99,7 @@ function MyMap(props) {
             .then(res => {
                 //returning users - load data off of session
                 if (res.data[1][0]) {
+                    console.log(res.data)
                     setCountries(res.data[2][0].countries)
                     setCities(res.data[2][0].cities)
                     setMarkers(res.data[1])
@@ -109,13 +112,6 @@ function MyMap(props) {
                 }
             })
     }, [])
-
-    // useEffect(() => {
-    //     //while working this should be updating
-    //     setCountries(props.count[0].countries)
-    //     setCities(props.count[0].cities)
-    //     setMarkers(props.markers)
-    // }, [props]);
 
     let options = {
         styles: colors,
@@ -140,11 +136,9 @@ function MyMap(props) {
 
     // Add Markers
     const addmarker = (coordinates) => {
-        console.log('hit add marker 1')
         if (props.user.id) {
             axios.post('/api/newtrip', { id: props.user.id, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
                 .then(res => {
-                    console.log('hit add marker 2')
                     getCount();
                     setMarkers(current => [...current, {
                         name: coordinates.address,
@@ -152,7 +146,6 @@ function MyMap(props) {
                         lng: coordinates.lng,
                         trip_id: res.data.trip_id
                     }])
-                    console.log('hit add marker 3')
                 })
                 .catch(err => console.log(err))
         }

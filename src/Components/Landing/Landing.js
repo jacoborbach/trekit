@@ -54,15 +54,14 @@ export class Landing extends Component {
         axios.post('/api/login', { email, password })
             .then(res => {
                 this.props.getUser(res.data[0]) //user info
-                this.props.getMarkers(res.data[1]) //marker info
-                this.props.getCount(res.data[2]) //trip count info
+                // this.props.getMarkers(res.data[1]) //marker info
+                // this.props.getCount(res.data[2]) //trip count info
                 this.props.history.push('/myMap')
             })
             .catch(err => console.log(err))
     }
 
     render() {
-        // console.log(this.props)
         return (
             <div className='landing-container'>
                 <section className='authentication-info'>
