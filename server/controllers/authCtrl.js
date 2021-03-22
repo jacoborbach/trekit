@@ -5,7 +5,6 @@ module.exports = {
         const { first_name, last_name, email, password } = req.body
         const db = req.app.get('db')
 
-
         const [registeredUser] = await db.users.get_user(email)
 
         if (registeredUser) {
@@ -18,7 +17,7 @@ module.exports = {
         const createdUser = await db.users.create_user(first_name, last_name, email, hash)
         const userSesh = createdUser[0]
 
-        req.session.user = userSesh
+        req.session.user = [userSesh, [], []] //placeholders for markers and count
         return res.status(201).send(req.session.user)
 
     },

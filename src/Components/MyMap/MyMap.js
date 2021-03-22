@@ -42,7 +42,6 @@ function MyMap(props) {
         libraries,
     });
 
-    const [userFromSession, setUserFromSession] = useState(false)
     //trips
     const [markers, setMarkers] = useState([]);
     const [selected, setSelected] = useState(null)
@@ -79,7 +78,8 @@ function MyMap(props) {
     }
 
     const getCount = () => {
-        if (props.user) {
+        console.log('hit getcount')
+        if (props.user.id) {
             axios.get(`/api/trip-count/${props.user.id}`)
                 .then(res => {
                     setCountries(res.data[0].countries)
@@ -87,17 +87,35 @@ function MyMap(props) {
                 })
         }
     }
-
+    console.log(props)
     //setting user from from session
+
     useEffect(() => {
+        setUserColor();
+        //initial load should be from session
         axios.get('/api/user')
             .then(res => {
-                setUserColor();
-                setCountries(res.data[2][0].countries)
-                setCities(res.data[2][0].cities)
-                setMarkers(res.data[1])
+                //returning users - load data off of session
+                if (res.data[1][0]) {
+                    setCountries(res.data[2][0].countries)
+                    setCities(res.data[2][0].cities)
+                    setMarkers(res.data[1])
+                }
+                //new users
+                else {
+                    setCountries(props.count[0].countries)
+                    setCities(props.count[0].cities)
+                    setMarkers(props.markers)
+                }
             })
-    }, [props]);
+    }, [])
+
+    // useEffect(() => {
+    //     //while working this should be updating
+    //     setCountries(props.count[0].countries)
+    //     setCities(props.count[0].cities)
+    //     setMarkers(props.markers)
+    // }, [props]);
 
     let options = {
         styles: colors,
@@ -119,13 +137,14 @@ function MyMap(props) {
         changeView(!showView)
         setSelected(null)
     }
-    // console.log(props)
+
     // Add Markers
     const addmarker = (coordinates) => {
-        if (props.user) {
+        console.log('hit add marker 1')
+        if (props.user.id) {
             axios.post('/api/newtrip', { id: props.user.id, name: coordinates.address, lat: coordinates.lat, lng: coordinates.lng })
                 .then(res => {
-                    console.log('hit')
+                    console.log('hit add marker 2')
                     getCount();
                     setMarkers(current => [...current, {
                         name: coordinates.address,
@@ -133,6 +152,7 @@ function MyMap(props) {
                         lng: coordinates.lng,
                         trip_id: res.data.trip_id
                     }])
+                    console.log('hit add marker 3')
                 })
                 .catch(err => console.log(err))
         }
@@ -298,7 +318,7 @@ function MyMap(props) {
 
     // Delete Markers
     const handleDelete = () => {
-        if (props.user) {
+        if (props.user.id) {
             axios.delete(`/api/trip/${selected.trip_id}`)
                 .then(res => {
                     //remove the trip from state and re-set state here

@@ -34,7 +34,9 @@ export class Landing extends Component {
         if (password && password === verPassword) {
             axios.post('/api/register', { first_name, last_name, email, password })
                 .then(res => {
-                    this.props.getUser(res.data)
+                    this.props.getUser(res.data[0])
+                    this.props.getMarkers([])
+                    this.props.getCount([{ cities: "0", countries: "0" }])
                     this.props.history.push('/myMap')
                 })
                 .catch(err => console.log(err))
