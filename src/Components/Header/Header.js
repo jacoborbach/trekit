@@ -10,7 +10,7 @@ function Header(props) {
 
                 <header className='header-container'>
 
-                    <Link to='/' className='nav-links' id='logo'><h1>Trekit</h1></Link>
+                    <Link to='/' className='nav-links' id='logo'><h1>trekit!</h1></Link>
 
                     {props.location.pathname !== '/'
                         ? (
@@ -26,25 +26,25 @@ function Header(props) {
 
                 </header>
             ) : (
-                    <header>
-                        <header className='header-container2'>
-                            <Link to='/' className='nav-links' id='logo'><h1>Trekit</h1></Link>
+                <header>
+                    <header className='header-container2'>
+                        <Link to='/myMap' className='nav-links' id='logo'><h1>trekit!</h1></Link>
 
-                            {props.location.pathname !== '/'
-                                ? (
-                                    <nav >
-                                        <Link to='/myMap' className='nav-links'>Map</Link>
-                                        <Link to='settings' className='nav-links'><span id="settings" role="img" aria-label="settingsLbl" title='Settings'>
-                                            ⚙️
+                        {props.location.pathname !== '/'
+                            ? (
+                                <nav >
+                                    <Link to='/myMap' className='nav-links'>Map</Link>
+                                    <Link to='settings' className='nav-links'><span id="settings" role="img" aria-label="settingsLbl" title='Settings'>
+                                        ⚙️
                     </span>{" "}</Link>
-                                    </nav>
-                                )
-                                : null
-                            }
+                                </nav>
+                            )
+                            : null
+                        }
 
-                        </header>
                     </header>
-                )}
+                </header>
+            )}
 
         </>
     )

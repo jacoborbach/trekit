@@ -13,9 +13,12 @@ import SearchMap from '../SearchMap/SearchMap'
 import { original } from "./ColorThemes/original"
 import { dark } from "./ColorThemes/dark"
 import { silver } from "./ColorThemes/silver"
-import { noLabels } from './ColorThemes/noLabels';
+import { noLabels } from './ColorThemes/noLabels'
+import { sunset } from './ColorThemes/sunset'
 import "./MyMap.css"
-
+import { getDeviceTypeInfo } from '../Responsive/utilResponsive'
+import Responsive from '../Responsive/Responsive'
+import InfoWindowComp from '../InfoWindowComp'
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
@@ -31,6 +34,23 @@ const mapContainerStyle = {
     left: "6vw",
     top: "3vh"
 }
+
+//tablet
+const mapContainerStyle2 = {
+    width: "90vw",
+    height: "80vh",
+    left: "2vw",
+    top: "2vh"
+}
+
+//mobile
+const mapContainerStyle3 = {
+    width: "90vw",
+    height: "80vh",
+    left: "2vw",
+    top: "2vh"
+}
+
 const center = {
     lat: 34.373112,
     lng: 6.252371
@@ -62,11 +82,11 @@ function MyMap(props) {
     const [newEndDate, setNewEnd] = useState('')
     const [newRating, setNewRating] = useState('')
     const [newComment, setNewComment] = useState('')
-    const [newFile, setNewFile] = useState({})
+    const [newFile, setNewFile] = useState({ name: '' })
     const [colors, setColors] = useState(null)
 
     //Aws
-    const [file, setFile] = useState({})
+    const [file, setFile] = useState({ name: '' })
     const [fileView, setFileView] = useState(false)
 
     const setUserColor = () => {
@@ -78,6 +98,8 @@ function MyMap(props) {
             setColors(noLabels)
         } else if (props.user.theme === "Original") {
             setColors(original)
+        } else if (props.user.theme === "Sunset") {
+            setColors(sunset)
         }
     }
 
@@ -90,7 +112,7 @@ function MyMap(props) {
                 })
         }
     }
-    console.log(props)
+    // console.log(props)
 
     useEffect(() => {
         setUserColor();
@@ -99,7 +121,7 @@ function MyMap(props) {
             .then(res => {
                 //returning users - load data off of session
                 if (res.data[1][0]) {
-                    console.log(res.data)
+                    // console.log(res.data)
                     setCountries(res.data[2][0].countries)
                     setCities(res.data[2][0].cities)
                     setMarkers(res.data[1])
@@ -112,6 +134,10 @@ function MyMap(props) {
                 }
             })
     }, [])
+
+    useEffect(() => {
+        getDeviceTypeInfo()
+    }, [props])
 
     let options = {
         styles: colors,
@@ -196,9 +222,7 @@ function MyMap(props) {
         setNewEnd(selected.end_date.substring(0, 10))
         setNewRating(selected.rating)
         setNewComment(selected.comment)
-        setNewFile(selected.file)
     }
-
 
     // Edit Trip Info
     const handleTripEditSubmit = (e) => {
@@ -214,16 +238,17 @@ function MyMap(props) {
                         copyMarkers[i].end_date = res.data.end_date
                         copyMarkers[i].rating = res.data.rating
                         copyMarkers[i].comment = res.data.comment
-                        { newFile.name ? getSignedRequest(newFile) : console.log('didnt work') }
-                        setMarkers(copyMarkers)
-                        setToggleTripEdit(!toggleTripEdit)
+                        { newFile.name ? getSignedRequest(newFile) : console.log('no itinerary submitted') }
                     }
                 }
+                setMarkers(copyMarkers)
+                setToggleTripEdit(!toggleTripEdit)
+
                 setStart('')
                 setEnd('')
                 setRating('')
                 setComment('')
-                setFile({})
+                setNewComment({})
 
             })
             .catch(err => console.log(err))
@@ -240,8 +265,7 @@ function MyMap(props) {
                         copyMarkers[i].end_date = res.data.end_date
                         copyMarkers[i].rating = res.data.rating
                         copyMarkers[i].comment = res.data.comment
-                        // console.log(file)
-                        { file.name ? getSignedRequest(file) : console.log('didnt work') }
+                        { file.name ? getSignedRequest(file) : console.log('no itinerary submitted') }
                     }
                 }
                 setMarkers(copyMarkers)
@@ -360,249 +384,234 @@ function MyMap(props) {
     return (
         <div id='map-background'>
 
-            <GoogleMap className='myMap'
-                mapContainerStyle={mapContainerStyle}
-                zoom={2.15}
-                center={center}
-                options={options}
-                onLoad={onMapLoad} >
+            <Responsive displayIn={["Laptop"]}>
+                <GoogleMap className='myMap'
 
-                {showView
-                    ? (
-                        <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
-                    )
-                    : (
-                        < div className='search-container'>
-                            <SearchMap addmarker={addmarker} />
-                            <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
-                        </div>
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
 
-                    )}
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
 
-                {markers.map((marker, i) => (
-                    < Marker
-                        key={i}
-                        title='Click to add trip info'
-                        position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
-                        // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
-                        onClick={() => {
-                            setSelected(marker);
-                            changeView(true)
-                        }}
-                    />
-                ))}
-
-                <div className="count">
-                    <h2>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
-                    <h2>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
-                </div>
-
-                {selected ? (
-                    <InfoWindow
-                        // pixelOffset:
-                        position={{ lat: +selected.lat, lng: +selected.lng }}
-                        onCloseClick={() => {
-                            handleClose();
-                        }}
-                    >
-                        {selected.start_date || selected.end_date || selected.rating || selected.comment ? (
-                            <>
-                                <h2 className='formName'>{selected.name || selected.city + ', ' + selected.country}</h2>
-                                <button onClick={handleDelete} className='deleteBtn'>Delete</button>
-
-                                {/* Displaying Trip Info */}
-                                {!toggleTripEdit ? (
-                                    <div >
-                                        <div className='alignTripInfoLeft'>
-                                            <p>Start Date:  <span>{selected.start_date.substring(0, 10)}</span></p>
-
-                                            <p>End Date: <span>{selected.end_date.substring(0, 10)}</span></p>
-
-
-
-                                            <div className='ratingContainer'>
-                                                <p>Rating</p>
-                                                <div className="rating">
-                                                    <input id="star5" name={5} type="radio" className="radio-btn hide"
-                                                        checked={+selected.rating === 5} disabled='disabled' />
-                                                    <label htmlFor="star5">☆</label>
-                                                    <input id="star4" name={4} type="radio" className="radio-btn hide"
-                                                        checked={+selected.rating === 4} disabled='disabled' />
-                                                    <label htmlFor="star4">☆</label>
-                                                    <input id="star3" name={3} type="radio" className="radio-btn hide"
-                                                        checked={+selected.rating === 3} disabled='disabled' />
-                                                    <label htmlFor="star3">☆</label>
-                                                    <input id="star2" name={2} type="radio" className="radio-btn hide"
-                                                        checked={+selected.rating === 2} disabled='disabled' />
-                                                    <label htmlFor="star2">☆</label>
-                                                    <input id="star1" name={1} type="radio" className="radio-btn hide"
-                                                        checked={+selected.rating === 1} disabled='disabled' />
-                                                    <label htmlFor="star1">☆</label>
-                                                    <div className="clear"></div>
-                                                </div>
-                                            </div>
-
-                                            <p className='question'>Notes: </p>
-                                            <span>{selected.comment}</span>
-                                        </div>
-
-
-
-                                        <br />
-
-                                        {selected.file ? (
-                                            <>
-                                                <div className='alignTripInfoLeft'>
-                                                    <div>Files:</div>
-                                                    <a href={selected.file} target="_blank" rel="noopener noreferrer">Itinerary</a>
-                                                </div>
-                                                <br />
-                                                {/* <button onClick={DeleteAwsFile}>Delete AWS File</button> */}
-
-                                                <button onClick={handleEdit}>Edit</button><br /><br />
-                                            </>
-                                        ) : (
-                                            <>
-                                                <button onClick={handleEdit}>Edit</button><br /><br />
-                                            </>
-                                        )}
-
-
-
-                                    </div>
-
-                                ) : (
-                                    <>
-                                        <label>Start Date:</label>
-                                        <input type='date'
-                                            value={newStartDate}
-                                            onChange={e => setNewStart(e.target.value)}
-                                        />
-
-                                        <br /><br />
-
-                                        <label>End Date:</label>
-                                        <input id='endDateInp' type='date'
-                                            value={newEndDate}
-                                            onChange={e => setNewEnd(e.target.value)} />
-                                        <br /><br />
-
-                                        <label>Rating:</label>
-                                        <input value={newRating}
-                                            onChange={e => setNewRating(e.target.value)} />
-
-
-                                        {/* Text Area */}
-                                        <h3 id='review'>Review</h3>
-                                        <textarea value={newComment} onChange={e => setNewComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br /><br />
-
-
-                                        <div className="App">
-                                            {!fileView ?
-                                                <p id='cutPadding' onClick={toggleFileView}>Add an Itinerary+</p>
-                                                :
-                                                <>
-                                                    <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
-                                                        setNewFile(e.target.files[0])
-                                                    }} />
-                                                    <span onClick={toggleFileView}>Dont Add</span>
-                                                </>
-                                            }
-
-                                        </div>
-                                        <br />
-
-                                        <button onClick={handleEdit}>Back</button>
-                                        <button id='EditTripSubmit' onClick={handleTripEditSubmit}>Submit</button>
-
-
-                                        <br /><br />
-
-                                    </>
-                                )}
-
-
-                            </>
-                        ) : (
-                            // Add Trip Info
-                            <>
-                                <form onSubmit={handleSubmit}>
-                                    <button onClick={handleDelete} className='deleteBtn'>Delete</button>
-                                    <h2 className='formName'>{selected.name || selected.city + ', ' + selected.country}</h2>
-                                    <div className='tripInfoForm'>
-                                        {!dateView ?
-                                            (
-                                                <h3 onClick={toggleDateView} id='review' >Add dates <span id='plus' title='Click to add Dates'>+</span></h3>
-                                            ) : (
-                                                <div className='dumbclass'>
-                                                    {/* Trip Dates */}
-                                                    {/* <DateInput
-                                                        name="date"
-                                                        placeholder="Date"
-
-                                                        iconPosition="left"
-
-                                                    /> */}
-                                                    <label>Start Date:</label>
-                                                    <input type='date' placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)" required value={startDate} onChange={e => setStart(e.target.value)} /><br />
-
-                                                    <label>End Date:</label>
-                                                    <input id='endDateInp' type='date' placeholder="dd/mm/yyyy" pattern="(^(((0[1-9]|1[0-9]|2[0-8])[\/](0[1-9]|1[012]))|((29|30|31)[\/](0[13578]|1[02]))|((29|30)[\/](0[4,6,9]|11)))[\/](19|[2-9][0-9])\d\d$)|(^29[\/]02[\/](19|[2-9][0-9])(00|04|08|12|16|20|24|28|32|36|40|44|48|52|56|60|64|68|72|76|80|84|88|92|96)$)" required value={endDate} onChange={e => setEnd(e.target.value)} />
-
-                                                    <br />
-                                                    <p onClick={toggleDateView} id='back' title="Click to go back to 'Add Dates' view">Back</p>
-                                                </div>
-                                            )}
-
-
-                                        {/* Star Rating */}
-                                        <div className='ratingContainer'>
-                                            <h3 className='question'>Rating</h3>
-                                            <div className="rating">
-                                                <input onChange={e => setRating(e.target.name)} id="star5" name={5} type="radio" value={ratingInp} className="radio-btn hide"
-                                                    checked={+ratingInp === 5} />
-                                                <label htmlFor="star5">☆</label>
-                                                <input onChange={e => setRating(e.target.name)} id="star4" name={4} type="radio" value={ratingInp} className="radio-btn hide"
-                                                    checked={+ratingInp === 4} />
-                                                <label htmlFor="star4">☆</label>
-                                                <input onChange={e => setRating(e.target.name)} id="star3" name={3} type="radio" value={ratingInp} className="radio-btn hide"
-                                                    checked={+ratingInp === 3} />
-                                                <label htmlFor="star3">☆</label>
-                                                <input onChange={e => setRating(e.target.name)} id="star2" name={2} type="radio" value={ratingInp} className="radio-btn hide"
-                                                    checked={+ratingInp === 2} />
-                                                <label htmlFor="star2">☆</label>
-                                                <input onChange={e => setRating(e.target.name)} id="star1" name={1} type="radio" value={ratingInp} className="radio-btn hide"
-                                                    checked={+ratingInp === 1} />
-                                                <label htmlFor="star1">☆</label>
-                                                <div className="clear"></div>
-                                            </div>
-                                        </div>
-
-
-                                        {/* Text Area */}
-                                        <h3 id='review'>Review</h3>
-                                        <textarea value={commentInp} onChange={e => setComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br />
-
-
-                                        <div className="App">
-                                            <h3 id='cutPadding'>Upload an Itinerary</h3>
-                                            {/* File Input */}
-                                            <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
-                                                setFile(e.target.files[0])
-                                            }} />
-
-
-                                        </div>
-                                    </div>
-
-                                    <input type="submit" />
-
-                                </form>
-                            </>
                         )}
 
-                    </InfoWindow>) : null}
-            </GoogleMap>
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
+                    />
+
+                </GoogleMap>
+            </Responsive>
+
+
+
+
+            <Responsive displayIn={["Tablet"]}>
+                <GoogleMap className='myMap'
+
+                    mapContainerStyle={mapContainerStyle2}
+                    zoom={1}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                    />
+
+                </GoogleMap>
+            </Responsive>
+
+
+            <Responsive displayIn={["Mobile"]}>
+                <GoogleMap className='myMap'
+
+                    mapContainerStyle={mapContainerStyle3}
+                    zoom={1}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                    />
+
+                </GoogleMap>
+            </Responsive>
+
 
         </div >
     )

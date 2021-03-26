@@ -26,11 +26,13 @@ function Settings(props) {
             .catch(err => console.log(err))
     }
 
+    console.log(props)
     return (
         <div className='settings'>
-            <div id='innerDiv'>
 
-                <h4 id='colorHeader'>Color</h4>
+            <div id='innerDiv'>
+                <h3 id='colorHeader'>{props.user.first_name} {props.user.last_name}</h3>
+                <h4 id='colorHeader'>Map</h4>
                 <p >Choose one of the following color themes:</p>
 
                 <button onClick={e => {
@@ -45,6 +47,9 @@ function Settings(props) {
                 <button onClick={e => {
                     handleColorChange(e.target.innerText)
                 }}>Silver</button>
+                <button onClick={e => {
+                    handleColorChange(e.target.innerText)
+                }}>Sunset</button>
                 {toggleColor ? <div>Color Successfully Changed to {toggleColor}</div> : null}
 
             </div>
