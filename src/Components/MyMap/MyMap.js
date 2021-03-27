@@ -15,8 +15,6 @@ import { silver } from "./ColorThemes/silver"
 import { noLabels } from './ColorThemes/noLabels'
 import { sunset } from './ColorThemes/sunset'
 import "./MyMap.css"
-import { getDeviceTypeInfo } from '../Responsive/utilResponsive'
-// import Responsive from '../Responsive/Responsive'
 import InfoWindowComp from '../InfoWindowComp/InfoWindowComp'
 
 const aws = require('aws-sdk')
@@ -73,8 +71,28 @@ const center = {
 }
 
 
+//get device type and orientation (portrait vs landscape)
+let device;
+let orientation;
 function getWindowDimensions() {
     const { innerWidth: width, innerHeight: height } = window;
+    if (width > height) {
+        orientation = 'landscape'
+    } else if (height > width) {
+        orientation = 'potrait'
+    }
+
+    if (width >= 1200) {
+        device = 'laptop'
+    } else if (width >= 815 && width < 1200) {
+        device = 'tablet'
+    } else if (width > 700 && width < 815) {
+        device = 'largeMobile'
+    } else if (width > 0 && width <= 700) {
+        device = 'smallMobile'
+    }
+    console.log("device:", device)
+    console.log("orientation:", orientation)
     return {
         width,
         height
@@ -87,6 +105,7 @@ function useWindowDimensions() {
     useEffect(() => {
         function handleResize() {
             setWindowDimensions(getWindowDimensions());
+
         }
 
         window.addEventListener('resize', handleResize);
@@ -96,7 +115,7 @@ function useWindowDimensions() {
     return windowDimensions;
 }
 
-
+//
 
 function MyMap(props) {
     const [libraries] = useState(['places']);
@@ -131,8 +150,8 @@ function MyMap(props) {
     const [file, setFile] = useState({ name: '' })
     const [fileView, setFileView] = useState(false)
 
+    //Device height/width
     const { height, width } = useWindowDimensions();
-    console.log(height, width)
 
     const setUserColor = () => {
         if (props.user.theme === 'Dark') {
@@ -179,11 +198,6 @@ function MyMap(props) {
                 }
             })
     }, [])
-
-    useEffect(() => {
-        getDeviceTypeInfo()
-        // useWindowDimensions()
-    }, [props])
 
     let options = {
         styles: colors,
@@ -430,78 +444,159 @@ function MyMap(props) {
 
     return (
         <div id='map-background'>
-            <GoogleMap className='myMapLaptop'
-                mapContainerStyle={mapContainerStyle}
-                zoom={2.15}
-                center={center}
-                options={options}
-                onLoad={onMapLoad} >
 
-                {showView
-                    ? (
-                        <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
-                    )
-                    : (
-                        < div className='search-container'>
-                            <SearchMap addmarker={addmarker} />
-                            <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
-                        </div>
+            {/* CONDITIONAL RENDERING FOR LAPTOP */}
+            {device === 'laptop' ? (
+                <GoogleMap className='myMapLaptop'
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
 
-                    )}
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
 
-                {markers.map((marker, i) => (
-                    < Marker
-                        key={i}
-                        title='Click to add trip info'
-                        position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
-                        // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
-                        onClick={() => {
-                            setSelected(marker);
-                            changeView(true)
-                        }}
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
                     />
-                ))}
 
-                <div className="count">
-                    <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
-                    <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
-                </div>
+                </GoogleMap>
+            ) : null}
+
+            {/* CONDITIONAL RENDERING FOR TABLET IN LANDSCAPE */}
+            {device === 'tablet' && orientation === 'landscape' ? (
+                <GoogleMap className='myMapLaptop'
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
 
 
-                <InfoWindowComp
-                    selected={selected}
-                    handleClose={handleClose}
-                    handleDelete={handleDelete}
-                    toggleTripEdit={toggleTripEdit}
-                    handleEdit={handleEdit}
-                    newStartDate={newStartDate}
-                    setNewStart={setNewStart}
-                    newEndDate={newEndDate}
-                    setNewEnd={setNewEnd}
-                    newRating={newRating}
-                    setNewRating={setNewRating}
-                    newComment={newComment}
-                    setNewComment={setNewComment}
-                    toggleFileView={toggleFileView}
-                    setNewFile={setNewFile}
-                    handleTripEditSubmit={handleTripEditSubmit}
-                    handleSubmit={handleSubmit}
-                    dateView={dateView}
-                    toggleDateView={toggleDateView}
-                    startDate={startDate}
-                    setStart={setStart}
-                    endDate={endDate}
-                    setEnd={setEnd}
-                    setRating={setRating}
-                    ratingInp={ratingInp}
-                    setComment={setComment}
-                    commentInp={commentInp}
-                    setFile={setFile}
-                    fileView={fileView}
-                    newFile={newFile}
-                />
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
+                    />
 
-            </GoogleMap>
+                </GoogleMap>
+            ) : null}
+
 
 
         </div >

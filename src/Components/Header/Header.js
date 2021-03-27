@@ -15,7 +15,6 @@ function Header(props) {
                     {props.location.pathname !== '/'
                         ? (
                             <nav >
-                                <Link to='/windowdimensions' className='nav-links'>Dimensions</Link>
                                 <Link to='/myMap' className='nav-links'>Map</Link>
                                 <Link to='settings' className='nav-links'><span id="settings" role="img" aria-label="settingsLbl" title='Settings'>
                                     ⚙️
@@ -34,7 +33,6 @@ function Header(props) {
                         {props.location.pathname !== '/'
                             ? (
                                 <nav >
-                                    <Link to='/windowdimensions' className='nav-links'>Dimensions</Link>
                                     <Link to='/myMap' className='nav-links'>Map</Link>
                                     <Link to='settings' className='nav-links'><span id="settings" role="img" aria-label="settingsLbl" title='Settings'>
                                         ⚙️
