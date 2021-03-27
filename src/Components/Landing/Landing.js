@@ -130,3 +130,42 @@ export class Landing extends Component {
 }
 
 export default connect(null, { getUser, getMarkers, getCount })(Landing)
+
+
+
+// const DetectDevice = () => {
+//     const { height, width } = useWindowDimensions();
+//     let device;
+//     let orientation;
+
+//     if (width > height) {
+//         orientation = 'landscape'
+//     } else if (height > width) {
+//         orientation = 'potrait'
+
+//     }
+//     getOrientation(orientation)
+
+//     if (width > 1200) {
+//         device = 'laptop'
+//     } else if (width >= 815 && width < 1200) {
+//         device = 'tablet'
+//     } else if (width > 700 && width < 815) {
+//         device = 'largeMobile'
+//     } else if (width > 0 && width <= 815) {
+//         device = 'smallMobile'
+//     }
+//     getType(device)
+
+//     return (
+//         // <div className='teststyles'>
+//         //     width: {width} ~ height: {height}
+//         // </div>
+//         <>
+
+//         </>
+//     );
+// };
+
+// const rootElement = document.getElementById("root");
+// ReactDOM.render(<DetectDevice />, rootElement);

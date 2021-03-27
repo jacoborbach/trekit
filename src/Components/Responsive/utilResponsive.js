@@ -111,7 +111,7 @@ export const getDeviceTypeInfo = () => {
             buildDeviceDetails.deviceTypeVariant = 'MobileLarge'
             buildDeviceDetails.isFallback = true
         }
-        console.log(buildDeviceDetails)
+        // console.log(buildDeviceDetails)
         return buildDeviceDetails
     } else {
         // Orientation is portrait
@@ -174,4 +174,3 @@ const handleExceptions = (buildDeviceDetails, width, height) => {
 
     return undefined
 }
-

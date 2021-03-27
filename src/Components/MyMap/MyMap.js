@@ -5,8 +5,7 @@ import { v4 as randomString } from 'uuid'
 import {
     GoogleMap,
     useLoadScript,
-    Marker,
-    InfoWindow
+    Marker
 }
     from "@react-google-maps/api";
 import SearchMap from '../SearchMap/SearchMap'
@@ -17,8 +16,8 @@ import { noLabels } from './ColorThemes/noLabels'
 import { sunset } from './ColorThemes/sunset'
 import "./MyMap.css"
 import { getDeviceTypeInfo } from '../Responsive/utilResponsive'
-import Responsive from '../Responsive/Responsive'
-import InfoWindowComp from '../InfoWindowComp'
+// import Responsive from '../Responsive/Responsive'
+import InfoWindowComp from '../InfoWindowComp/InfoWindowComp'
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
@@ -28,6 +27,7 @@ const s3 = new aws.S3({
 
 const { REACT_APP_S3_BUCKET: S3_BUCKET } = process.env;
 
+//laptop
 const mapContainerStyle = {
     width: "88vw",
     height: "74vh",
@@ -35,7 +35,7 @@ const mapContainerStyle = {
     top: "3vh"
 }
 
-//tablet
+//tablet landscape
 const mapContainerStyle2 = {
     width: "90vw",
     height: "80vh",
@@ -43,10 +43,26 @@ const mapContainerStyle2 = {
     top: "2vh"
 }
 
-//mobile
+//tablet portrait
 const mapContainerStyle3 = {
     width: "90vw",
     height: "80vh",
+    left: "2vw",
+    top: "2vh"
+}
+
+//mobile landscape
+const mapContainerStyle4 = {
+    width: "96vw",
+    height: "82vh",
+    left: "2vw",
+    top: "2vh"
+}
+
+//mobile portrait
+const mapContainerStyle5 = {
+    width: "96vw",
+    height: "82vh",
     left: "2vw",
     top: "2vh"
 }
@@ -55,6 +71,32 @@ const center = {
     lat: 34.373112,
     lng: 6.252371
 }
+
+
+function getWindowDimensions() {
+    const { innerWidth: width, innerHeight: height } = window;
+    return {
+        width,
+        height
+    };
+}
+
+function useWindowDimensions() {
+    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+    useEffect(() => {
+        function handleResize() {
+            setWindowDimensions(getWindowDimensions());
+        }
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, []);
+
+    return windowDimensions;
+}
+
+
 
 function MyMap(props) {
     const [libraries] = useState(['places']);
@@ -88,6 +130,9 @@ function MyMap(props) {
     //Aws
     const [file, setFile] = useState({ name: '' })
     const [fileView, setFileView] = useState(false)
+
+    const { height, width } = useWindowDimensions();
+    console.log(height, width)
 
     const setUserColor = () => {
         if (props.user.theme === 'Dark') {
@@ -137,6 +182,7 @@ function MyMap(props) {
 
     useEffect(() => {
         getDeviceTypeInfo()
+        // useWindowDimensions()
     }, [props])
 
     let options = {
@@ -155,11 +201,6 @@ function MyMap(props) {
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps"
 
-    const toggle = () => {
-        changeView(!showView)
-        setSelected(null)
-    }
-
     // Add Markers
     const addmarker = (coordinates) => {
         if (props.user.id) {
@@ -175,6 +216,11 @@ function MyMap(props) {
                 })
                 .catch(err => console.log(err))
         }
+    }
+
+    const toggle = () => {
+        changeView(!showView)
+        setSelected(null)
     }
 
     const toggleDateView = () => {
@@ -210,7 +256,6 @@ function MyMap(props) {
             setFile({})
         }
     }
-
 
     const handleClose = () => {
         startDate || endDate || ratingInp || commentInp || file.name ? confirmClose() : setSelected(null)
@@ -253,6 +298,7 @@ function MyMap(props) {
             })
             .catch(err => console.log(err))
     }
+
     // Submit Trip Info
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -278,6 +324,7 @@ function MyMap(props) {
             .catch(err => console.log(err))
     }
 
+    //AWS
     const getSignedRequest = (file) => {
         const fileName = `${randomString()}-${file.name.replace(/\s/g, '-')}`
 
@@ -383,234 +430,78 @@ function MyMap(props) {
 
     return (
         <div id='map-background'>
+            <GoogleMap className='myMapLaptop'
+                mapContainerStyle={mapContainerStyle}
+                zoom={2.15}
+                center={center}
+                options={options}
+                onLoad={onMapLoad} >
 
-            <Responsive displayIn={["Laptop"]}>
-                <GoogleMap className='myMap'
+                {showView
+                    ? (
+                        <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                    )
+                    : (
+                        < div className='search-container'>
+                            <SearchMap addmarker={addmarker} />
+                            <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                        </div>
 
-                    mapContainerStyle={mapContainerStyle}
-                    zoom={2.15}
-                    center={center}
-                    options={options}
-                    onLoad={onMapLoad} >
+                    )}
 
-                    {showView
-                        ? (
-                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
-                        )
-                        : (
-                            < div className='search-container'>
-                                <SearchMap addmarker={addmarker} />
-                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
-                            </div>
-
-                        )}
-
-                    {markers.map((marker, i) => (
-                        < Marker
-                            key={i}
-                            title='Click to add trip info'
-                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
-                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
-                            onClick={() => {
-                                setSelected(marker);
-                                changeView(true)
-                            }}
-                        />
-                    ))}
-
-                    <div className="count">
-                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
-                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
-                    </div>
-
-
-                    <InfoWindowComp
-                        selected={selected}
-                        handleClose={handleClose}
-                        handleDelete={handleDelete}
-                        toggleTripEdit={toggleTripEdit}
-                        handleEdit={handleEdit}
-                        newStartDate={newStartDate}
-                        setNewStart={setNewStart}
-                        newEndDate={newEndDate}
-                        setNewEnd={setNewEnd}
-                        newRating={newRating}
-                        setNewRating={setNewRating}
-                        newComment={newComment}
-                        setNewComment={setNewComment}
-                        toggleFileView={toggleFileView}
-                        setNewFile={setNewFile}
-                        handleTripEditSubmit={handleTripEditSubmit}
-                        handleSubmit={handleSubmit}
-                        dateView={dateView}
-                        toggleDateView={toggleDateView}
-                        startDate={startDate}
-                        setStart={setStart}
-                        endDate={endDate}
-                        setEnd={setEnd}
-                        setRating={setRating}
-                        ratingInp={ratingInp}
-                        setComment={setComment}
-                        commentInp={commentInp}
-                        setFile={setFile}
-                        fileView={fileView}
-                        newFile={newFile}
+                {markers.map((marker, i) => (
+                    < Marker
+                        key={i}
+                        title='Click to add trip info'
+                        position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                        // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                        onClick={() => {
+                            setSelected(marker);
+                            changeView(true)
+                        }}
                     />
+                ))}
 
-                </GoogleMap>
-            </Responsive>
-
-
-
-
-            <Responsive displayIn={["Tablet"]}>
-                <GoogleMap className='myMap'
-
-                    mapContainerStyle={mapContainerStyle2}
-                    zoom={1}
-                    center={center}
-                    options={options}
-                    onLoad={onMapLoad} >
-
-                    {showView
-                        ? (
-                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
-                        )
-                        : (
-                            < div className='search-container'>
-                                <SearchMap addmarker={addmarker} />
-                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
-                            </div>
-
-                        )}
-
-                    {markers.map((marker, i) => (
-                        < Marker
-                            key={i}
-                            title='Click to add trip info'
-                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
-                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
-                            onClick={() => {
-                                setSelected(marker);
-                                changeView(true)
-                            }}
-                        />
-                    ))}
-
-                    <div className="count">
-                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
-                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
-                    </div>
-
-                    <InfoWindowComp
-                        selected={selected}
-                        handleClose={handleClose}
-                        handleDelete={handleDelete}
-                        toggleTripEdit={toggleTripEdit}
-                        handleEdit={handleEdit}
-                        newStartDate={newStartDate}
-                        setNewStart={setNewStart}
-                        newEndDate={newEndDate}
-                        setNewEnd={setNewEnd}
-                        newRating={newRating}
-                        setNewRating={setNewRating}
-                        newComment={newComment}
-                        setNewComment={setNewComment}
-                        toggleFileView={toggleFileView}
-                        setNewFile={setNewFile}
-                        handleTripEditSubmit={handleTripEditSubmit}
-                        handleSubmit={handleSubmit}
-                        dateView={dateView}
-                        toggleDateView={toggleDateView}
-                        startDate={startDate}
-                        setStart={setStart}
-                        endDate={endDate}
-                        setEnd={setEnd}
-                        setRating={setRating}
-                        ratingInp={ratingInp}
-                        setComment={setComment}
-                        commentInp={commentInp}
-                        setFile={setFile}
-                        fileView={fileView}
-                    />
-
-                </GoogleMap>
-            </Responsive>
+                <div className="count">
+                    <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                    <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                </div>
 
 
-            <Responsive displayIn={["Mobile"]}>
-                <GoogleMap className='myMap'
+                <InfoWindowComp
+                    selected={selected}
+                    handleClose={handleClose}
+                    handleDelete={handleDelete}
+                    toggleTripEdit={toggleTripEdit}
+                    handleEdit={handleEdit}
+                    newStartDate={newStartDate}
+                    setNewStart={setNewStart}
+                    newEndDate={newEndDate}
+                    setNewEnd={setNewEnd}
+                    newRating={newRating}
+                    setNewRating={setNewRating}
+                    newComment={newComment}
+                    setNewComment={setNewComment}
+                    toggleFileView={toggleFileView}
+                    setNewFile={setNewFile}
+                    handleTripEditSubmit={handleTripEditSubmit}
+                    handleSubmit={handleSubmit}
+                    dateView={dateView}
+                    toggleDateView={toggleDateView}
+                    startDate={startDate}
+                    setStart={setStart}
+                    endDate={endDate}
+                    setEnd={setEnd}
+                    setRating={setRating}
+                    ratingInp={ratingInp}
+                    setComment={setComment}
+                    commentInp={commentInp}
+                    setFile={setFile}
+                    fileView={fileView}
+                    newFile={newFile}
+                />
 
-                    mapContainerStyle={mapContainerStyle3}
-                    zoom={1}
-                    center={center}
-                    options={options}
-                    onLoad={onMapLoad} >
-
-                    {showView
-                        ? (
-                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
-                        )
-                        : (
-                            < div className='search-container'>
-                                <SearchMap addmarker={addmarker} />
-                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
-                            </div>
-
-                        )}
-
-                    {markers.map((marker, i) => (
-                        < Marker
-                            key={i}
-                            title='Click to add trip info'
-                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
-                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
-                            onClick={() => {
-                                setSelected(marker);
-                                changeView(true)
-                            }}
-                        />
-                    ))}
-
-                    <div className="count">
-                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
-                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
-                    </div>
-
-                    <InfoWindowComp
-                        selected={selected}
-                        handleClose={handleClose}
-                        handleDelete={handleDelete}
-                        toggleTripEdit={toggleTripEdit}
-                        handleEdit={handleEdit}
-                        newStartDate={newStartDate}
-                        setNewStart={setNewStart}
-                        newEndDate={newEndDate}
-                        setNewEnd={setNewEnd}
-                        newRating={newRating}
-                        setNewRating={setNewRating}
-                        newComment={newComment}
-                        setNewComment={setNewComment}
-                        toggleFileView={toggleFileView}
-                        setNewFile={setNewFile}
-                        handleTripEditSubmit={handleTripEditSubmit}
-                        handleSubmit={handleSubmit}
-                        dateView={dateView}
-                        toggleDateView={toggleDateView}
-                        startDate={startDate}
-                        setStart={setStart}
-                        endDate={endDate}
-                        setEnd={setEnd}
-                        setRating={setRating}
-                        ratingInp={ratingInp}
-                        setComment={setComment}
-                        commentInp={commentInp}
-                        setFile={setFile}
-                        fileView={fileView}
-                    />
-
-                </GoogleMap>
-            </Responsive>
+            </GoogleMap>
 
 
         </div >
@@ -620,7 +511,9 @@ function MyMap(props) {
 const mapStateToProps = reduxState => ({
     user: reduxState.userReducer.user,
     markers: reduxState.userReducer.markers,
-    count: reduxState.userReducer.count
+    count: reduxState.userReducer.count,
+    orientation: reduxState.dimensionReducer.orientation,
+    deviceType: reduxState.dimensionReducer.deviceType
 })
 
 export default connect(mapStateToProps)(MyMap)

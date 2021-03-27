@@ -4,7 +4,7 @@ import { InfoWindow } from "@react-google-maps/api";
 
 
 export default function InfoWindowComp(props) {
-    const { selected, handleClose, handleDelete, toggleTripEdit, handleEdit, newStartDate, setNewStart, newEndDate, setNewEnd, newRating, setNewRating, newComment, setNewComment, toggleFileView, setNewFile, handleTripEditSubmit, handleSubmit, dateView, toggleDateView, startDate, setStart, endDate, setEnd, setRating, ratingInp, commentInp, setComment, setFile, fileView, newFile } = props;
+    const { selected, handleClose, handleDelete, toggleTripEdit, handleEdit, newStartDate, setNewStart, newEndDate, setNewEnd, newRating, setNewRating, newComment, setNewComment, toggleFileView, setNewFile, handleTripEditSubmit, handleSubmit, dateView, toggleDateView, startDate, setStart, endDate, setEnd, setRating, ratingInp, commentInp, setComment, setFile, fileView } = props;
 
     return (
         <div>

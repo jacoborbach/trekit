@@ -46,7 +46,7 @@
     justify-content: space-around;
 }
 
-@media only screen and (max-width: 812px) and (orientation: landscape) {
+@media only screen and (max-width: 812px) and (orientation: portrait) {
     .header-container2 {
         height: 40px;
     }
