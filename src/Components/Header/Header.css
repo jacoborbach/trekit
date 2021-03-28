@@ -63,7 +63,7 @@
   /* mobile small landscape */
   @media only screen and (max-width: 670px) and (orientation: landscape) {
     .header-container2 {
-        height: 15px;
+        display: none;
     }
     h1, h2 {
         font-size: 1em;
@@ -72,11 +72,15 @@
         margin: 0px
     }
     .nav-links {
-        font-size: 14px
+        font-size: 14px;
+        display: none;
     }
     .AddBtn {
-        top: 30px!important;
+        top: 90px!important;
         width: 54px!important;
+    }
+    #settings {
+        display: none;
     }
   }
 

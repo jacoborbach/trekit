@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios'
 import { connect } from 'react-redux'
 import { v4 as randomString } from 'uuid'
@@ -16,6 +16,12 @@ import { noLabels } from './ColorThemes/noLabels'
 import { sunset } from './ColorThemes/sunset'
 import "./MyMap.css"
 import InfoWindowComp from '../InfoWindowComp/InfoWindowComp'
+import { ThemeProvider } from 'styled-components';
+import { useOnClickOutside } from '../../hooks';
+import { GlobalStyles } from '../../global';
+import { theme } from '../../theme';
+import { Burger, Menu } from '../../Components';
+import FocusLock from 'react-focus-lock';
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
@@ -44,7 +50,7 @@ const mapContainerStyle2 = {
 //smallmobile landscape
 const mapContainerStyle3 = {
     width: "100vw",
-    height: "95vh",
+    height: "100vh",
     left: "0vw",
     top: "0vh"
 }
@@ -101,6 +107,13 @@ function useWindowDimensions() {
 //
 
 function MyMap(props) {
+    const [open, setOpen] = useState(false);
+    const node = useRef();
+    const menuId = "main-menu";
+
+    useOnClickOutside(node, () => setOpen(false));
+
+
     const [libraries] = useState(['places']);
 
     const { isLoaded, loadError } = useLoadScript({
@@ -892,6 +905,24 @@ function MyMap(props) {
             {/* CONDITIONAL RENDERING FOR small-mobile IN landscape */}
             {device === 'smallMobile' && orientation === 'landscape' ? (
                 <>
+                    <ThemeProvider theme={theme}>
+                        <>
+                            <GlobalStyles />
+                            <div ref={node}>
+                                <FocusLock disabled={!open}>
+                                    <Burger open={open} setOpen={setOpen} aria-controls={menuId} />
+                                    <Menu open={open} setOpen={setOpen} id={menuId} />
+                                </FocusLock>
+                            </div>
+                            {/* <div>
+                        <h1>Hello. This is burger menu tutorial</h1>
+                        <img src="https://image.flaticon.com/icons/svg/2016/2016012.svg" alt="burger icon" />
+                        <small>Icon made by <a href="https://www.freepik.com/home">Freepik</a> from <a href="https://www.flaticon.com">www.flaticon.com</a></small>
+                    </div> */}
+
+                        </>
+                    </ThemeProvider>
+
                     <GoogleMap className='myMapLaptop'
                         mapContainerStyle={mapContainerStyle3}
                         zoom={1}
