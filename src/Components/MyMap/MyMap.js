@@ -79,7 +79,7 @@ function getWindowDimensions() {
     if (width > height) {
         orientation = 'landscape'
     } else if (height > width) {
-        orientation = 'potrait'
+        orientation = 'portrait'
     }
 
     if (width >= 1200) {
@@ -523,6 +523,386 @@ function MyMap(props) {
 
             {/* CONDITIONAL RENDERING FOR TABLET IN LANDSCAPE */}
             {device === 'tablet' && orientation === 'landscape' ? (
+                <GoogleMap className='myMapLaptop'
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
+                    />
+
+                </GoogleMap>
+            ) : null}
+
+            {/* CONDITIONAL RENDERING FOR TABLET IN portrait */}
+            {device === 'tablet' && orientation === 'portrait' ? (
+                <GoogleMap className='myMapLaptop'
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
+                    />
+
+                </GoogleMap>
+            ) : null}
+
+            {/* CONDITIONAL RENDERING FOR large-mobile IN LANDSCAPE */}
+            {device === 'largeMobile' && orientation === 'landscape' ? (
+                <GoogleMap className='myMapLaptop'
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
+                    />
+
+                </GoogleMap>
+            ) : null}
+
+            {/* CONDITIONAL RENDERING FOR large-mobile IN portrait */}
+            {device === 'largeMobile' && orientation === 'portrait' ? (
+                <GoogleMap className='myMapLaptop'
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
+                    />
+
+                </GoogleMap>
+            ) : null}
+
+            {/* CONDITIONAL RENDERING FOR small-mobile IN portrait */}
+            {device === 'smallMobile' && orientation === 'portrait' ? (
+                <GoogleMap className='myMapLaptop'
+                    mapContainerStyle={mapContainerStyle}
+                    zoom={2.15}
+                    center={center}
+                    options={options}
+                    onLoad={onMapLoad} >
+
+                    {showView
+                        ? (
+                            <h2 className='AddBtn' onClick={toggle} title='Click to add trips'>Add +</h2>
+                        )
+                        : (
+                            < div className='search-container'>
+                                <SearchMap addmarker={addmarker} />
+                                <h2 title="Click to close search" className='MinusBtn' onClick={toggle}>-</h2>
+                            </div>
+
+                        )}
+
+                    {markers.map((marker, i) => (
+                        < Marker
+                            key={i}
+                            title='Click to add trip info'
+                            position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
+                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            onClick={() => {
+                                setSelected(marker);
+                                changeView(true)
+                            }}
+                        />
+                    ))}
+
+                    <div className="count">
+                        <h2 id='countDisplay'>Cities <br /><span className='countDisplay'>{cityCount}</span></h2>
+                        <h2 id='countDisplay'>Countries <br /><span className='countDisplay'>{countryCount}</span></h2>
+                    </div>
+
+
+                    <InfoWindowComp
+                        selected={selected}
+                        handleClose={handleClose}
+                        handleDelete={handleDelete}
+                        toggleTripEdit={toggleTripEdit}
+                        handleEdit={handleEdit}
+                        newStartDate={newStartDate}
+                        setNewStart={setNewStart}
+                        newEndDate={newEndDate}
+                        setNewEnd={setNewEnd}
+                        newRating={newRating}
+                        setNewRating={setNewRating}
+                        newComment={newComment}
+                        setNewComment={setNewComment}
+                        toggleFileView={toggleFileView}
+                        setNewFile={setNewFile}
+                        handleTripEditSubmit={handleTripEditSubmit}
+                        handleSubmit={handleSubmit}
+                        dateView={dateView}
+                        toggleDateView={toggleDateView}
+                        startDate={startDate}
+                        setStart={setStart}
+                        endDate={endDate}
+                        setEnd={setEnd}
+                        setRating={setRating}
+                        ratingInp={ratingInp}
+                        setComment={setComment}
+                        commentInp={commentInp}
+                        setFile={setFile}
+                        fileView={fileView}
+                        newFile={newFile}
+                    />
+
+                </GoogleMap>
+            ) : null}
+
+            {/* CONDITIONAL RENDERING FOR small-mobile IN landscape */}
+            {device === 'smallMobile' && orientation === 'landscape' ? (
                 <GoogleMap className='myMapLaptop'
                     mapContainerStyle={mapContainerStyle}
                     zoom={2.15}
