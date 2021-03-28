@@ -49,11 +49,52 @@
 @media only screen and (max-width: 812px) and (orientation: portrait) {
     .header-container2 {
         height: 40px;
+        position: absolute;
+        bottom: 0px;
     }
     h1 {
         font-size: 1em;
     }
     #countDisplay {
         margin: 0px
+    }
+  }
+
+  /* mobile small landscape */
+  @media only screen and (max-width: 670px) and (orientation: landscape) {
+    .header-container2 {
+        height: 15px;
+    }
+    h1, h2 {
+        font-size: 1em;
+    }
+    #countDisplay {
+        margin: 0px
+    }
+    .nav-links {
+        font-size: 14px
+    }
+    .AddBtn {
+        top: 30px!important;
+        width: 54px!important;
+    }
+  }
+
+/* mobile large landscape */
+@media only screen and (min-width: 671px) and (max-width: 870px) and (orientation: landscape) {
+    .header-container2 {
+        height: 55px;
+    }
+    h1, h2 {
+        font-size: 1.5em;
+    }
+    #countDisplay {
+        margin: 0px
+    }
+    .nav-links {
+        font-size: 20px
+    }
+    .AddBtn {
+        top: 0px!important
     }
   }
