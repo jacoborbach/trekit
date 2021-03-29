@@ -1,5 +1,6 @@
 import { bool } from 'prop-types';
 import { StyledMenu } from './Menu.styled';
+import { Link } from 'react-router-dom'
 
 const Menu = ({ open, ...props }) => {
 
@@ -8,18 +9,8 @@ const Menu = ({ open, ...props }) => {
 
     return (
         <StyledMenu open={open} aria-hidden={!isHidden} {...props}>
-            <a href="/" tabIndex={tabIndex}>
-                <span aria-hidden="true">💁🏻‍♂️</span>
-        Map
-      </a>
-            <a href="/" tabIndex={tabIndex}>
-                <span aria-hidden="true">💸</span>
-        Settings
-        </a>
-            {/* <a href="/" tabIndex={tabIndex}>
-                <span aria-hidden="true">📩</span>
-        Contact
-        </a> */}
+            <Link to='/myMap'>Map</Link>
+            <Link to='/settings'>Settings </Link>
         </StyledMenu>
     )
 }

@@ -23,6 +23,8 @@ import { theme } from '../../theme';
 import { Burger, Menu } from '../../Components';
 import FocusLock from 'react-focus-lock';
 
+import { getType, getOrientation } from '../../dux/dimensionReducer'
+
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
     accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
@@ -61,51 +63,6 @@ const center = {
 }
 
 
-//get device type and orientation (portrait vs landscape)
-let device;
-let orientation;
-function getWindowDimensions() {
-    const { innerWidth: width, innerHeight: height } = window;
-    if (width > height) {
-        orientation = 'landscape'
-    } else if (height > width) {
-        orientation = 'portrait'
-    }
-
-    if (width >= 1200) {
-        device = 'laptop'
-    } else if (width >= 815 && width < 1200) {
-        device = 'tablet'
-    } else if (width > 700 && width < 815) {
-        device = 'largeMobile'
-    } else if (width > 0 && width <= 700) {
-        device = 'smallMobile'
-    }
-    console.log("device:", device)
-    console.log("orientation:", orientation)
-    return {
-        width,
-        height
-    };
-}
-
-function useWindowDimensions() {
-    const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-
-    useEffect(() => {
-        function handleResize() {
-            setWindowDimensions(getWindowDimensions());
-
-        }
-
-        window.addEventListener('resize', handleResize);
-        return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    return windowDimensions;
-}
-//
-
 function MyMap(props) {
     const [open, setOpen] = useState(false);
     const node = useRef();
@@ -120,6 +77,64 @@ function MyMap(props) {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     });
+
+
+    //get device type and orientation (portrait vs landscape)
+    let device;
+    let orientation;
+    function getWindowDimensions() {
+        const { innerWidth: width, innerHeight: height } = window;
+        if (width > height) {
+            orientation = 'landscape'
+            props.getOrientation(orientation)
+        } else if (height > width) {
+            orientation = 'portrait'
+            props.getOrientation(orientation)
+        }
+
+        if (width >= 1200) {
+            device = 'laptop'
+            props.getType(device)
+        } else if (width >= 815 && width < 1200) {
+            device = 'tablet'
+            props.getType(device)
+        } else if (width > 700 && width < 815) {
+            device = 'largeMobile'
+            props.getType(device)
+        } else if (width > 0 && width <= 700) {
+            device = 'smallMobile'
+            props.getType(device)
+        }
+
+        // console.log("device:", device)
+        // console.log("orientation:", orientation)
+        return {
+            width,
+            height
+        };
+    }
+
+    function useWindowDimensions() {
+        const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+
+        useEffect(() => {
+            function handleResize() {
+                setWindowDimensions(getWindowDimensions());
+
+            }
+
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+        }, []);
+
+        return windowDimensions;
+    }
+    //
+
+
+
+
+
 
     //trips
     const [markers, setMarkers] = useState([]);
@@ -914,12 +929,6 @@ function MyMap(props) {
                                     <Menu open={open} setOpen={setOpen} id={menuId} />
                                 </FocusLock>
                             </div>
-                            {/* <div>
-                        <h1>Hello. This is burger menu tutorial</h1>
-                        <img src="https://image.flaticon.com/icons/svg/2016/2016012.svg" alt="burger icon" />
-                        <small>Icon made by <a href="https://www.freepik.com/home">Freepik</a> from <a href="https://www.flaticon.com">www.flaticon.com</a></small>
-                    </div> */}
-
                         </>
                     </ThemeProvider>
 
@@ -1010,4 +1019,4 @@ const mapStateToProps = reduxState => ({
     count: reduxState.userReducer.count
 })
 
-export default connect(mapStateToProps)(MyMap)
+export default connect(mapStateToProps, { getType, getOrientation })(MyMap)

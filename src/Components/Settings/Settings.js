@@ -1,11 +1,28 @@
 import axios from 'axios';
-import React from 'react'
+import React, { useState, useRef } from 'react'
 import { connect } from 'react-redux'
 import { clearUser, getUser } from '../../dux/reducer'
 import './Settings.css'
 
+import { ThemeProvider } from 'styled-components';
+import { useOnClickOutside } from '../../hooks';
+import { GlobalStyles } from '../../global';
+import { theme } from '../../theme';
+import { Burger, Menu } from '../../Components';
+import FocusLock from 'react-focus-lock';
+
+import useWindowDimensions from '../../useWindowDimensions'
+
+
 
 function Settings(props) {
+    const { height, width } = useWindowDimensions();
+    const [open, setOpen] = useState(false);
+    const node = useRef();
+    const menuId = "main-menu";
+
+    useOnClickOutside(node, () => setOpen(false));
+
     const [toggleColor, changeToggle] = React.useState('')
 
     const handleLogout = () => {
@@ -29,6 +46,20 @@ function Settings(props) {
     console.log(props)
     return (
         <div className='settings'>
+            width: {width} ~ height: {height}
+            {props.device === 'smallMobile' && props.orientation === 'landscape' ? (
+                <ThemeProvider theme={theme}>
+                    <>
+                        <GlobalStyles />
+                        <div ref={node}>
+                            <FocusLock disabled={!open}>
+                                <Burger open={open} setOpen={setOpen} aria-controls={menuId} />
+                                <Menu open={open} setOpen={setOpen} id={menuId} />
+                            </FocusLock>
+                        </div>
+                    </>
+                </ThemeProvider>
+            ) : null}
 
             <div id='innerDiv'>
                 <h3 id='colorHeader'>{props.user.first_name} {props.user.last_name}</h3>
@@ -61,7 +92,9 @@ function Settings(props) {
     )
 }
 const mapStateToProps = reduxState => ({
-    user: reduxState.userReducer.user
+    user: reduxState.userReducer.user,
+    orientation: reduxState.dimensionReducer.orientation,
+    device: reduxState.dimensionReducer.deviceType
 })
 
 export default connect(mapStateToProps, { clearUser, getUser })(Settings)
