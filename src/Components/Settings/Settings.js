@@ -14,9 +14,8 @@ import FocusLock from 'react-focus-lock';
 import useWindowDimensions from '../../useWindowDimensions'
 
 
-
 function Settings(props) {
-    const { height, width } = useWindowDimensions();
+    const { device, orientation } = useWindowDimensions();
     const [open, setOpen] = useState(false);
     const node = useRef();
     const menuId = "main-menu";
@@ -46,8 +45,8 @@ function Settings(props) {
     console.log(props)
     return (
         <div className='settings'>
-            width: {width} ~ height: {height}
-            {props.device === 'smallMobile' && props.orientation === 'landscape' ? (
+            {/* device: {device} ~ orientation: {orientation} */}
+            {device === 'smallMobile' && orientation === 'landscape' ? (
                 <ThemeProvider theme={theme}>
                     <>
                         <GlobalStyles />
@@ -92,9 +91,7 @@ function Settings(props) {
     )
 }
 const mapStateToProps = reduxState => ({
-    user: reduxState.userReducer.user,
-    orientation: reduxState.dimensionReducer.orientation,
-    device: reduxState.dimensionReducer.deviceType
+    user: reduxState.userReducer.user
 })
 
 export default connect(mapStateToProps, { clearUser, getUser })(Settings)

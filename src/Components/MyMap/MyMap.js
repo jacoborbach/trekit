@@ -22,8 +22,9 @@ import { GlobalStyles } from '../../global';
 import { theme } from '../../theme';
 import { Burger, Menu } from '../../Components';
 import FocusLock from 'react-focus-lock';
+import useWindowDimensions from '../../useWindowDimensions'
 
-import { getType, getOrientation } from '../../dux/dimensionReducer'
+
 
 const aws = require('aws-sdk')
 const s3 = new aws.S3({
@@ -64,6 +65,7 @@ const center = {
 
 
 function MyMap(props) {
+
     const [open, setOpen] = useState(false);
     const node = useRef();
     const menuId = "main-menu";
@@ -77,64 +79,6 @@ function MyMap(props) {
         googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
         libraries,
     });
-
-
-    //get device type and orientation (portrait vs landscape)
-    let device;
-    let orientation;
-    function getWindowDimensions() {
-        const { innerWidth: width, innerHeight: height } = window;
-        if (width > height) {
-            orientation = 'landscape'
-            props.getOrientation(orientation)
-        } else if (height > width) {
-            orientation = 'portrait'
-            props.getOrientation(orientation)
-        }
-
-        if (width >= 1200) {
-            device = 'laptop'
-            props.getType(device)
-        } else if (width >= 815 && width < 1200) {
-            device = 'tablet'
-            props.getType(device)
-        } else if (width > 700 && width < 815) {
-            device = 'largeMobile'
-            props.getType(device)
-        } else if (width > 0 && width <= 700) {
-            device = 'smallMobile'
-            props.getType(device)
-        }
-
-        // console.log("device:", device)
-        // console.log("orientation:", orientation)
-        return {
-            width,
-            height
-        };
-    }
-
-    function useWindowDimensions() {
-        const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
-
-        useEffect(() => {
-            function handleResize() {
-                setWindowDimensions(getWindowDimensions());
-
-            }
-
-            window.addEventListener('resize', handleResize);
-            return () => window.removeEventListener('resize', handleResize);
-        }, []);
-
-        return windowDimensions;
-    }
-    //
-
-
-
-
-
 
     //trips
     const [markers, setMarkers] = useState([]);
@@ -161,8 +105,8 @@ function MyMap(props) {
     const [file, setFile] = useState({ name: '' })
     const [fileView, setFileView] = useState(false)
 
-    //Device height/width
-    const { height, width } = useWindowDimensions();
+    //Device type/orientation
+    const { device, orientation } = useWindowDimensions();
 
     const setUserColor = () => {
         if (props.user.theme === 'Dark') {
@@ -1019,4 +963,4 @@ const mapStateToProps = reduxState => ({
     count: reduxState.userReducer.count
 })
 
-export default connect(mapStateToProps, { getType, getOrientation })(MyMap)
+export default connect(mapStateToProps)(MyMap)

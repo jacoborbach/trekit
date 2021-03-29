@@ -1,10 +1,8 @@
 import { createStore, combineReducers } from 'redux'
 import reducer from './reducer'
-import dimensionReducer from './dimensionReducer'
 
 const rootReducer = combineReducers({
-    userReducer: reducer,
-    dimensionReducer
+    userReducer: reducer
 })
 
 export default createStore(rootReducer)
