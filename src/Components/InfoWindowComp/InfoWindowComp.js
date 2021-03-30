@@ -110,27 +110,17 @@ export default function InfoWindowComp(props) {
 
 
                                         <div className="App">
-                                            {selected.file ?
+                                            {!fileView ?
+                                                <p id='cutPadding' onClick={toggleFileView}>Add an Itinerary+</p>
+                                                :
                                                 <>
-                                                    <span>{selected.file}</span> <br />
-                                                    <span>Change File</span>
-                                                    <span>Remove File</span>
-                                                    <span>Add a new File</span>
+                                                    <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
+                                                        setNewFile(e.target.files[0])
+
+                                                    }} />
+                                                    <span onClick={toggleFileView}>Dont Add</span>
                                                 </>
-
-                                                : (
-                                                    !fileView ?
-                                                        <p id='cutPadding' onClick={toggleFileView}>Add an Itinerary+</p>
-                                                        :
-                                                        <>
-                                                            <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
-                                                                setNewFile(e.target.files[0])
-
-                                                            }} />
-                                                            <span onClick={toggleFileView}>Dont Add</span>
-                                                        </>
-                                                )}
-
+                                            }
 
 
 

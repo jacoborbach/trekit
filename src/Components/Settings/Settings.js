@@ -42,11 +42,10 @@ function Settings(props) {
             .catch(err => console.log(err))
     }
 
-    console.log(props)
+    // console.log(props)
     return (
         <div className='settings'>
-            {/* device: {device} ~ orientation: {orientation} */}
-            {device === 'smallMobile' && orientation === 'landscape' ? (
+            {(device === 'smallMobile' || device === 'largeMobile') && orientation === 'landscape' ? (
                 <ThemeProvider theme={theme}>
                     <>
                         <GlobalStyles />

@@ -3,27 +3,28 @@ import { useState, useEffect } from 'react';
 export default function useWindowDimensions() {
 
   const hasWindow = typeof window !== 'undefined';
+  let device;
+  let orientation;
 
   function getWindowDimensions() {
     const width = hasWindow ? window.innerWidth : null;
     const height = hasWindow ? window.innerHeight : null;
-    let device;
-    let orientation;
+
     if (width > height) {
       orientation = 'landscape'
     } else if (height > width) {
       orientation = 'portrait'
     }
-    if (width >= 1200) {
+    if (width >= 1350) {
       device = 'laptop'
-    } else if (width >= 815 && width < 1200) {
+    } else if (width >= 824 && width < 1350) {
       device = 'tablet'
-    } else if (width > 700 && width < 815) {
+    } else if (width > 700 && width < 824) {
       device = 'largeMobile'
     } else if (width > 0 && width <= 700) {
       device = 'smallMobile'
     }
-
+    // console.log(device)
     return {
       orientation,
       device,

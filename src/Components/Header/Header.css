@@ -72,33 +72,51 @@
         margin: 0px
     }
     .nav-links {
-        font-size: 14px;
         display: none;
     }
     .AddBtn {
         top: 90px!important;
-        width: 54px!important;
+        width: 78px!important;
+        right: 40px!important;
+        padding: 2px;
+        opacity: .88
     }
     #settings {
         display: none;
+    }
+    body {
+        color: black!important;
     }
   }
 
 /* mobile large landscape */
 @media only screen and (min-width: 671px) and (max-width: 870px) and (orientation: landscape) {
     .header-container2 {
-        height: 55px;
+        display: none;
     }
     h1, h2 {
-        font-size: 1.5em;
+        font-size: 1.3em;
     }
     #countDisplay {
-        margin: 0px
+        margin: 2px
+    }
+    .nav-links {
+        display: none;
     }
     .nav-links {
         font-size: 20px
     }
     .AddBtn {
-        top: 0px!important
+        top: 90px!important;
+        width: 90px!important;
+        right: 40px!important;
+        padding: 2px;
+        opacity: .88
+    }
+    #settings {
+        display: none;
+    }
+    body {
+        color: black!important;
     }
   }
