@@ -133,7 +133,6 @@ function MyMap(props) {
     // console.log(device, orientation)
     useEffect(() => {
         setUserColor();
-        //initial load should be from session
         axios.get('/api/user')
             .then(res => {
                 //returning users - load data off of session

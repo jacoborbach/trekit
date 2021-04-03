@@ -17,6 +17,13 @@ export class Landing extends Component {
         }
     }
 
+    componentDidMount() {
+        axios.get('/api/user')
+            .then(res => {
+                this.props.history.push('/myMap')
+            })
+    }
+
     handleInput = (e) => {
         this.setState({
             [e.target.name]: e.target.value
