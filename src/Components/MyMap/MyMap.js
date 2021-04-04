@@ -130,6 +130,7 @@ function MyMap(props) {
         }
     }
 
+    console.log(props)
     // console.log(device, orientation)
     useEffect(() => {
         setUserColor();
@@ -137,13 +138,14 @@ function MyMap(props) {
             .then(res => {
                 //returning users - load data off of session
                 if (res.data[1][0]) {
-                    // console.log(res.data)
+                    setUserColor();
                     setCountries(res.data[2][0].countries)
                     setCities(res.data[2][0].cities)
                     setMarkers(res.data[1])
                 }
                 //new users
                 else {
+                    setUserColor();
                     setCountries(props.count[0].countries)
                     setCities(props.count[0].cities)
                     setMarkers(props.markers)

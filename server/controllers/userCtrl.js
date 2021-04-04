@@ -27,9 +27,9 @@ module.exports = {
         const db = req.app.get('db')
 
         const [changed] = await db.users.change_color(color, id)
-        console.log('theme:', changed.theme)
-
+        // console.log(changed)
         req.session.user[0].theme = changed.theme
+        console.log(req.session.user)
 
 
         return res.status(200).send(changed)
