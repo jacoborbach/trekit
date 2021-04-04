@@ -144,7 +144,6 @@ function MyMap(props) {
                 }
                 //new users
                 else {
-                    setUserColor();
                     setCountries(props.count[0].countries)
                     setCities(props.count[0].cities)
                     setMarkers(props.markers)
