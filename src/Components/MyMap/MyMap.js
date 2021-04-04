@@ -138,7 +138,6 @@ function MyMap(props) {
             .then(res => {
                 //returning users - load data off of session
                 if (res.data[1][0]) {
-                    setUserColor();
                     setCountries(res.data[2][0].countries)
                     setCities(res.data[2][0].cities)
                     setMarkers(res.data[1])
