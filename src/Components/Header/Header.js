@@ -25,6 +25,9 @@ function Header(props) {
     }
 
     useEffect(() => {
+        // if (props.location.pathname.includes('friend')) {
+        //     settextVal('')
+        // }
         if (textVal) {
             handleSearch()
         }
@@ -38,11 +41,15 @@ function Header(props) {
 
     let handleClick = (id) => {
         if (props.user.id === id) {
+            settextVal('')
             props.history.push(`/myMap`)
         } else {
+            settextVal('')
             props.history.push(`/friend/${id}`)
         }
     }
+
+    console.log(props)
 
     return (
         <>

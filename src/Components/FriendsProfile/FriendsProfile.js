@@ -96,8 +96,7 @@ export default function FriendsProfile(props) {
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps"
 
-    console.log(searchVal)
-    console.log(selected)
+    console.log(props)
     return (
         <div id='map-background'>
             <h1>{user.first_name} {user.last_name}</h1>
