@@ -9,6 +9,7 @@ const markerCtrl = require('./controllers/markerCtrl')
 const userCtrl = require('./controllers/userCtrl')
 const emailCtrl = require('./controllers/emailCtrl')
 const searchCtrl = require('./controllers/searchCtrl')
+const friendCtrl = require('./controllers/friendCtrl')
 const { CONNECTION_STRING, SESSION_SECRET, SERVER_PORT } = process.env
 const app = express()
 
@@ -102,6 +103,8 @@ app.post('/api/file', markerCtrl.saveFile)
 app.post('/api/email', emailCtrl.email);
 
 app.get('/api/friends/:textVal', searchCtrl.search)
+
+app.get('/api/friend/profile/:id', friendCtrl.renderFriend)
 
 //for hosting
 app.use(express.static(__dirname + '/../build'))

@@ -10,10 +10,14 @@ import {
 } from "@reach/combobox";
 import "@reach/combobox/styles.css";
 import './Header.css'
+import { setISODay } from 'date-fns';
 
 function Header(props) {
     const [textVal, settextVal] = useState('')
     const [searchResults, setsearchResults] = useState([])
+    const [first, setFirst] = useState('')
+    const [last, setLast] = useState('')
+    // const [id, setID] = useState(0)
 
     let handleChange = (e) => {
         settextVal(e.target.value)
@@ -25,10 +29,22 @@ function Header(props) {
         }
     }, [textVal])
 
-    let handleSearch = async () => {
-        await axios.get(`/api/friends/${textVal}`)
+    let handleSearch = () => {
+        axios.get(`/api/friends/${textVal}`)
             .then(res => setsearchResults(res.data))
             .catch(err => console.log(err))
+    }
+
+    let handleClick = (e) => {
+        let splitName = e.nativeEvent.srcElement.parentElement.innerText.split(' ')
+        setFirst(splitName.shift())
+        setLast(splitName.pop())
+        searchResults.map(element => {
+            if (element.first_name === first && element.last_name === last) {
+                props.history.push(`/friend/${element.id}`)
+            }
+        })
+
     }
 
     return (
@@ -41,7 +57,6 @@ function Header(props) {
             ) : (
                 <header className='header-container2'>
                     <Link to='/myMap' className='nav-links' id='logo'><h1>trekit!</h1></Link>
-                    {/* <input type='text' placeholder='Yoo Friends...' value={textVal} onChange={handleChange} /> */}
                     <div>
                         <Combobox>
                             <ComboboxInput
@@ -51,8 +66,8 @@ function Header(props) {
                             />
                             <ComboboxPopover>
                                 <ComboboxList>
-                                    {searchResults.map((person, i) =>
-                                        <ComboboxOption key={i} value={person.first_name} />
+                                    {searchResults.map(person =>
+                                        <ComboboxOption key={person.id} value={person.first_name + ' ' + person.last_name} onClick={handleClick} />
                                     )}
                                 </ComboboxList>
                             </ComboboxPopover>
