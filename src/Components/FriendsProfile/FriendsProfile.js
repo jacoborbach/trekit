@@ -12,8 +12,16 @@ import {
     InfoWindow
 }
     from "@react-google-maps/api";
-
+import {
+    Combobox,
+    ComboboxInput,
+    ComboboxPopover,
+    ComboboxList,
+    ComboboxOption,
+} from "@reach/combobox";
+import "@reach/combobox/styles.css";
 import './FriendsProfile.css'
+
 
 //laptop
 const mapContainerStyle = {
@@ -41,6 +49,7 @@ export default function FriendsProfile(props) {
     const [countryCount, setCountries] = useState(" ")
     const [showView, changeView] = useState(true)
     const [colors, setColors] = useState(null)
+    const [searchVal, setSearchVal] = useState('')
 
     useEffect(() => {
         setId(props.match.params.id)
@@ -87,16 +96,44 @@ export default function FriendsProfile(props) {
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps"
 
-
+    console.log(searchVal)
+    console.log(selected)
     return (
         <div id='map-background'>
             <h1>{user.first_name} {user.last_name}</h1>
+
             <GoogleMap className='myMapLaptop'
                 mapContainerStyle={mapContainerStyle}
                 zoom={2.15}
                 center={center}
                 options={options}
                 onLoad={onMapLoad} >
+
+                <div className='search-container'>
+                    <div className='search'>
+                        <Combobox>
+                            <ComboboxInput
+                                value={searchVal}
+                                onChange={(e) => setSearchVal(e.target.value)}
+                                placeholder="Search for Cities..."
+                            />
+                            <ComboboxPopover>
+                                <ComboboxList>
+                                    {markers
+                                        .filter(element => element.city.toLowerCase().includes(searchVal.toLowerCase()))
+                                        .map(marker =>
+                                            <ComboboxOption key={marker.city} value={marker.city} onClick={() => setSelected(marker)} />
+                                        )
+                                    }
+                                    {/*  */}
+                                </ComboboxList>
+                            </ComboboxPopover>
+                        </Combobox>
+                    </div>
+
+                </div>
+
+
 
                 {markers.map((marker, i) => (
                     < Marker
