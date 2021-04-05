@@ -4,7 +4,8 @@ import { dark } from '../MyMap/ColorThemes/dark'
 import {
     GoogleMap,
     useLoadScript,
-    Marker
+    Marker,
+    InfoWindow
 }
     from "@react-google-maps/api";
 
@@ -22,11 +23,8 @@ const center = {
 }
 
 export default function FriendsProfile(props) {
-    const [libraries] = useState(['places']);
-
     const { isLoaded, loadError } = useLoadScript({
-        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY,
-        libraries,
+        googleMapsApiKey: process.env.REACT_APP_GOOGLE_MAPS_API_KEY
     });
 
     const [id, setId] = useState(0)
@@ -72,6 +70,7 @@ export default function FriendsProfile(props) {
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps"
 
+    console.log(markers)
     return (
         <div id='map-background'>
             <GoogleMap className='myMapLaptop'
@@ -88,7 +87,7 @@ export default function FriendsProfile(props) {
                         position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
                         onClick={() => {
                             setSelected(marker);
-                            changeView(true)
+                            // changeView(true)
                         }}
                     />
                 ))}
@@ -99,11 +98,55 @@ export default function FriendsProfile(props) {
                 </div>
 
 
-                {/* <InfoWindowComp
-                            selected={selected}
-                        /> */}
+                {selected ?
+                    <InfoWindow
+                        position={{ lat: +selected.lat, lng: +selected.lng }}
+                        onCloseClick={() => {
+                            setSelected(null)
+                        }}
+                    >
+                        <div>
+                            <h2 className='formName'>{selected.city + ', ' + selected.country}</h2>
+                            <div className='alignTripInfoLeft'>
+                                {selected.start_date ? <p>Start Date:  <span>{selected.start_date.substring(0, 10)}</span></p> : null}
+                                {selected.end_date ? <p>End Date: <span>{selected.end_date.substring(0, 10)}</span></p> : null}
+
+                                {selected.rating ?
+                                    <div className='ratingContainer'>
+                                        <p>Rating</p>
+                                        <div className="rating">
+                                            <input id="star5" name={5} type="radio" className="radio-btn hide"
+                                                checked={+selected.rating === 5} disabled='disabled' />
+                                            <label htmlFor="star5">☆</label>
+                                            <input id="star4" name={4} type="radio" className="radio-btn hide"
+                                                checked={+selected.rating === 4} disabled='disabled' />
+                                            <label htmlFor="star4">☆</label>
+                                            <input id="star3" name={3} type="radio" className="radio-btn hide"
+                                                checked={+selected.rating === 3} disabled='disabled' />
+                                            <label htmlFor="star3">☆</label>
+                                            <input id="star2" name={2} type="radio" className="radio-btn hide"
+                                                checked={+selected.rating === 2} disabled='disabled' />
+                                            <label htmlFor="star2">☆</label>
+                                            <input id="star1" name={1} type="radio" className="radio-btn hide"
+                                                checked={+selected.rating === 1} disabled='disabled' />
+                                            <label htmlFor="star1">☆</label>
+                                            <div className="clear"></div>
+                                        </div>
+                                    </div> : null}
+
+                                {selected.comment ?
+                                    <>
+                                        <p className='question'>Notes: </p>
+                                        <span>{selected.comment}</span>
+                                    </>
+                                    : null}
+
+
+                            </div>
+                        </div>
+                    </InfoWindow> : null}
 
             </GoogleMap>
-        </div>
+        </div >
     )
 }
