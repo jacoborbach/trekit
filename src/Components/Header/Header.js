@@ -28,15 +28,6 @@ function Header(props) {
         if (textVal) {
             handleSearch()
         }
-        if (last) {
-            searchResults.map(element => {
-                if (props.user.id === element.id) {
-                    props.history.push(`/myMap`)
-                } else if (element.first_name === first && element.last_name === last) {
-                    props.history.push(`/friend/${element.id}`)
-                }
-            })
-        }
     }, [textVal, last])
 
     let handleSearch = () => {
@@ -45,10 +36,12 @@ function Header(props) {
             .catch(err => console.log(err))
     }
 
-    let handleClick = (e) => {
-        let splitName = e.nativeEvent.srcElement.parentElement.innerText.split(' ')
-        setFirst(splitName.shift())
-        setLast(splitName.pop())
+    let handleClick = (id) => {
+        if (props.user.id === id) {
+            props.history.push(`/myMap`)
+        } else {
+            props.history.push(`/friend/${id}`)
+        }
     }
     console.log(props)
 
@@ -72,7 +65,7 @@ function Header(props) {
                             <ComboboxPopover>
                                 <ComboboxList>
                                     {searchResults.map(person =>
-                                        <ComboboxOption key={person.id} value={person.first_name + ' ' + person.last_name} onClick={handleClick} />
+                                        <ComboboxOption key={person.id} value={person.first_name + ' ' + person.last_name} onClick={() => handleClick(person.id)} />
                                     )}
                                 </ComboboxList>
                             </ComboboxPopover>
