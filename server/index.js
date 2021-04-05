@@ -8,6 +8,7 @@ const authCtrl = require('./controllers/authCtrl')
 const markerCtrl = require('./controllers/markerCtrl')
 const userCtrl = require('./controllers/userCtrl')
 const emailCtrl = require('./controllers/emailCtrl')
+const searchCtrl = require('./controllers/searchCtrl')
 const { CONNECTION_STRING, SESSION_SECRET, SERVER_PORT } = process.env
 const app = express()
 
@@ -99,6 +100,8 @@ app.post('/api/file', markerCtrl.saveFile)
 
 //Email handler
 app.post('/api/email', emailCtrl.email);
+
+app.get('/api/friends/:textVal', searchCtrl.search)
 
 //for hosting
 app.use(express.static(__dirname + '/../build'))
