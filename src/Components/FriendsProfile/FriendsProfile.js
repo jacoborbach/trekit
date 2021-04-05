@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
+import { original } from '../MyMap/ColorThemes/original'
 import { dark } from '../MyMap/ColorThemes/dark'
+import { silver } from '../MyMap/ColorThemes/silver'
+import { noLabels } from '../MyMap/ColorThemes/noLabels'
+import { sunset } from '../MyMap/ColorThemes/sunset'
 import {
     GoogleMap,
     useLoadScript,
@@ -36,7 +40,7 @@ export default function FriendsProfile(props) {
     const [cityCount, setCities] = useState(" ")
     const [countryCount, setCountries] = useState(" ")
     const [showView, changeView] = useState(true)
-
+    const [colors, setColors] = useState(null)
 
     useEffect(() => {
         setId(props.match.params.id)
@@ -48,6 +52,17 @@ export default function FriendsProfile(props) {
                 .then(res => {
                     if (res.data[1][0].cities) {
                         setUser(res.data[0])
+                        if (res.data[0].theme === 'Dark') {
+                            setColors(dark)
+                        } else if (res.data[0].theme === "Silver") {
+                            setColors(silver)
+                        } else if (res.data[0].theme === "No Labels") {
+                            setColors(noLabels)
+                        } else if (res.data[0].theme === "Original") {
+                            setColors(original)
+                        } else if (res.data[0].theme === "Sunset") {
+                            setColors(sunset)
+                        }
                         setCountries(res.data[1][0].countries)
                         setCities(res.data[1][0].cities)
                         setMarkers(res.data[2])
@@ -58,7 +73,7 @@ export default function FriendsProfile(props) {
     }, [id])
 
     let options = {
-        styles: dark,
+        styles: colors,
         disableDefaultUI: true,
         zoomControl: true,
         minZoom: 1.5
@@ -75,6 +90,7 @@ export default function FriendsProfile(props) {
 
     return (
         <div id='map-background'>
+            <h1>{user.first_name} {user.last_name}</h1>
             <GoogleMap className='myMapLaptop'
                 mapContainerStyle={mapContainerStyle}
                 zoom={2.15}

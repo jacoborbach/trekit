@@ -43,7 +43,6 @@ function Header(props) {
             props.history.push(`/friend/${id}`)
         }
     }
-    console.log(props)
 
     return (
         <>
