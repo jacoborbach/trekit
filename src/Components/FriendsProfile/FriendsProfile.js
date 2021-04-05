@@ -9,6 +9,8 @@ import {
 }
     from "@react-google-maps/api";
 
+import './FriendsProfile.css'
+
 //laptop
 const mapContainerStyle = {
     width: "88vw",
@@ -70,7 +72,7 @@ export default function FriendsProfile(props) {
     if (loadError) return "Error loading maps";
     if (!isLoaded) return "Loading Maps"
 
-    console.log(markers)
+
     return (
         <div id='map-background'>
             <GoogleMap className='myMapLaptop'
@@ -107,6 +109,7 @@ export default function FriendsProfile(props) {
                     >
                         <div>
                             <h2 className='formName'>{selected.city + ', ' + selected.country}</h2>
+                            <button className='addBtn' title='Add to Wish List'>Add</button>
                             <div className='alignTripInfoLeft'>
                                 {selected.start_date ? <p>Start Date:  <span>{selected.start_date.substring(0, 10)}</span></p> : null}
                                 {selected.end_date ? <p>End Date: <span>{selected.end_date.substring(0, 10)}</span></p> : null}

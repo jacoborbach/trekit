@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import axios from 'axios'
+import { connect } from 'react-redux'
 import { withRouter, Link } from 'react-router-dom'
 import {
     Combobox,
@@ -27,7 +28,16 @@ function Header(props) {
         if (textVal) {
             handleSearch()
         }
-    }, [textVal])
+        if (last) {
+            searchResults.map(element => {
+                if (props.user.id === element.id) {
+                    props.history.push(`/myMap`)
+                } else if (element.first_name === first && element.last_name === last) {
+                    props.history.push(`/friend/${element.id}`)
+                }
+            })
+        }
+    }, [textVal, last])
 
     let handleSearch = () => {
         axios.get(`/api/friends/${textVal}`)
@@ -39,13 +49,8 @@ function Header(props) {
         let splitName = e.nativeEvent.srcElement.parentElement.innerText.split(' ')
         setFirst(splitName.shift())
         setLast(splitName.pop())
-        searchResults.map(element => {
-            if (element.first_name === first && element.last_name === last) {
-                props.history.push(`/friend/${element.id}`)
-            }
-        })
-
     }
+    console.log(props)
 
     return (
         <>
@@ -88,4 +93,8 @@ function Header(props) {
     )
 }
 
-export default withRouter(Header)
+const mapStateToProps = reduxState => ({
+    user: reduxState.userReducer.user
+})
+
+export default withRouter(connect(mapStateToProps)(Header))

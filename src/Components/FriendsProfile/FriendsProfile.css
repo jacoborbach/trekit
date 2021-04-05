@@ -1,0 +1,10 @@
+.addBtn {
+    bottom: 0px;
+    position: absolute;
+    background-color: white;
+    color: green;
+    border: none;
+    right: 3px;
+    font-weight: 700;
+    cursor: pointer;
+}
