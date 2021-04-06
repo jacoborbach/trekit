@@ -130,7 +130,6 @@ function MyMap(props) {
         }
     }
 
-    console.log(props)
     // console.log(device, orientation)
     useEffect(() => {
         setUserColor();
@@ -177,7 +176,8 @@ function MyMap(props) {
                         name: coordinates.address,
                         lat: coordinates.lat,
                         lng: coordinates.lng,
-                        trip_id: res.data.trip_id
+                        trip_id: res.data.trip_id,
+                        icon: 'http://maps.google.com/mapfiles/ms/icons/red-dot.png'
                     }])
                 })
                 .catch(err => console.log(err))
@@ -393,7 +393,7 @@ function MyMap(props) {
             */
         });
     }
-
+    console.log(markers)
     return (
         <div id='map-background'>
 
@@ -418,12 +418,13 @@ function MyMap(props) {
 
                         )}
 
-                    {markers.map((marker, i) => (
+                    {markers.map(marker => (
                         < Marker
-                            key={i}
+                            key={marker.trip_id}
                             title='Click to add trip info'
                             position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
-                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            // icon={{ url: '', scaledSize: new window.google.maps.Size(30, 30) }}
+                            // ${marker.icon}
                             onClick={() => {
                                 setSelected(marker);
                                 changeView(true)
@@ -494,12 +495,17 @@ function MyMap(props) {
 
                         )}
 
-                    {markers.map((marker, i) => (
+                    {markers.map(marker => (
                         < Marker
-                            key={i}
+                            key={marker.trip_id}
                             title='Click to add trip info'
                             position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
-                            // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
+                            icon={{
+                                url: `${marker.icon}`,
+                                scaledSize: new window.google.maps.Size(30, 30),
+                                anchor: new window.google.maps.Point(15, 15),
+                                scaledSize: new window.google.maps.Size(30, 30),
+                            }}
                             onClick={() => {
                                 setSelected(marker);
                                 changeView(true)
@@ -570,9 +576,9 @@ function MyMap(props) {
 
                         )}
 
-                    {markers.map((marker, i) => (
+                    {markers.map(marker => (
                         < Marker
-                            key={i}
+                            key={marker.trip_id}
                             title='Click to add trip info'
                             position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
                             // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
@@ -658,9 +664,9 @@ function MyMap(props) {
 
                             )}
 
-                        {markers.map((marker, i) => (
+                        {markers.map(marker => (
                             < Marker
-                                key={i}
+                                key={marker.trip_id}
                                 title='Click to add trip info'
                                 position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
                                 // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
@@ -735,9 +741,9 @@ function MyMap(props) {
 
                         )}
 
-                    {markers.map((marker, i) => (
+                    {markers.map(marker => (
                         < Marker
-                            key={i}
+                            key={marker.trip_id}
                             title='Click to add trip info'
                             position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
                             // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
@@ -815,9 +821,9 @@ function MyMap(props) {
 
                             )}
 
-                        {markers.map((marker, i) => (
+                        {markers.map(marker => (
                             < Marker
-                                key={i}
+                                key={marker.trip_id}
                                 title='Click to add trip info'
                                 position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
                                 // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}
@@ -907,9 +913,9 @@ function MyMap(props) {
 
                             )}
 
-                        {markers.map((marker, i) => (
+                        {markers.map(marker => (
                             < Marker
-                                key={i}
+                                key={marker.trip_id}
                                 title='Click to add trip info'
                                 position={{ lat: +marker.lat || marker.lat, lng: +marker.lng || marker.lng }}
                                 // icon = {{ url: "", scaledSize: new window.google.maps.Size(30, 30) }}

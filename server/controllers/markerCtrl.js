@@ -7,9 +7,9 @@ module.exports = {
         const splitName = name.split(', ');
         const city = splitName.shift();
         const country = splitName.pop()
-        const [addedtrip] = await db.trips.create_trip(city, lat, lng, id, country) //returns a trip_id
+        const addedtrip = await db.trips.create_trip(city, lat, lng, id, country) //returns a trip_id
 
-        req.session.user[1].splice(0, 0, { country, city, lat, lng, trip_id: addedtrip.trip_id, start_date: null, end_date: null, rating: null, comment: null, file: null })
+        req.session.user[1].splice(0, 0, { country, city, lat, lng, trip_id: addedtrip[0].trip_id, icon: addedtrip[0].icon, start_date: null, end_date: null, rating: null, comment: null, file: null })
 
         const count = await db.trips.count_trips(id)
         req.session.user[2].splice(0, 1, { cities: count[0].cities, countries: count[0].countries })
