@@ -31,7 +31,7 @@
 .header-container2 {
     height: 100px;
     width: 100%;
-    background-color: white;
+    background-color: rgb(93, 93, 93);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -118,4 +118,14 @@
     body {
         color: black!important;
     }
+  }
+
+#searchFriends {
+    height: 40px;
+    width: 200px;
+    border-color: blue;
+}
+
+::placeholder {
+    color: blue;
   }

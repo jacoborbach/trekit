@@ -1,8 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export default function useWindowDimensions() {
-
-  const hasWindow = typeof window !== 'undefined';
+  const hasWindow = typeof window !== "undefined";
   let device;
   let orientation;
 
@@ -11,18 +10,12 @@ export default function useWindowDimensions() {
     const height = hasWindow ? window.innerHeight : null;
 
     if (width > height) {
-      orientation = 'landscape'
+      orientation = "landscape";
     } else if (height > width) {
-      orientation = 'portrait'
+      orientation = "portrait";
     }
     if (width >= 1350) {
-      device = 'laptop'
-    } else if (width >= 824 && width < 1350) {
-      device = 'tablet'
-    } else if (width > 700 && width < 824) {
-      device = 'largeMobile'
-    } else if (width > 0 && width <= 700) {
-      device = 'smallMobile'
+      device = "laptop";
     }
     // console.log(device)
     return {
@@ -31,17 +24,19 @@ export default function useWindowDimensions() {
     };
   }
 
-  const [windowDimensions, setWindowDimensions] = useState(getWindowDimensions());
+  const [windowDimensions, setWindowDimensions] = useState(
+    getWindowDimensions()
+  );
 
   useEffect(() => {
     if (hasWindow) {
       function handleResize() {
         setWindowDimensions(getWindowDimensions());
       }
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
+      window.addEventListener("resize", handleResize);
+      return () => window.removeEventListener("resize", handleResize);
     }
   }, [hasWindow]);
 
-  return (windowDimensions)
+  return windowDimensions;
 }

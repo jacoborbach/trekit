@@ -169,7 +169,6 @@ export default function InfoWindowComp(props) {
                                                 </div>
                                             )}
 
-
                                         {/* Star Rating */}
                                         <div className='ratingContainer'>
                                             <h3 className='question'>Rating</h3>
@@ -193,32 +192,27 @@ export default function InfoWindowComp(props) {
                                             </div>
                                         </div>
 
-
                                         {/* Text Area */}
                                         <h3 id='review'>Review</h3>
                                         <textarea value={commentInp} onChange={e => setComment(e.target.value)} maxLength="1250" rows='4' cols='20' /><br />
 
 
-                                        <div className="App">
-                                            <h3 id='cutPadding'>Upload an Itinerary</h3>
-                                            {/* File Input */}
-                                            <input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
-                                                setFile(e.target.files[0])
-                                            }} />
+                                        <h3 id='cutPadding'>Advanced Options</h3>
 
+                                        {/* Custom Pin */}
+                                        <span>Customize Marker:</span><input type='text' placeholder='Enter link' /><br />
 
-                                        </div>
+                                        {/* AWS */}
+                                        <span>Submit Itinerary: </span><input type='file' accept="image/png, .doc, .docx, image/jpeg" onChange={e => {
+                                            setFile(e.target.files[0])
+                                        }} /><br />
                                     </div>
-
-                                    <input type="submit" />
-
+                                    <input type="submit" className='App' />
                                 </form>
                             </>
                         )}
-
                     </InfoWindow>) : null
             }
         </div>
     )
 }
-

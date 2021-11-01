@@ -61,12 +61,13 @@ function Header(props) {
             ) : (
                 <header className='header-container2'>
                     <Link to='/myMap' className='nav-links' id='logo'><h1>trekit!</h1></Link>
-                    <div>
-                        <Combobox>
+                    <div >
+                        <Combobox >
                             <ComboboxInput
+                                id="searchFriends"
                                 value={textVal}
                                 onChange={handleChange}
-                                placeholder="Search for Friends..."
+                                placeholder="  Search for Friends..."
                             />
                             <ComboboxPopover>
                                 <ComboboxList>

@@ -17,5 +17,12 @@ export let noLabels =
                     "visibility": "off"
                 }
             ]
+        },
+        {
+            featureType: "administrative",
+            elementType: "geometry",
+            stylers: [
+                { visibility: "off" }
+            ]
         }
     ]

@@ -167,5 +167,12 @@ export let silver =
                     "color": "#ffffff"
                 }
             ]
+        },
+        {
+            featureType: "administrative",
+            elementType: "geometry",
+            stylers: [
+                { visibility: "off" }
+            ]
         }
     ]

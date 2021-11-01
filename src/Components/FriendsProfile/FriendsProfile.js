@@ -99,7 +99,13 @@ export default function FriendsProfile(props) {
     console.log(props)
     return (
         <div id='map-background'>
+            {/* Pro Pic */}
             <h1>{user.first_name} {user.last_name}</h1>
+            <div className='following-container'>
+                <h1>Following<br /><span>###</span></h1>
+                <h1>Followers<br /><span>###</span></h1>
+            </div>
+            <span>Follow <span>+</span></span>
 
             <GoogleMap className='myMapLaptop'
                 mapContainerStyle={mapContainerStyle}
