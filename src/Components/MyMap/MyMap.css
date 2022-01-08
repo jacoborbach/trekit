@@ -1,138 +1,137 @@
 .myMapLaptop {
-    position: relative;
+  position: relative;
 }
 
 #map-background {
-    background-color: rgb(48, 154, 48);
-    height: 100vh;
+  background-color: rgb(48, 154, 48);
+  height: 100vh;
 }
 
 .AddBtn {
-    right: 0px;
-    top: 60px;
-    background-color:  rgb(213, 213, 26);
-    border-radius: 15px;
-    width: 100px;
-    position: absolute;
-    z-index: 10;
+  right: 0px;
+  top: 60px;
+  background-color: rgb(213, 213, 26);
+  border-radius: 15px;
+  width: 100px;
+  position: absolute;
+  z-index: 10;
 }
 .testingE {
-    z-index: 10;
-    background-color: aqua; 
+  z-index: 10;
+  background-color: aqua;
 }
 .search-container {
-    display: flex;
-	flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    /* padding: 15px; */
-    z-index: 10;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  /* padding: 15px; */
+  z-index: 10;
 }
 
 .search {
-    /* position: absolute; */
-    /* top: 1rem; */
-    /* left: 50%;
+  /* position: absolute; */
+  /* top: 1rem; */
+  /* left: 50%;
     transform: translateX(-50%); */
-    width:90%;
-    max-width: 350px;
-    z-index: 10;
+  width: 90%;
+  max-width: 350px;
+  z-index: 10;
 }
 
 .search input {
-    padding: 0.5rem;
-    font-size: 1.5 rem;
-    width: 90%;
+  padding: 0.5rem;
+  font-size: 1.5 rem;
+  width: 90%;
 }
 
 .MinusBtn {
-    /* top: 1rem; */
-    background-color: red;
-    border-radius: 15px;
-    width: 30px;
-    /* position: absolute; */
-    z-index: 10;
+  /* top: 1rem; */
+  background-color: red;
+  border-radius: 15px;
+  width: 30px;
+  /* position: absolute; */
+  z-index: 10;
 }
 
 .count {
-    display: flex;
-    position: absolute;
-    bottom: 1rem;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color:midnightblue;
-    color: white;
-    border: solid rgb(213, 213, 26) 2px;
+  display: flex;
+  position: absolute;
+  bottom: 1rem;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: midnightblue;
+  color: white;
+  border: solid rgb(213, 213, 26) 2px;
 }
 
 .countDisplay {
-    margin: 25px 45px 25px 25px;
-    padding: 30px;
-    
+  margin: 25px 45px 25px 25px;
+  padding: 30px;
 }
 
 .count {
-    opacity: .72;
+  opacity: 0.72;
 }
 .formName {
-    margin: 5px;
+  margin: 5px;
 }
 .deleteBtn {
-    bottom: 6px;
-    position: absolute;
-    background-color: white;
-    color: red;
-    border: none;
-    right: 5px;
-    /* float: right; */
+  bottom: 6px;
+  position: absolute;
+  background-color: white;
+  color: red;
+  border: none;
+  right: 5px;
+  /* float: right; */
 }
 
 .tripInfoForm {
-    display: flex;
-    text-align: start;
-    flex-direction: column;
-    justify-content: flex-start;
+  display: flex;
+  text-align: start;
+  flex-direction: column;
+  justify-content: flex-start;
 }
 
 #plus {
-    color: rgba(13, 82, 185, 0.623)
+  color: rgba(13, 82, 185, 0.623);
 }
 
 .dumbclass {
-    display: flex;
-    text-align: start;
-    flex-direction: column;
-    justify-content: flex-start;
-    position: relative;
-    margin-bottom: 8px;
-    margin-top: 4px;
+  display: flex;
+  text-align: start;
+  flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+  margin-bottom: 8px;
+  margin-top: 4px;
 }
 
 #back {
-    color: blue;
-    margin: 0px;
-    margin-top: 8px;
-    position: absolute;
-    bottom: 0px;
-    right: 10px;
+  color: blue;
+  margin: 0px;
+  margin-top: 8px;
+  position: absolute;
+  bottom: 0px;
+  right: 10px;
 }
 
 #endDateInp {
-    margin-bottom: 3px;
+  margin-bottom: 3px;
 }
 
 .question {
-    margin: 0px;
+  margin: 0px;
 }
 
 #review {
-    margin-top: 10px;
-    margin-bottom: 7px;
+  margin-top: 10px;
+  margin-bottom: 7px;
 }
 
 #EditTripSubmit {
-    background-color: rgb(21, 184, 21);
-    margin-left: 8px;
+  background-color: rgb(21, 184, 21);
+  margin-left: 8px;
 }
 
 /* #map-background h3 {
@@ -141,92 +140,107 @@
 } */
 
 #imgFile {
-    height: 50px;
-    width: 50px;
+  height: 50px;
+  width: 50px;
 }
 
 #cutPadding {
-    margin-top: 6px;
-    padding: 0px;
-    text-align: center;
+  margin-top: 6px;
+  padding: 0px;
+  text-align: center;
 }
 
 .alignTripInfoLeft {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: space-evenly;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-evenly;
 }
 
 /* #notesHeader {
     margin: 0px 0px 8px 0px;
 } */
 
-
 /* ------------------Other----------------------------- */
 /* stars */
 .hide {
-    display: none;
+  display: none;
 }
 
 .clear {
-    float: none;
-    clear: both;
+  float: none;
+  clear: both;
 }
 
 .rating {
-    width: 60%;
-    unicode-bidi: bidi-override;
-    direction: rtl;
-    /* text-align: center;
+  width: 60%;
+  unicode-bidi: bidi-override;
+  direction: rtl;
+  /* text-align: center;
     position: relative; */
-
 }
 
 .rating > label {
-    display: inline;
-    padding: 0;
-    margin: 0;
-    position: relative;
-    width: 1.1em;
-    cursor: pointer;
-    color: #000;
+  display: inline;
+  padding: 0;
+  margin: 0;
+  position: relative;
+  width: 1.1em;
+  cursor: pointer;
+  color: #000;
 }
 
 .rating > label:hover,
 .rating > label:hover ~ label,
 .rating > input.radio-btn:checked ~ label {
-    color: transparent;
+  color: transparent;
 }
 
 .rating > label:hover:before,
 .rating > label:hover ~ label:before,
 .rating > input.radio-btn:checked ~ label:before,
 .rating > input.radio-btn:checked ~ label:before {
-    content: "\2605";
-    position: absolute;
-    left: 0;
-    color: #FFD700;
+  content: "\2605";
+  position: absolute;
+  left: 0;
+  color: #ffd700;
 }
 
 .ratingContainer {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    width: 100%;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 100%;
 }
 /*  */
 
 /* gets ride of Google Logo and ToS */
-a[href^="http://maps.google.com/maps"]{display:none !important}
-a[href^="https://maps.google.com/maps"]{display:none !important}
+a[href^="http://maps.google.com/maps"]
+{
+  display: none !important;
+}
+a[href^="https://maps.google.com/maps"]
+{
+  display: none !important;
+}
 
-.gmnoprint a, .gmnoprint span, .gm-style-cc {
-    display:none;
+.gmnoprint a,
+.gmnoprint span,
+.gm-style-cc {
+  display: none;
 }
 .gmnoprint div {
-    background:none !important;
+  background: none !important;
 }
 /*  */
 
+#profile {
+  display: flex;
+  flex-direction: row;
+}
 
+.listItems {
+  text-align: left;
+  margin-left: 40px;
+  cursor: pointer;
+}

@@ -19,6 +19,10 @@ import { Burger, Menu } from "../../Components";
 import FocusLock from "react-focus-lock";
 import useWindowDimensions from "../../useWindowDimensions";
 
+import svgTest from "../../assets/icons/bigben.svg";
+
+import Filter from "./Filter/Filter";
+
 const aws = require("aws-sdk");
 const s3 = new aws.S3({
   accessKeyId: process.env.REACT_APP_AWS_ACCESS_KEY_ID,
@@ -29,7 +33,7 @@ const { REACT_APP_S3_BUCKET: S3_BUCKET } = process.env;
 
 //laptop
 const mapContainerStyle = {
-  width: "100vw",
+  width: "80vw",
   height: "100vh",
   left: "0vw",
   top: "0vh",
@@ -82,6 +86,9 @@ function MyMap(props) {
 
   //Device type/orientation
   const { device, orientation } = useWindowDimensions();
+
+  //filter
+  const [value, setValue] = useState("");
 
   const setUserColor = () => {
     if (props.user.theme === "Dark") {
@@ -144,23 +151,31 @@ function MyMap(props) {
   // Add Markers
   const addmarker = (coordinates) => {
     if (props.user.id) {
+      //Getting City and Country from full address
+      const splitName = coordinates.address.split(", ");
+      const city = splitName.shift();
+      const country = splitName.pop();
       axios
         .post("/api/newtrip", {
           id: props.user.id,
-          name: coordinates.address,
+          // name: coordinates.address,
+          city,
+          country,
           lat: coordinates.lat,
           lng: coordinates.lng,
+          icon: svgTest,
         })
         .then((res) => {
           getCount();
           setMarkers((current) => [
             ...current,
             {
-              name: coordinates.address,
+              city,
+              country,
               lat: coordinates.lat,
               lng: coordinates.lng,
               trip_id: res.data.trip_id,
-              icon: "http://maps.google.com/mapfiles/ms/icons/red-dot.png",
+              icon: svgTest,
             },
           ]);
         })
@@ -419,102 +434,117 @@ function MyMap(props) {
   console.log(markers);
   return (
     <div id="map-background">
-      {/* CONDITIONAL RENDERING FOR LAPTOP */}
-      {/* {device === "laptop" ? ( */}
-      <GoogleMap
-        className="myMapLaptop"
-        mapContainerStyle={mapContainerStyle}
-        zoom={2.15}
-        center={center}
-        options={options}
-        onLoad={onMapLoad}
-      >
-        {showView ? (
-          <h2 className="AddBtn" onClick={toggle} title="Click to add trips">
-            Add +
-          </h2>
-        ) : (
-          <div className="search-container">
-            <SearchMap addmarker={addmarker} />
-            <h2
-              title="Click to close search"
-              className="MinusBtn"
-              onClick={toggle}
-            >
-              -
+      <div id="profile">
+        <GoogleMap
+          className="myMapLaptop"
+          mapContainerStyle={mapContainerStyle}
+          zoom={2.15}
+          center={center}
+          options={options}
+          onLoad={onMapLoad}
+        >
+          {showView ? (
+            <h2 className="AddBtn" onClick={toggle} title="Click to add trips">
+              Add +
+            </h2>
+          ) : (
+            <div className="search-container">
+              <SearchMap addmarker={addmarker} />
+              <h2
+                title="Click to close search"
+                className="MinusBtn"
+                onClick={toggle}
+              >
+                -
+              </h2>
+            </div>
+          )}
+
+          {markers.map((marker) => (
+            <Marker
+              key={marker.trip_id}
+              title="Click to add trip info"
+              position={{
+                lat: +marker.lat || marker.lat,
+                lng: +marker.lng || marker.lng,
+              }}
+              icon={{
+                url: `${marker.icon}`,
+                origin: new window.google.maps.Point(0, 0),
+                anchor: new window.google.maps.Point(15, 15),
+                scaledSize: new window.google.maps.Size(30, 30),
+              }}
+              onClick={() => {
+                setSelected(marker);
+                changeView(true);
+              }}
+            />
+          ))}
+
+          <div className="count">
+            <h2 id="countDisplay">
+              Cities <br />
+              <span className="countDisplay">{cityCount}</span>
+            </h2>
+            <h2 id="countDisplay">
+              Countries <br />
+              <span className="countDisplay">{countryCount}</span>
             </h2>
           </div>
-        )}
 
-        {markers.map((marker) => (
-          <Marker
-            key={marker.trip_id}
-            title="Click to add trip info"
-            position={{
-              lat: +marker.lat || marker.lat,
-              lng: +marker.lng || marker.lng,
-            }}
-            icon={{
-              url: `${marker.icon}`,
-              origin: new window.google.maps.Point(0, 0),
-              anchor: new window.google.maps.Point(15, 15),
-              scaledSize: new window.google.maps.Size(30, 30),
-            }}
-            onClick={() => {
-              setSelected(marker);
-              changeView(true);
-            }}
+          <InfoWindowComp
+            selected={selected}
+            handleClose={handleClose}
+            handleDelete={handleDelete}
+            toggleTripEdit={toggleTripEdit}
+            handleEdit={handleEdit}
+            newStartDate={newStartDate}
+            setNewStart={setNewStart}
+            newEndDate={newEndDate}
+            setNewEnd={setNewEnd}
+            newRating={newRating}
+            setNewRating={setNewRating}
+            newComment={newComment}
+            setNewComment={setNewComment}
+            toggleFileView={toggleFileView}
+            setNewFile={setNewFile}
+            handleTripEditSubmit={handleTripEditSubmit}
+            handleSubmit={handleSubmit}
+            dateView={dateView}
+            toggleDateView={toggleDateView}
+            startDate={startDate}
+            setStart={setStart}
+            endDate={endDate}
+            setEnd={setEnd}
+            setRating={setRating}
+            ratingInp={ratingInp}
+            setComment={setComment}
+            commentInp={commentInp}
+            setFile={setFile}
+            fileView={fileView}
+            newFile={newFile}
           />
-        ))}
-
-        <div className="count">
-          <h2 id="countDisplay">
-            Cities <br />
-            <span className="countDisplay">{cityCount}</span>
-          </h2>
-          <h2 id="countDisplay">
-            Countries <br />
-            <span className="countDisplay">{countryCount}</span>
-          </h2>
+        </GoogleMap>
+        <div>
+          {/* <Filter value={value} /> */}
+          <input
+            placeholder="Filter Cities"
+            value={value}
+            onChange={(e) => setValue(e.target.value.toLowerCase())}
+          />
+          {markers[0]
+            ? markers
+                .filter((item) => item.city.toLowerCase().includes(value))
+                //words.filter(word => word.length > 6);
+                .map((marker) => (
+                  <h3 className="listItems" onClick={() => setSelected(marker)}>
+                    {marker.city}
+                  </h3>
+                ))
+            : null}
         </div>
+      </div>
 
-        <InfoWindowComp
-          selected={selected}
-          handleClose={handleClose}
-          handleDelete={handleDelete}
-          toggleTripEdit={toggleTripEdit}
-          handleEdit={handleEdit}
-          newStartDate={newStartDate}
-          setNewStart={setNewStart}
-          newEndDate={newEndDate}
-          setNewEnd={setNewEnd}
-          newRating={newRating}
-          setNewRating={setNewRating}
-          newComment={newComment}
-          setNewComment={setNewComment}
-          toggleFileView={toggleFileView}
-          setNewFile={setNewFile}
-          handleTripEditSubmit={handleTripEditSubmit}
-          handleSubmit={handleSubmit}
-          dateView={dateView}
-          toggleDateView={toggleDateView}
-          startDate={startDate}
-          setStart={setStart}
-          endDate={endDate}
-          setEnd={setEnd}
-          setRating={setRating}
-          ratingInp={ratingInp}
-          setComment={setComment}
-          commentInp={commentInp}
-          setFile={setFile}
-          fileView={fileView}
-          newFile={newFile}
-        />
-      </GoogleMap>
-
-      {/* toggle list of places visited */}
-      {/* <p onClick={toggleList}>Click for list</p>
-      {toggleList ? markers.map((marker) => <h1>{marker}</h1>) : null} */}
       {/* CONDITIONAL RENDERING FOR small-mobile IN landscape */}
       {device !== "laptop" ? (
         // && orientation === "landscape"
