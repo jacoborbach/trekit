@@ -19,9 +19,8 @@ import { Burger, Menu } from "../../Components";
 import FocusLock from "react-focus-lock";
 import useWindowDimensions from "../../useWindowDimensions";
 
-import svgTest from "../../assets/icons/bigben.svg";
-
 import Filter from "./Filter/Filter";
+import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 
 const aws = require("aws-sdk");
 const s3 = new aws.S3({
@@ -163,7 +162,7 @@ function MyMap(props) {
           country,
           lat: coordinates.lat,
           lng: coordinates.lng,
-          icon: svgTest,
+          // icon: svgTest,
         })
         .then((res) => {
           getCount();
@@ -175,7 +174,7 @@ function MyMap(props) {
               lat: coordinates.lat,
               lng: coordinates.lng,
               trip_id: res.data.trip_id,
-              icon: svgTest,
+              // icon: svgTest,
             },
           ]);
         })
@@ -460,7 +459,7 @@ function MyMap(props) {
             </div>
           )}
 
-          {markers.map((marker) => (
+          {markers.map((marker, i) => (
             <Marker
               key={marker.trip_id}
               title="Click to add trip info"
@@ -469,10 +468,10 @@ function MyMap(props) {
                 lng: +marker.lng || marker.lng,
               }}
               icon={{
-                url: `${marker.icon}`,
+                url: marker.icon || undefined,
                 origin: new window.google.maps.Point(0, 0),
                 anchor: new window.google.maps.Point(15, 15),
-                scaledSize: new window.google.maps.Size(30, 30),
+                scaledSize: new window.google.maps.Size(60, 60),
               }}
               onClick={() => {
                 setSelected(marker);
@@ -535,11 +534,17 @@ function MyMap(props) {
           {markers[0]
             ? markers
                 .filter((item) => item.city.toLowerCase().includes(value))
-                //words.filter(word => word.length > 6);
+                // .sort((a, b) => a.city - b.city)
                 .map((marker) => (
-                  <h3 className="listItems" onClick={() => setSelected(marker)}>
-                    {marker.city}
-                  </h3>
+                  <div id="listRow">
+                    <h3
+                      className="listItems"
+                      onClick={() => setSelected(marker)}
+                    >
+                      {marker.city}
+                    </h3>
+                    <MoreHorizIcon />
+                  </div>
                 ))
             : null}
         </div>

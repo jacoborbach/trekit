@@ -1,5 +1,6 @@
 import React from "react";
 import { InfoWindow } from "@react-google-maps/api";
+import svgTest from "../../icons/bigben.svg";
 
 export default function InfoWindowComp(props) {
   const {
@@ -34,6 +35,10 @@ export default function InfoWindowComp(props) {
     fileView,
   } = props;
 
+  // const handleChangeSVG = () => {
+
+  // }
+  console.log("selected HERE:", selected);
   return (
     <div>
       {selected ? (
@@ -362,7 +367,7 @@ export default function InfoWindowComp(props) {
 
                   {/* Custom Pin */}
                   <span>Customize Marker:</span>
-                  <input type="text" placeholder="Enter link" />
+                  {/* <div onClick={handleChangeSVG}>Change Pin to Big Ben</div> */}
                   <br />
 
                   {/* AWS */}

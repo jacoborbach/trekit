@@ -244,3 +244,10 @@ a[href^="https://maps.google.com/maps"]
   margin-left: 40px;
   cursor: pointer;
 }
+
+#listRow {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}

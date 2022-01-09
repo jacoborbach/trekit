@@ -1,8 +1,7 @@
 module.exports = {
   newtrip: async (req, res) => {
-    const { id, city, country, lat, lng, icon } = req.body;
+    const { id, city, country, lat, lng } = req.body;
     const db = req.app.get("db");
-    console.log("icon on backend:", icon);
 
     const [addedtrip] = await db.trips.create_trip(city, lat, lng, id, country); //returns a trip_id
 
@@ -12,7 +11,6 @@ module.exports = {
       lat,
       lng,
       trip_id: addedtrip.trip_id,
-      icon,
       start_date: null,
       end_date: null,
       rating: null,
