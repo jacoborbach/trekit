@@ -21,6 +21,7 @@ import useWindowDimensions from "../../useWindowDimensions";
 
 import Filter from "./Filter/Filter";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+// import svgTest from "../../icons/bigben.svg";
 
 const aws = require("aws-sdk");
 const s3 = new aws.S3({
@@ -33,7 +34,7 @@ const { REACT_APP_S3_BUCKET: S3_BUCKET } = process.env;
 //laptop
 const mapContainerStyle = {
   width: "80vw",
-  height: "100vh",
+  height: "90vh",
   left: "0vw",
   top: "0vh",
 };
@@ -147,22 +148,28 @@ function MyMap(props) {
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
 
+  let city = "";
+  let country = "";
+  const splitUpName = (coords) => {
+    //Getting City and Country from full address
+    const splitName = coords.address.split(", ");
+    city = splitName.shift();
+    country = splitName.pop();
+  };
+
   // Add Markers
   const addmarker = (coordinates) => {
     if (props.user.id) {
-      //Getting City and Country from full address
-      const splitName = coordinates.address.split(", ");
-      const city = splitName.shift();
-      const country = splitName.pop();
+      splitUpName(coordinates);
+      // checkifDuplicates()
+
       axios
         .post("/api/newtrip", {
           id: props.user.id,
-          // name: coordinates.address,
           city,
           country,
           lat: coordinates.lat,
           lng: coordinates.lng,
-          // icon: svgTest,
         })
         .then((res) => {
           getCount();
@@ -174,7 +181,6 @@ function MyMap(props) {
               lat: coordinates.lat,
               lng: coordinates.lng,
               trip_id: res.data.trip_id,
-              // icon: svgTest,
             },
           ]);
         })
@@ -422,14 +428,6 @@ function MyMap(props) {
     });
   };
 
-  // const toggleList = () => {
-  //     if (toggleList) {
-  //         SetToggleList(false)
-  //     } else if (!toggleList) {
-  //         SetToggleList(true)
-  //     }
-  // }
-
   console.log(markers);
   return (
     <div id="map-background">
@@ -470,7 +468,7 @@ function MyMap(props) {
               icon={{
                 url: marker.icon || undefined,
                 origin: new window.google.maps.Point(0, 0),
-                anchor: new window.google.maps.Point(15, 15),
+                // anchor: new window.google.maps.Point(15, 15),
                 scaledSize: new window.google.maps.Size(60, 60),
               }}
               onClick={() => {

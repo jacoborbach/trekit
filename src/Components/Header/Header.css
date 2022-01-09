@@ -1,131 +1,133 @@
 .header-container {
-    position: fixed;
-    height: 100px;
-    width: 100%;
-    /* background-color: grey; */
-    color: white;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 0 30px;
+  position: fixed;
+  height: 10vh;
+  width: 100%;
+  /* background-color: grey; */
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 30px;
 }
 
 .header-container nav {
-    width: 225px;
-    display: flex;
-    justify-content: space-between;
+  width: 225px;
+  display: flex;
+  justify-content: space-between;
 }
 
 .nav-links {
-    text-decoration: none;
-    color: rgba(8, 22, 186, 0.933);
-    font-size: 24px;
-    font-weight: 500;
+  text-decoration: none;
+  color: rgba(8, 22, 186, 0.933);
+  font-size: 24px;
+  font-weight: 500;
 }
 
 #logo {
-    color: rgb(0, 150, 17);
+  color: rgb(0, 150, 17);
 }
 
 .header-container2 {
-    height: 100px;
-    width: 100%;
-    background-color: rgb(93, 93, 93);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    box-sizing: border-box;
-    padding: 0 30px;
+  height: 100px;
+  width: 100%;
+  background-color: rgb(93, 93, 93);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-sizing: border-box;
+  padding: 0 30px;
 }
 
 .header-container2 nav {
-    width: 225px;
-    display: flex;
-    justify-content: space-around;
+  width: 225px;
+  display: flex;
+  justify-content: space-around;
 }
 
 @media only screen and (max-width: 812px) and (orientation: portrait) {
-    .header-container2 {
-        height: 40px;
-        position: absolute;
-        bottom: 0px;
-    }
-    h1 {
-        font-size: 1em;
-    }
-    #countDisplay {
-        margin: 0px
-    }
+  .header-container2 {
+    height: 40px;
+    position: absolute;
+    bottom: 0px;
   }
+  h1 {
+    font-size: 1em;
+  }
+  #countDisplay {
+    margin: 0px;
+  }
+}
 
-  /* mobile small landscape */
-  @media only screen and (max-width: 670px) and (orientation: landscape) {
-    .header-container2 {
-        display: none;
-    }
-    h1, h2 {
-        font-size: 1em;
-    }
-    #countDisplay {
-        margin: 0px
-    }
-    .nav-links {
-        display: none;
-    }
-    .AddBtn {
-        top: 90px!important;
-        width: 78px!important;
-        right: 40px!important;
-        padding: 2px;
-        opacity: .88
-    }
-    #settings {
-        display: none;
-    }
-    body {
-        color: black!important;
-    }
+/* mobile small landscape */
+@media only screen and (max-width: 670px) and (orientation: landscape) {
+  .header-container2 {
+    display: none;
   }
+  h1,
+  h2 {
+    font-size: 1em;
+  }
+  #countDisplay {
+    margin: 0px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .AddBtn {
+    top: 90px !important;
+    width: 78px !important;
+    right: 40px !important;
+    padding: 2px;
+    opacity: 0.88;
+  }
+  #settings {
+    display: none;
+  }
+  body {
+    color: black !important;
+  }
+}
 
 /* mobile large landscape */
 @media only screen and (min-width: 671px) and (max-width: 870px) and (orientation: landscape) {
-    .header-container2 {
-        display: none;
-    }
-    h1, h2 {
-        font-size: 1.3em;
-    }
-    #countDisplay {
-        margin: 2px
-    }
-    .nav-links {
-        display: none;
-    }
-    .nav-links {
-        font-size: 20px
-    }
-    .AddBtn {
-        top: 90px!important;
-        width: 90px!important;
-        right: 40px!important;
-        padding: 2px;
-        opacity: .88
-    }
-    #settings {
-        display: none;
-    }
-    body {
-        color: black!important;
-    }
+  .header-container2 {
+    display: none;
   }
+  h1,
+  h2 {
+    font-size: 1.3em;
+  }
+  #countDisplay {
+    margin: 2px;
+  }
+  .nav-links {
+    display: none;
+  }
+  .nav-links {
+    font-size: 20px;
+  }
+  .AddBtn {
+    top: 90px !important;
+    width: 90px !important;
+    right: 40px !important;
+    padding: 2px;
+    opacity: 0.88;
+  }
+  #settings {
+    display: none;
+  }
+  body {
+    color: black !important;
+  }
+}
 
 #searchFriends {
-    height: 40px;
-    width: 200px;
-    border-color: blue;
+  height: 40px;
+  width: 200px;
+  border-color: blue;
 }
 
 ::placeholder {
-    color: blue;
-  }
+  color: blue;
+}

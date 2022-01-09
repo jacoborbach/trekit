@@ -1,6 +1,7 @@
 import React from "react";
 import { InfoWindow } from "@react-google-maps/api";
-import svgTest from "../../icons/bigben.svg";
+// import svgTest from "../../icons/bigben.svg";
+// import test from "../../icons/america/SVG/test.svg";
 
 export default function InfoWindowComp(props) {
   const {
@@ -35,10 +36,19 @@ export default function InfoWindowComp(props) {
     fileView,
   } = props;
 
-  // const handleChangeSVG = () => {
+  function importAll(r) {
+    let images = {};
+    r.keys().map((item, index) => {
+      images[item.replace("./", "")] = r(item);
+    });
+    return images;
+  }
 
-  // }
-  console.log("selected HERE:", selected);
+  const images = importAll(
+    require.context("../../icons/america/SVG", false, /\.svg$/)
+  );
+
+  console.log("images:", images);
   return (
     <div>
       {selected ? (
@@ -367,7 +377,10 @@ export default function InfoWindowComp(props) {
 
                   {/* Custom Pin */}
                   <span>Customize Marker:</span>
-                  {/* <div onClick={handleChangeSVG}>Change Pin to Big Ben</div> */}
+                  {/* based on selected grab the folder of svgs for that country and render them here to choose from */}
+                  {/* <img src={test}></img> */}
+                  <img src={images["test.svg"].default} />
+
                   <br />
 
                   {/* AWS */}
