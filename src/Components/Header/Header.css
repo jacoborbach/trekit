@@ -2,7 +2,6 @@
   position: fixed;
   height: 10vh;
   width: 100%;
-  /* background-color: grey; */
   color: white;
   display: flex;
   justify-content: space-between;
@@ -17,13 +16,6 @@
   justify-content: space-between;
 }
 
-.nav-links {
-  text-decoration: none;
-  color: rgba(8, 22, 186, 0.933);
-  font-size: 24px;
-  font-weight: 500;
-}
-
 #logo {
   color: rgb(0, 150, 17);
 }
@@ -31,12 +23,12 @@
 .header-container2 {
   height: 100px;
   width: 100%;
-  background-color: rgb(93, 93, 93);
   display: flex;
   justify-content: space-between;
   align-items: center;
   box-sizing: border-box;
   padding: 0 30px;
+  border-bottom: solid 1px rgb(225, 221, 221);
 }
 
 .header-container2 nav {
@@ -130,4 +122,14 @@
 
 ::placeholder {
   color: blue;
+}
+
+#settings {
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+}
+
+#profileName {
+  color: white;
 }

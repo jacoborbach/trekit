@@ -21,6 +21,8 @@ import useWindowDimensions from "../../useWindowDimensions";
 
 import Filter from "./Filter/Filter";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 // import svgTest from "../../icons/bigben.svg";
 
 const aws = require("aws-sdk");
@@ -33,8 +35,8 @@ const { REACT_APP_S3_BUCKET: S3_BUCKET } = process.env;
 
 //laptop
 const mapContainerStyle = {
-  width: "80vw",
-  height: "90vh",
+  width: "65vw",
+  height: "60vh",
   left: "0vw",
   top: "0vh",
 };
@@ -58,10 +60,11 @@ function MyMap(props) {
     libraries,
   });
 
+  //checking if new user
+  const [newUser, setNewUser] = useState(false);
   //trips
   const [markers, setMarkers] = useState([]);
   const [selected, setSelected] = useState(null);
-  const [cityCount, setCities] = useState(" ");
   const [countryCount, setCountries] = useState(" ");
   const [showView, changeView] = useState(true);
   const [dateView, changeDateView] = useState(false);
@@ -79,6 +82,8 @@ function MyMap(props) {
   const [newFile, setNewFile] = useState({ name: "" });
   const [colors, setColors] = useState(null);
   const [toggleList, SetToggleList] = useState(false);
+  //show info window
+  const [showIW, setshowIW] = useState(true);
 
   //Aws
   const [file, setFile] = useState({ name: "" });
@@ -89,6 +94,11 @@ function MyMap(props) {
 
   //filter
   const [value, setValue] = useState("");
+
+  // toggle List Items Individually
+  const [showListItem, setShowListItem] = useState([
+    { id: "this is a placeholder id" },
+  ]);
 
   const setUserColor = () => {
     if (props.user.theme === "Dark") {
@@ -108,7 +118,6 @@ function MyMap(props) {
     if (props.user.id) {
       axios.get(`/api/trip-count/${props.user.id}`).then((res) => {
         setCountries(res.data[0].countries);
-        setCities(res.data[0].cities);
       });
     }
   };
@@ -119,14 +128,15 @@ function MyMap(props) {
     axios.get("/api/user").then((res) => {
       //returning users - load data off of session
       if (res.data[1][0]) {
+        setNewUser(false);
         setCountries(res.data[2][0].countries);
-        setCities(res.data[2][0].cities);
+
         setMarkers(res.data[1]);
       }
       //new users
       else {
+        setNewUser(true);
         setCountries(props.count[0].countries);
-        setCities(props.count[0].cities);
         setMarkers(props.markers);
       }
     });
@@ -136,7 +146,13 @@ function MyMap(props) {
     styles: colors,
     disableDefaultUI: true,
     zoomControl: true,
-    minZoom: 1.5,
+    // minZoom: 1.9,
+    // maxZoom: 1.9,
+    draggable: true,
+    // restriction: {
+    //   latLngBounds: { north: 85, south: -85, west: -180, east: 180 },
+    //   strictBounds: true,
+    // },
   };
 
   // too (hopefully) cause less re-renders
@@ -148,36 +164,42 @@ function MyMap(props) {
   if (loadError) return "Error loading maps";
   if (!isLoaded) return "Loading Maps";
 
+  let name = "";
   let city = "";
   let country = "";
   const splitUpName = (coords) => {
-    //Getting City and Country from full address
     const splitName = coords.address.split(", ");
-    city = splitName.shift();
+    name = splitName[0];
     country = splitName.pop();
+    city = splitName.pop();
   };
 
   // Add Markers
   const addmarker = (coordinates) => {
+    // console.log("coordinates:", coordinates);
     if (props.user.id) {
       splitUpName(coordinates);
-      // checkifDuplicates()
-
       axios
         .post("/api/newtrip", {
           id: props.user.id,
+          name,
           city,
           country,
+          types: coordinates.types,
           lat: coordinates.lat,
           lng: coordinates.lng,
         })
         .then((res) => {
           getCount();
+          mapRef.current.panTo({ lat: coordinates.lat, lng: coordinates.lng });
+          mapRef.current.setZoom(6);
           setMarkers((current) => [
             ...current,
             {
+              name,
               city,
               country,
+              types: coordinates.types,
               lat: coordinates.lat,
               lng: coordinates.lng,
               trip_id: res.data.trip_id,
@@ -191,6 +213,7 @@ function MyMap(props) {
   const toggle = () => {
     changeView(!showView);
     setSelected(null);
+    setNewUser(false);
   };
 
   const toggleDateView = () => {
@@ -394,7 +417,6 @@ function MyMap(props) {
 
           //add another axios call for count
           axios.get(`/api/trip-count/${props.user.id}`).then((response) => {
-            setCities(response.data[0].cities);
             setCountries(response.data[0].countries);
           });
 
@@ -428,30 +450,70 @@ function MyMap(props) {
     });
   };
 
-  console.log(markers);
+  const groupedMarkers = markers.reduce((r, a) => {
+    r[a.country] = [...(r[a.country] || []), a];
+    return r;
+  }, {});
+
+  const groupedCities = Object.values(groupedMarkers).reduce((r, a) => {
+    r[a.city] = [...(r[a.city] || []), a];
+    return r;
+  }, {});
+
+  const toggleListItem = (id) => {
+    const index = showListItem.map((e) => e.id).indexOf(id); //check if id in array
+    if (index === -1) {
+      //if not in array, add to array
+      setShowListItem((showListItem) => [...showListItem, { id }]);
+    } else {
+      let copyshowListItem = [...showListItem];
+      for (let i = 0; i < copyshowListItem.length; i++) {
+        if (copyshowListItem[i].id === id) {
+          copyshowListItem.splice(i, 1);
+        }
+      }
+      setShowListItem(copyshowListItem);
+    }
+  };
+
+  // console.log(markers);
+  console.log(groupedMarkers);
+  // console.log(groupedCities);
+  // console.log(newUser);
+  // console.log(selected);
+  console.log(mapRef);
   return (
     <div id="map-background">
       <div id="profile">
         <GoogleMap
           className="myMapLaptop"
           mapContainerStyle={mapContainerStyle}
-          zoom={2.15}
+          zoom={1.9}
           center={center}
           options={options}
           onLoad={onMapLoad}
+          onClick={() => setshowIW(false)}
         >
+          {/* if new user we are going to build a simple UI tutorial on how to use trekit */}
+
           {showView ? (
-            <h2 className="AddBtn" onClick={toggle} title="Click to add trips">
-              Add +
-            </h2>
+            <div className="AddBtn">
+              {newUser ? (
+                <>
+                  <h2>Click to add a marker </h2>
+                  <div class="arrow-1"></div>
+                </>
+              ) : null}
+
+              <h2 id="AddBtn" onClick={toggle} title="Click to add trips">
+                Add +
+              </h2>
+            </div>
           ) : (
             <div className="search-container">
+              <h2 id="MinusBtnTutorial">Search for a place</h2>
               <SearchMap addmarker={addmarker} />
-              <h2
-                title="Click to close search"
-                className="MinusBtn"
-                onClick={toggle}
-              >
+              <h2 title="Click to close search" id="MinusBtn" onClick={toggle}>
                 -
               </h2>
             </div>
@@ -472,6 +534,7 @@ function MyMap(props) {
                 scaledSize: new window.google.maps.Size(60, 60),
               }}
               onClick={() => {
+                setshowIW(true);
                 setSelected(marker);
                 changeView(true);
               }}
@@ -480,108 +543,105 @@ function MyMap(props) {
 
           <div className="count">
             <h2 id="countDisplay">
-              Cities <br />
-              <span className="countDisplay">{cityCount}</span>
-            </h2>
-            <h2 id="countDisplay">
               Countries <br />
               <span className="countDisplay">{countryCount}</span>
             </h2>
           </div>
 
-          <InfoWindowComp
-            selected={selected}
-            handleClose={handleClose}
-            handleDelete={handleDelete}
-            toggleTripEdit={toggleTripEdit}
-            handleEdit={handleEdit}
-            newStartDate={newStartDate}
-            setNewStart={setNewStart}
-            newEndDate={newEndDate}
-            setNewEnd={setNewEnd}
-            newRating={newRating}
-            setNewRating={setNewRating}
-            newComment={newComment}
-            setNewComment={setNewComment}
-            toggleFileView={toggleFileView}
-            setNewFile={setNewFile}
-            handleTripEditSubmit={handleTripEditSubmit}
-            handleSubmit={handleSubmit}
-            dateView={dateView}
-            toggleDateView={toggleDateView}
-            startDate={startDate}
-            setStart={setStart}
-            endDate={endDate}
-            setEnd={setEnd}
-            setRating={setRating}
-            ratingInp={ratingInp}
-            setComment={setComment}
-            commentInp={commentInp}
-            setFile={setFile}
-            fileView={fileView}
-            newFile={newFile}
-          />
+          {showIW && (
+            <InfoWindowComp
+              selected={selected}
+              handleClose={handleClose}
+              handleDelete={handleDelete}
+              toggleTripEdit={toggleTripEdit}
+              handleEdit={handleEdit}
+              newStartDate={newStartDate}
+              setNewStart={setNewStart}
+              newEndDate={newEndDate}
+              setNewEnd={setNewEnd}
+              newRating={newRating}
+              setNewRating={setNewRating}
+              newComment={newComment}
+              setNewComment={setNewComment}
+              toggleFileView={toggleFileView}
+              setNewFile={setNewFile}
+              handleTripEditSubmit={handleTripEditSubmit}
+              handleSubmit={handleSubmit}
+              dateView={dateView}
+              toggleDateView={toggleDateView}
+              startDate={startDate}
+              setStart={setStart}
+              endDate={endDate}
+              setEnd={setEnd}
+              setRating={setRating}
+              ratingInp={ratingInp}
+              setComment={setComment}
+              commentInp={commentInp}
+              setFile={setFile}
+              fileView={fileView}
+              newFile={newFile}
+            />
+          )}
         </GoogleMap>
-        <div>
-          {/* <Filter value={value} /> */}
+        <div id="list-container">
+          {/* List (to the right of Map) */}
+          <h4>Markers</h4>
           <input
             placeholder="Filter Cities"
             value={value}
             onChange={(e) => setValue(e.target.value.toLowerCase())}
           />
-          {markers[0]
-            ? markers
-                .filter((item) => item.city.toLowerCase().includes(value))
-                // .sort((a, b) => a.city - b.city)
-                .map((marker) => (
-                  <div id="listRow">
-                    <h3
-                      className="listItems"
-                      onClick={() => setSelected(marker)}
-                    >
-                      {marker.city}
-                    </h3>
-                    <MoreHorizIcon />
+          <div>
+            {Object.keys(groupedMarkers)
+              .sort()
+              .map((key, i) => {
+                // console.log("value of 1 map:", groupedMarkers[key]);
+                // groupedMarkers[key].reduce((r, a) => {
+                // r[a.city] = [...(r[a.city] || []), a];
+                // return r; instead of return r we need to return a map
+                // return "hello";
+                // Object.keys(r)
+                //     .sort()
+                //     .map((element, i) => {
+                //       <h2>mapped: {element}</h2>;
+                //     });
+                // }, {});
+                console.log("key:", key);
+                console.log("groupedMarkers[key]:", groupedMarkers[key]);
+                return (
+                  <div id="list">
+                    <div id="listRow" key={i}>
+                      {showListItem.find((item) => item.id === i) ? (
+                        <ExpandLessIcon onClick={() => toggleListItem(i)} />
+                      ) : (
+                        <ExpandMoreIcon onClick={() => toggleListItem(i)} />
+                      )}
+                      <h4
+                        className="countriesList"
+                        onClick={() => setSelected(groupedMarkers[key][i])}
+                      >
+                        {key}
+                      </h4>
+                    </div>
+
+                    <ul id="citiesList">
+                      {showListItem.find((item) => item.id === i)
+                        ? //using the array of objects (value) on each key we can do another reduce
+
+                          groupedMarkers[key].map((e, i) => (
+                            <div key={i} className="citiesList">
+                              <ExpandMoreIcon />
+                              <li>{e.city}</li>
+                            </div>
+                          ))
+                        : null}
+                    </ul>
                   </div>
-                ))
-            : null}
+                );
+              })}
+          </div>
         </div>
       </div>
-
-      {/* CONDITIONAL RENDERING FOR small-mobile IN landscape */}
-      {device !== "laptop" ? (
-        // && orientation === "landscape"
-        <>
-          <ThemeProvider theme={theme}>
-            <>
-              <GlobalStyles />
-              <div ref={node}>
-                <FocusLock disabled={!open}>
-                  <Burger
-                    open={open}
-                    setOpen={setOpen}
-                    aria-controls={menuId}
-                  />
-                  <Menu open={open} setOpen={setOpen} id={menuId} />
-                </FocusLock>
-              </div>
-            </>
-          </ThemeProvider>
-
-          <br />
-          <br />
-          <div className="count">
-            <h2 id="countDisplay">
-              Cities <br />
-              <span className="countDisplay">{cityCount}</span>
-            </h2>
-            <h2 id="countDisplay">
-              Countries <br />
-              <span className="countDisplay">{countryCount}</span>
-            </h2>
-          </div>
-        </>
-      ) : null}
     </div>
   );
 }

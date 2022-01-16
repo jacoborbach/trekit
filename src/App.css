@@ -1,5 +1,12 @@
 .App {
   text-align: center;
+  height: 100vh;
+  background-image: url("./Components/Landing/landing.jpg");
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  /* background-repeat: repeat-y;
+  background-position: center;  */
 }
 
 .App-header {

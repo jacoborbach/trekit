@@ -12,6 +12,7 @@ import {
 import "@reach/combobox/styles.css";
 import "./Header.css";
 import { setISODay } from "date-fns";
+import SettingsIcon from "@mui/icons-material/Settings";
 
 function Header(props) {
   const [textVal, settextVal] = useState("");
@@ -24,33 +25,33 @@ function Header(props) {
     settextVal(e.target.value);
   };
 
-  useEffect(() => {
-    // if (props.location.pathname.includes('friend')) {
-    //     settextVal('')
-    // }
-    if (textVal) {
-      handleSearch();
-    }
-  }, [textVal, last]);
+  // useEffect(() => {
+  //   if (props.location.pathname.includes('friend')) {
+  //       settextVal('')
+  //   }
+  //   if (textVal) {
+  //     handleSearch();
+  //   }
+  // }, [textVal, last]);
 
-  let handleSearch = () => {
-    axios
-      .get(`/api/friends/${textVal}`)
-      .then((res) => setsearchResults(res.data))
-      .catch((err) => console.log(err));
-  };
+  // let handleSearch = () => {
+  //   axios
+  //     .get(`/api/friends/${textVal}`)
+  //     .then((res) => setsearchResults(res.data))
+  //     .catch((err) => console.log(err));
+  // };
 
-  let handleClick = (id) => {
-    if (props.user.id === id) {
-      settextVal("");
-      props.history.push(`/myMap`);
-    } else {
-      settextVal("");
-      props.history.push(`/friend/${id}`);
-    }
-  };
+  // let handleClick = (id) => {
+  //   if (props.user.id === id) {
+  //     settextVal("");
+  //     props.history.push(`/myMap`);
+  //   } else {
+  //     settextVal("");
+  //     props.history.push(`/friend/${id}`);
+  //   }
+  // };
 
-  console.log(props);
+  console.log("headerprops:", props);
 
   return (
     <>
@@ -60,10 +61,11 @@ function Header(props) {
         </header>
       ) : (
         <header className="header-container2">
-          <Link to="/myMap" className="nav-links" id="logo">
-            <h1>trekit!</h1>
+          <Link to="/myMap">
+            <h1 id="logo">trekit!</h1>
           </Link>
-          <div>
+          <h2 id="profileName">{props.user.first_name}'s Map</h2>
+          {/* <div>
             <Combobox>
               <ComboboxInput
                 id="searchFriends"
@@ -83,19 +85,11 @@ function Header(props) {
                 </ComboboxList>
               </ComboboxPopover>
             </Combobox>
-          </div>
+          </div> */}
 
           <nav>
-            {/* <Link to='/myMap' className='nav-links'>Map</Link> */}
-            <Link to="settings" className="nav-links">
-              <span
-                id="settings"
-                role="img"
-                aria-label="settingsLbl"
-                title="Settings"
-              >
-                ⚙️
-              </span>{" "}
+            <Link to="settings" title="Settings">
+              <SettingsIcon id="settings"></SettingsIcon>
             </Link>
           </nav>
         </header>

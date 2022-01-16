@@ -1,7 +1,7 @@
 import React from "react";
 import { InfoWindow } from "@react-google-maps/api";
-// import svgTest from "../../icons/bigben.svg";
-// import test from "../../icons/america/SVG/test.svg";
+import "./InfoWindowComp.css";
+import svgTest from "../../icons/bigben.svg";
 
 export default function InfoWindowComp(props) {
   const {
@@ -45,18 +45,18 @@ export default function InfoWindowComp(props) {
   }
 
   const images = importAll(
-    require.context("../../icons/america/SVG", false, /\.svg$/)
+    require.context(`../../icons/USA/SVG`, false, /\.svg$/)
   );
 
-  console.log("images:", images);
   return (
     <div>
       {selected ? (
         <InfoWindow
-          //   pixelOffset={{}}
-          //   options={{
-          //     pixelOffset: new window.google.maps.Size(100, 30),
-          //   }}
+          // anchor={{ lat: 30, lng: 30 }}
+          options={{
+            disableAutoPan: true,
+            pixelOffset: new window.google.maps.Size(100, 30),
+          }}
           position={{ lat: +selected.lat, lng: +selected.lng }}
           onCloseClick={() => {
             handleClose();
@@ -373,13 +373,24 @@ export default function InfoWindowComp(props) {
                   />
                   <br />
 
-                  <h3 id="cutPadding">Advanced Options</h3>
-
                   {/* Custom Pin */}
-                  <span>Customize Marker:</span>
-                  {/* based on selected grab the folder of svgs for that country and render them here to choose from */}
-                  {/* <img src={test}></img> */}
-                  <img src={images["test.svg"].default} />
+                  <h3>Customize Marker:</h3>
+
+                  <div id="customizeIcon">
+                    {Object.keys(images).map(function (key, index) {
+                      return (
+                        <img
+                          className="customizeIcon"
+                          src={images[key].default}
+                          height={50}
+                          width={50}
+                          // key={index}
+                        />
+                      );
+                    })}
+                  </div>
+
+                  {/* <img src={images["test.svg"].default} /> */}
 
                   <br />
 
