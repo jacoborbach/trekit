@@ -340,3 +340,12 @@ input {
   right: 0px;
   z-index: 10;
 }
+
+.place {
+  text-align: left;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 15px;
+  cursor: pointer;
+}

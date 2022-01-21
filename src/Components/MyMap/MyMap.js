@@ -25,6 +25,8 @@ import Filter from "./Filter/Filter";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+import PushPinIcon from "@mui/icons-material/PushPin";
+import { red } from "@mui/material/colors";
 
 // import svgTest from "../../icons/bigben.svg";
 
@@ -627,8 +629,12 @@ function MyMap(props) {
                         onClick={() => toggleListItem(`${i}${e.key}`)}
                       />
                     )}
-                    <span className="country">{e.key}</span>
-                    <MoreHorizIcon className="moreHoriz" />
+                    <span
+                      className="country"
+                      onClick={() => toggleListItem(`${i}${e.key}`)}
+                    >
+                      {e.key}
+                    </span>
                   </li>
 
                   {/* If the country key was added (toggled) to the showListItem list, then the cities will render below.  */}
@@ -652,7 +658,11 @@ function MyMap(props) {
                                   }
                                 />
                               )}
-                              {ee.key}
+                              <span
+                                onClick={() => toggleListItem(`${ii}${ee.key}`)}
+                              >
+                                {ee.key}
+                              </span>
                             </li>
                             {/* If the city key was added (toggled) to the showListItem list, then the types will render below.  */}
                             {showListItem.find(
@@ -678,7 +688,13 @@ function MyMap(props) {
                                             }
                                           />
                                         )}
-                                        {capitalize(eee.key)}
+                                        <span
+                                          onClick={() =>
+                                            toggleListItem(`${iii}${eee.key}`)
+                                          }
+                                        >
+                                          {capitalize(eee.key)}
+                                        </span>
                                         {/* If the types key was added (toggled) to the showListItem list, then the actual places will render below.  */}
                                       </li>
                                       {showListItem.find(
@@ -688,8 +704,18 @@ function MyMap(props) {
                                             (eeee, iiii) => {
                                               return (
                                                 <ul>
-                                                  <li key={iiii}>
+                                                  <li
+                                                    key={iiii}
+                                                    className="place"
+                                                    onClick={() =>
+                                                      setSelected(eeee)
+                                                    }
+                                                  >
+                                                    <PushPinIcon
+                                                      style={{ color: "red" }}
+                                                    />
                                                     {eeee.name}
+                                                    <MoreHorizIcon className="moreHoriz" />
                                                   </li>
                                                 </ul>
                                               );

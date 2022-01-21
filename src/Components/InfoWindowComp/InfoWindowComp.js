@@ -53,10 +53,11 @@ export default function InfoWindowComp(props) {
       {selected ? (
         <InfoWindow
           // anchor={{ lat: 30, lng: 30 }}
-          options={{
-            disableAutoPan: true,
-            pixelOffset: new window.google.maps.Size(100, 30),
-          }}
+          // options={{
+
+          // disableAutoPan: false,
+          // pixelOffset: new window.google.maps.Size(100, 30),
+          // }}
           position={{ lat: +selected.lat, lng: +selected.lng }}
           onCloseClick={() => {
             handleClose();
