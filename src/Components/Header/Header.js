@@ -51,8 +51,6 @@ function Header(props) {
   //   }
   // };
 
-  console.log("headerprops:", props);
-
   return (
     <>
       {props.location.pathname === "/" ? (

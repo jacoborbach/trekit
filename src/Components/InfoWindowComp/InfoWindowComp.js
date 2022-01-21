@@ -213,7 +213,7 @@ export default function InfoWindowComp(props) {
                   <br />
                   <br />
 
-                  <div className="App">
+                  <div>
                     {!fileView ? (
                       <p id="cutPadding" onClick={toggleFileView}>
                         Add an Itinerary+
@@ -405,7 +405,7 @@ export default function InfoWindowComp(props) {
                   />
                   <br />
                 </div>
-                <input type="submit" className="App" />
+                <input type="submit" />
               </form>
             </>
           )}

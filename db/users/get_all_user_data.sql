@@ -1,4 +1,4 @@
-select t.country, t.city, t.name, t.typesString, t.lat, t.lng, t.id as trip_id, ti.start_date, ti.end_date, ti.rating, "comment", ti.file
+select t.country, t.city, t.name, t.type, t.lat, t.lng, t.id as trip_id, ti.start_date, ti.end_date, ti.rating, "comment", ti.file
 from users u join trips t 
 on u.id = t.user_id
 full join trip_info ti on t.id = ti.trip_id

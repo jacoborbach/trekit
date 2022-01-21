@@ -1,0 +1,46 @@
+{
+  Object.keys(groupedMarkers)
+    .sort()
+    // .filter((key) => key.contains) //this is where i was
+    .map((key, i) => {
+      // console.log("value of 1 map:", groupedMarkers[key]);
+      // groupedMarkers[key].reduce((r, a) => {
+      // r[a.city] = [...(r[a.city] || []), a];
+      // return r; instead of return r we need to return a map
+      // return "hello";
+      // Object.keys(r)
+      //     .sort()
+      //     .map((element, i) => {
+      //       <h2>mapped: {element}</h2>;
+      //     });
+      // }, {});
+      return (
+        <div id="list">
+          <div id="listRow" key={i}>
+            {showListItem.find((item) => item.id === i) ? (
+              <ExpandLessIcon onClick={() => toggleListItem(i)} />
+            ) : (
+              <ExpandMoreIcon onClick={() => toggleListItem(i)} />
+            )}
+            <h4
+              className="countriesList"
+              onClick={() => setSelected(groupedMarkers[key][i])}
+            >
+              {key}
+            </h4>
+          </div>
+
+          <ul id="citiesList">
+            {showListItem.find((item) => item.id === i)
+              ? groupedMarkers[key].map((e, i) => (
+                  <div key={i} className="citiesList">
+                    <ExpandMoreIcon />
+                    <li>{e.city}</li>
+                  </div>
+                ))
+              : null}
+          </ul>
+        </div>
+      );
+    });
+}

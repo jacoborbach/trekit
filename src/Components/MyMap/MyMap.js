@@ -18,11 +18,14 @@ import { theme } from "../../theme";
 import { Burger, Menu } from "../../Components";
 import FocusLock from "react-focus-lock";
 import useWindowDimensions from "../../useWindowDimensions";
+import * as d3Collection from "d3-collection";
+import capitalize from "capitalize-the-first-letter";
 
 import Filter from "./Filter/Filter";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
+
 // import svgTest from "../../icons/bigben.svg";
 
 const aws = require("aws-sdk");
@@ -82,6 +85,7 @@ function MyMap(props) {
   const [newFile, setNewFile] = useState({ name: "" });
   const [colors, setColors] = useState(null);
   const [toggleList, SetToggleList] = useState(false);
+
   //show info window
   const [showIW, setshowIW] = useState(true);
 
@@ -130,9 +134,9 @@ function MyMap(props) {
       if (res.data[1][0]) {
         setNewUser(false);
         setCountries(res.data[2][0].countries);
-
         setMarkers(res.data[1]);
       }
+
       //new users
       else {
         setNewUser(true);
@@ -176,7 +180,7 @@ function MyMap(props) {
 
   // Add Markers
   const addmarker = (coordinates) => {
-    // console.log("coordinates:", coordinates);
+    console.log("coordinate types:", coordinates.types);
     if (props.user.id) {
       splitUpName(coordinates);
       axios
@@ -185,7 +189,7 @@ function MyMap(props) {
           name,
           city,
           country,
-          types: coordinates.types,
+          type: coordinates.types[0],
           lat: coordinates.lat,
           lng: coordinates.lng,
         })
@@ -199,7 +203,7 @@ function MyMap(props) {
               name,
               city,
               country,
-              types: coordinates.types,
+              type: coordinates.types[0],
               lat: coordinates.lat,
               lng: coordinates.lng,
               trip_id: res.data.trip_id,
@@ -455,10 +459,10 @@ function MyMap(props) {
     return r;
   }, {});
 
-  const groupedCities = Object.values(groupedMarkers).reduce((r, a) => {
-    r[a.city] = [...(r[a.city] || []), a];
-    return r;
-  }, {});
+  // const groupedCities = Object.values(groupedMarkers).reduce((r, a) => {
+  //   r[a.city] = [...(r[a.city] || []), a];
+  //   return r;
+  // }, {});
 
   const toggleListItem = (id) => {
     const index = showListItem.map((e) => e.id).indexOf(id); //check if id in array
@@ -476,12 +480,20 @@ function MyMap(props) {
     }
   };
 
-  // console.log(markers);
-  console.log(groupedMarkers);
-  // console.log(groupedCities);
-  // console.log(newUser);
-  // console.log(selected);
-  console.log(mapRef);
+  let entries = d3Collection
+    .nest()
+    .key(function (d) {
+      return d.country;
+    })
+    .key(function (d) {
+      return d.city;
+    })
+    .key(function (d) {
+      return d.type;
+    })
+    .entries(markers);
+
+  console.log("entries:", entries);
   return (
     <div id="map-background">
       <div id="profile">
@@ -519,6 +531,7 @@ function MyMap(props) {
             </div>
           )}
 
+          {/* this should wait till we map through markers and convert string to array for type */}
           {markers.map((marker, i) => (
             <Marker
               key={marker.trip_id}
@@ -584,62 +597,118 @@ function MyMap(props) {
           )}
         </GoogleMap>
         <div id="list-container">
-          {/* List (to the right of Map) */}
           <h4>Markers</h4>
           <input
             placeholder="Filter Cities"
             value={value}
             onChange={(e) => setValue(e.target.value.toLowerCase())}
           />
-          <div>
-            {Object.keys(groupedMarkers)
-              .sort()
-              .map((key, i) => {
-                // console.log("value of 1 map:", groupedMarkers[key]);
-                // groupedMarkers[key].reduce((r, a) => {
-                // r[a.city] = [...(r[a.city] || []), a];
-                // return r; instead of return r we need to return a map
-                // return "hello";
-                // Object.keys(r)
-                //     .sort()
-                //     .map((element, i) => {
-                //       <h2>mapped: {element}</h2>;
-                //     });
-                // }, {});
-                console.log("key:", key);
-                console.log("groupedMarkers[key]:", groupedMarkers[key]);
-                return (
-                  <div id="list">
-                    <div id="listRow" key={i}>
-                      {showListItem.find((item) => item.id === i) ? (
-                        <ExpandLessIcon onClick={() => toggleListItem(i)} />
-                      ) : (
-                        <ExpandMoreIcon onClick={() => toggleListItem(i)} />
-                      )}
-                      <h4
-                        className="countriesList"
-                        onClick={() => setSelected(groupedMarkers[key][i])}
-                      >
-                        {key}
-                      </h4>
-                    </div>
 
-                    <ul id="citiesList">
-                      {showListItem.find((item) => item.id === i)
-                        ? //using the array of objects (value) on each key we can do another reduce
+          {/* After grouping markers by country, city and type, we map here --List-- */}
+          {entries
+            .filter(
+              (thing) =>
+                thing.key.toLowerCase().includes(value) ||
+                thing.values.some((values) =>
+                  values.key.toLowerCase().includes(value)
+                )
+            )
+            .map((e, i) => {
+              return (
+                <ul key={i} className="list">
+                  {/* Looks for if id of the country key is in showListItem */}
+                  <li className="countriesList">
+                    {showListItem.find((item) => item.id === `${i}${e.key}`) ? (
+                      <ExpandLessIcon
+                        onClick={() => toggleListItem(`${i}${e.key}`)}
+                      />
+                    ) : (
+                      <ExpandMoreIcon
+                        onClick={() => toggleListItem(`${i}${e.key}`)}
+                      />
+                    )}
+                    <span className="country">{e.key}</span>
+                    <MoreHorizIcon className="moreHoriz" />
+                  </li>
 
-                          groupedMarkers[key].map((e, i) => (
-                            <div key={i} className="citiesList">
-                              <ExpandMoreIcon />
-                              <li>{e.city}</li>
-                            </div>
-                          ))
-                        : null}
-                    </ul>
-                  </div>
-                );
-              })}
-          </div>
+                  {/* If the country key was added (toggled) to the showListItem list, then the cities will render below.  */}
+                  {showListItem.find((item) => item.id === `${i}${e.key}`)
+                    ? e.values.map((ee, ii) => {
+                        return (
+                          <ul>
+                            <li key={ii} className="citiesList">
+                              {showListItem.find(
+                                (item) => item.id === `${ii}${ee.key}`
+                              ) ? (
+                                <ExpandLessIcon
+                                  onClick={() =>
+                                    toggleListItem(`${ii}${ee.key}`)
+                                  }
+                                />
+                              ) : (
+                                <ExpandMoreIcon
+                                  onClick={() =>
+                                    toggleListItem(`${ii}${ee.key}`)
+                                  }
+                                />
+                              )}
+                              {ee.key}
+                            </li>
+                            {/* If the city key was added (toggled) to the showListItem list, then the types will render below.  */}
+                            {showListItem.find(
+                              (item) => item.id === `${ii}${ee.key}`
+                            )
+                              ? e.values[ii].values.map((eee, iii) => {
+                                  return (
+                                    <ul>
+                                      <li key={iii} className="typesList">
+                                        {showListItem.find(
+                                          (item) =>
+                                            item.id === `${iii}${eee.key}`
+                                        ) ? (
+                                          <ExpandLessIcon
+                                            onClick={() =>
+                                              toggleListItem(`${iii}${eee.key}`)
+                                            }
+                                          />
+                                        ) : (
+                                          <ExpandMoreIcon
+                                            onClick={() =>
+                                              toggleListItem(`${iii}${eee.key}`)
+                                            }
+                                          />
+                                        )}
+                                        {capitalize(eee.key)}
+                                        {/* If the types key was added (toggled) to the showListItem list, then the actual places will render below.  */}
+                                      </li>
+                                      {showListItem.find(
+                                        (item) => item.id === `${iii}${eee.key}`
+                                      )
+                                        ? e.values[ii].values[iii].values.map(
+                                            (eeee, iiii) => {
+                                              return (
+                                                <ul>
+                                                  <li key={iiii}>
+                                                    {eeee.name}
+                                                  </li>
+                                                </ul>
+                                              );
+                                            }
+                                          )
+                                        : null}
+                                    </ul>
+                                  );
+                                })
+                              : null}
+                          </ul>
+                        );
+                      })
+                    : null}
+
+                  {/* If the city key was added (toggled) to the showListItem list, then the types (places) will render below.  */}
+                </ul>
+              );
+            })}
         </div>
       </div>
     </div>

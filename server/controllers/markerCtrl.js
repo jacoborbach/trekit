@@ -1,7 +1,7 @@
 module.exports = {
   newtrip: async (req, res) => {
-    const { id, name, city, country, types, lat, lng } = req.body;
-    let typesString = types.join();
+    const { id, name, city, country, type, lat, lng } = req.body;
+    // let typesString = types.join();
 
     const db = req.app.get("db");
 
@@ -12,7 +12,7 @@ module.exports = {
       country,
       city,
       name,
-      typesString
+      type
     ); //returns a trip_id
 
     //adds new marker to existing session
@@ -22,7 +22,7 @@ module.exports = {
       country,
       lat,
       lng,
-      types,
+      type,
       trip_id: addedtrip.trip_id,
       start_date: null,
       end_date: null,
@@ -31,7 +31,6 @@ module.exports = {
       file: null,
     });
 
-    // this might not work, might need to console.log(count)
     const count = await db.trips.count_trips(id);
     req.session.user[2].splice(0, 1, {
       countries: count[0].countries,

@@ -21,8 +21,7 @@ export default function Search(props) {
     clearSuggestions,
   } = usePlacesAutocomplete({
     // requestOptions: {
-    // types: ["(cities)"],
-    // types: ["(establishment)"],
+    //   types: ["(cities)"],
     // },
   });
 

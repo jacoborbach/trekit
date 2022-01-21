@@ -12,7 +12,7 @@ const searchCtrl = require("./controllers/searchCtrl");
 const friendCtrl = require("./controllers/friendCtrl");
 const { CONNECTION_STRING, SESSION_SECRET, SERVER_PORT } = process.env;
 const app = express();
-console.log(process.env.NODE_ENV);
+// console.log(process.env.NODE_ENV);
 // Aws------------------------------------>
 const aws = require("aws-sdk");
 const { default: axios } = require("axios");
