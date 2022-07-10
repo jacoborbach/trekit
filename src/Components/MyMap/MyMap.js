@@ -20,6 +20,7 @@ import FocusLock from "react-focus-lock";
 import useWindowDimensions from "../../useWindowDimensions";
 import * as d3Collection from "d3-collection";
 import capitalize from "capitalize-the-first-letter";
+import Listbox from "../Listbox/Listbox";
 
 import Filter from "./Filter/Filter";
 import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
@@ -27,6 +28,7 @@ import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
 import ExpandLessIcon from "@mui/icons-material/ExpandLess";
 import PushPinIcon from "@mui/icons-material/PushPin";
 import { red } from "@mui/material/colors";
+import { set } from "date-fns";
 
 // import svgTest from "../../icons/bigben.svg";
 
@@ -105,6 +107,9 @@ function MyMap(props) {
   const [showListItem, setShowListItem] = useState([
     { id: "this is a placeholder id" },
   ]);
+
+  //toggle Edit & Delete
+  const [toggleActions, setToggleActions] = useState(false);
 
   const setUserColor = () => {
     if (props.user.theme === "Dark") {
@@ -495,6 +500,10 @@ function MyMap(props) {
     })
     .entries(markers);
 
+  // const toggleActions = () => {
+  //   set(toggl);
+  // };
+
   console.log("entries:", entries);
   return (
     <div id="map-background">
@@ -715,7 +724,17 @@ function MyMap(props) {
                                                       style={{ color: "red" }}
                                                     />
                                                     {eeee.name}
-                                                    <MoreHorizIcon className="moreHoriz" />
+                                                    <MoreHorizIcon
+                                                      className="moreHoriz"
+                                                      onClick={() =>
+                                                        toggleActions
+                                                      }
+                                                    />
+                                                  </li>
+                                                  {/* toggle  */}
+
+                                                  <li>
+                                                    <Listbox />
                                                   </li>
                                                 </ul>
                                               );
