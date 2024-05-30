@@ -1,4 +1,5 @@
-require("dotenv").config();
+require('dotenv').config({ path: '../.env' })
+
 const massive = require("massive");
 const express = require("express");
 const session = require("express-session");
@@ -7,12 +8,11 @@ const path = require("path");
 const authCtrl = require("./controllers/authCtrl");
 const markerCtrl = require("./controllers/markerCtrl");
 const userCtrl = require("./controllers/userCtrl");
-const emailCtrl = require("./controllers/emailCtrl");
+// const emailCtrl = require("./controllers/emailCtrl");
 const searchCtrl = require("./controllers/searchCtrl");
 const friendCtrl = require("./controllers/friendCtrl");
 const { CONNECTION_STRING, SESSION_SECRET, SERVER_PORT } = process.env;
 const app = express();
-// console.log(process.env.NODE_ENV);
 // Aws------------------------------------>
 const aws = require("aws-sdk");
 const { default: axios } = require("axios");
@@ -58,6 +58,7 @@ app.get("/sign-s3", (req, res) => {
 
 app.use(express.json());
 
+
 app.use(
   session({
     resave: true,
@@ -74,6 +75,7 @@ massive({
   app.set("db", db);
   console.log("db working");
 });
+
 
 //Auth handlers
 app.post("/api/register", authCtrl.register);
@@ -99,7 +101,7 @@ app.put("/api/changecolor", userCtrl.colorChange);
 app.post("/api/file", markerCtrl.saveFile);
 
 //Email handler
-app.post("/api/email", emailCtrl.email);
+// app.post("/api/email", emailCtrl.email);
 
 app.get("/api/friends/:textVal", searchCtrl.search);
 

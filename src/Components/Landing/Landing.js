@@ -17,12 +17,12 @@ export class Landing extends Component {
     };
   }
 
-  componentDidMount() {
-    axios.get("/api/user").then((res) => {
-      this.props.getUser(res.data[0]);
-      this.props.history.push("/myMap");
-    });
-  }
+  // componentDidMount() {
+  //   axios.get("/api/user").then((res) => {
+  //     this.props.getUser(res.data[0]);
+  //     this.props.history.push("/myMap");
+  //   });
+  // }
 
   handleInput = (e) => {
     this.setState({
@@ -51,9 +51,9 @@ export class Landing extends Component {
     } else {
       alert("Passwords don't match");
     }
-    axios
-      .post("/api/email", { email, first_name })
-      .catch((err) => console.log(err));
+    // axios
+    //   .post("/api/email", { email, first_name })
+    //   .catch((err) => console.log(err));
   };
 
   handleLogin = (e) => {
@@ -63,6 +63,7 @@ export class Landing extends Component {
     axios
       .post("/api/login", { email, password })
       .then((res) => {
+        console.log(res)
         this.props.getUser(res.data[0]); //user info
         this.props.getMarkers(res.data[1]); //marker info
         this.props.getCount(res.data[2]); //trip count info

@@ -147,7 +147,7 @@ function MyMap(props) {
       //new users
       else {
         setNewUser(true);
-        setCountries(props.count[0].countries);
+        // setCountries(props.count[0].countries);
         setMarkers(props.markers);
       }
     });
@@ -517,30 +517,10 @@ function MyMap(props) {
           onLoad={onMapLoad}
           onClick={() => setshowIW(false)}
         >
-          {/* if new user we are going to build a simple UI tutorial on how to use trekit */}
 
-          {showView ? (
-            <div className="AddBtn">
-              {newUser ? (
-                <>
-                  <h2>Click to add a marker </h2>
-                  <div class="arrow-1"></div>
-                </>
-              ) : null}
-
-              <h2 id="AddBtn" onClick={toggle} title="Click to add trips">
-                Add +
-              </h2>
-            </div>
-          ) : (
-            <div className="search-container">
-              <h2 id="MinusBtnTutorial">Search for a place</h2>
+          <div className="search-container">
               <SearchMap addmarker={addmarker} />
-              <h2 title="Click to close search" id="MinusBtn" onClick={toggle}>
-                -
-              </h2>
-            </div>
-          )}
+          </div>
 
           {/* this should wait till we map through markers and convert string to array for type */}
           {markers.map((marker, i) => (
