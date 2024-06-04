@@ -8,7 +8,7 @@ export class Landing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      first_name: "",
+      first_name_: "",
       last_name: "",
       email: "",
       password: "",
@@ -36,7 +36,9 @@ export class Landing extends Component {
 
   handleRegister = (e) => {
     e.preventDefault();
-    const { first_name, last_name, email, password, verPassword } = this.state;
+    let { first_name, last_name, email, password, verPassword } = this.state;
+
+    first_name = this.capitalizeFirstLetter(first_name)
 
     if (password && password === verPassword) {
       axios
@@ -71,6 +73,10 @@ export class Landing extends Component {
       })
       .catch((err) => console.log(err));
   };
+
+  capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  } 
 
   render() {
     return (

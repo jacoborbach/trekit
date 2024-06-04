@@ -1,36 +1,18 @@
 import React, { useState, useEffect, useRef } from "react";
-import axios from "axios";
-import { connect } from "react-redux";
-import { v4 as randomString } from "uuid";
 import { GoogleMap, useLoadScript, Marker } from "@react-google-maps/api";
-import SearchMap from "../SearchMap/SearchMap";
-import { original } from "./ColorThemes/original";
-import { dark } from "./ColorThemes/dark";
-import { silver } from "./ColorThemes/silver";
-import { noLabels } from "./ColorThemes/noLabels";
-import { sunset } from "./ColorThemes/sunset";
-import "./MyMap.css";
 import InfoWindowComp from "../InfoWindowComp/InfoWindowComp";
-import { ThemeProvider } from "styled-components";
-import { useOnClickOutside } from "../../hooks";
-import { GlobalStyles } from "../../global";
-import { theme } from "../../theme";
-import { Burger, Menu } from "../../Components";
-import FocusLock from "react-focus-lock";
-import useWindowDimensions from "../../useWindowDimensions";
-import * as d3Collection from "d3-collection";
 import capitalize from "capitalize-the-first-letter";
+import { useOnClickOutside } from "../../hooks";
+import SearchMap from "../SearchMap/SearchMap";
+import * as d3Collection from "d3-collection";
+import { MoreHoriz, ExpandMore, ExpandLess, PushPin} from "@mui/icons-material";
+import { v4 as randomString } from "uuid";
 import Listbox from "../Listbox/Listbox";
+import { connect } from "react-redux";
+import { themes } from "./Themes";
+import axios from "axios";
+import "./MyMap.css";
 
-import Filter from "./Filter/Filter";
-import MoreHorizIcon from "@mui/icons-material/MoreHoriz";
-import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
-import ExpandLessIcon from "@mui/icons-material/ExpandLess";
-import PushPinIcon from "@mui/icons-material/PushPin";
-import { red } from "@mui/material/colors";
-import { set } from "date-fns";
-
-// import svgTest from "../../icons/bigben.svg";
 
 const aws = require("aws-sdk");
 const s3 = new aws.S3({
@@ -88,7 +70,6 @@ function MyMap(props) {
   const [newComment, setNewComment] = useState("");
   const [newFile, setNewFile] = useState({ name: "" });
   const [colors, setColors] = useState(null);
-  const [toggleList, SetToggleList] = useState(false);
 
   //show info window
   const [showIW, setshowIW] = useState(true);
@@ -98,7 +79,7 @@ function MyMap(props) {
   const [fileView, setFileView] = useState(false);
 
   //Device type/orientation
-  const { device, orientation } = useWindowDimensions();
+  // const { device, orientation } = useWindowDimensions();
 
   //filter
   const [value, setValue] = useState("");
@@ -113,15 +94,15 @@ function MyMap(props) {
 
   const setUserColor = () => {
     if (props.user.theme === "Dark") {
-      setColors(dark);
+      setColors(themes.dark);
     } else if (props.user.theme === "Silver") {
-      setColors(silver);
+      setColors(themes.silver);
     } else if (props.user.theme === "No Labels") {
-      setColors(noLabels);
+      setColors(themes.noLabels);
     } else if (props.user.theme === "Original") {
-      setColors(original);
+      setColors(themes.original);
     } else if (props.user.theme === "Sunset") {
-      setColors(sunset);
+      setColors(themes.sunset);
     }
   };
 
@@ -133,7 +114,6 @@ function MyMap(props) {
     }
   };
 
-  // console.log(device, orientation)
   useEffect(() => {
     setUserColor();
     axios.get("/api/user").then((res) => {
@@ -157,8 +137,8 @@ function MyMap(props) {
     styles: colors,
     disableDefaultUI: true,
     zoomControl: true,
-    // minZoom: 1.9,
-    // maxZoom: 1.9,
+    minZoom: 1.9,
+    maxZoom: 1.9,
     draggable: true,
     // restriction: {
     //   latLngBounds: { north: 85, south: -85, west: -180, east: 180 },
@@ -187,7 +167,7 @@ function MyMap(props) {
 
   // Add Markers
   const addmarker = (coordinates) => {
-    console.log("coordinate types:", coordinates.types);
+    console.log(coordinates);
     if (props.user.id) {
       splitUpName(coordinates);
       axios
@@ -500,11 +480,6 @@ function MyMap(props) {
     })
     .entries(markers);
 
-  // const toggleActions = () => {
-  //   set(toggl);
-  // };
-
-  console.log("entries:", entries);
   return (
     <div id="map-background">
       <div id="profile">
@@ -545,12 +520,12 @@ function MyMap(props) {
             />
           ))}
 
-          <div className="count">
+          {/* <div className="count">
             <h2 id="countDisplay">
               Countries <br />
               <span className="countDisplay">{countryCount}</span>
             </h2>
-          </div>
+          </div> */}
 
           {showIW && (
             <InfoWindowComp
@@ -610,11 +585,11 @@ function MyMap(props) {
                   {/* Looks for if id of the country key is in showListItem */}
                   <li className="countriesList">
                     {showListItem.find((item) => item.id === `${i}${e.key}`) ? (
-                      <ExpandLessIcon
+                      <ExpandLess
                         onClick={() => toggleListItem(`${i}${e.key}`)}
                       />
                     ) : (
-                      <ExpandMoreIcon
+                      <ExpandMore
                         onClick={() => toggleListItem(`${i}${e.key}`)}
                       />
                     )}
@@ -635,13 +610,13 @@ function MyMap(props) {
                               {showListItem.find(
                                 (item) => item.id === `${ii}${ee.key}`
                               ) ? (
-                                <ExpandLessIcon
+                                <ExpandLess
                                   onClick={() =>
                                     toggleListItem(`${ii}${ee.key}`)
                                   }
                                 />
                               ) : (
-                                <ExpandMoreIcon
+                                <ExpandMore
                                   onClick={() =>
                                     toggleListItem(`${ii}${ee.key}`)
                                   }
@@ -665,13 +640,13 @@ function MyMap(props) {
                                           (item) =>
                                             item.id === `${iii}${eee.key}`
                                         ) ? (
-                                          <ExpandLessIcon
+                                          <ExpandLess
                                             onClick={() =>
                                               toggleListItem(`${iii}${eee.key}`)
                                             }
                                           />
                                         ) : (
-                                          <ExpandMoreIcon
+                                          <ExpandMore
                                             onClick={() =>
                                               toggleListItem(`${iii}${eee.key}`)
                                             }
@@ -700,11 +675,11 @@ function MyMap(props) {
                                                       setSelected(eeee)
                                                     }
                                                   >
-                                                    <PushPinIcon
+                                                    <PushPin
                                                       style={{ color: "red" }}
                                                     />
                                                     {eeee.name}
-                                                    <MoreHorizIcon
+                                                    <MoreHoriz
                                                       className="moreHoriz"
                                                       onClick={() =>
                                                         toggleActions

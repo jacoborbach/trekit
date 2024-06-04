@@ -1,7 +1,6 @@
 module.exports = {
   newtrip: async (req, res) => {
-    const { id, name, city, country, type, lat, lng } = req.body;
-    // let typesString = types.join();
+    const { id, name, city, country, lat, lng } = req.body;
 
     const db = req.app.get("db");
 
@@ -12,7 +11,6 @@ module.exports = {
       country,
       city,
       name,
-      type
     ); //returns a trip_id
 
     //adds new marker to existing session
@@ -22,7 +20,6 @@ module.exports = {
       country,
       lat,
       lng,
-      type,
       trip_id: addedtrip.trip_id,
       start_date: null,
       end_date: null,
